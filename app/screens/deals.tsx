@@ -11,7 +11,7 @@ export default function DealsScreen() {
   useEffect(() => {
     const fetchMenuImage = async () => {
       try {
-        const { data } = await api.get("/menu/image"); // should return { url: '...' }
+        const { data } = await api.get("/menu/image");
         setMenuImageUrl(data.url);
       } catch (err) {
         console.error("Failed to fetch menu image", err);
@@ -51,14 +51,15 @@ export default function DealsScreen() {
   return (
     <View style={styles.background}>
       <View style={styles.container2}>
+        <Text style={styles.header}>Seasonal Menu</Text>
         {menuImageUrl ? (
-          <Image source={{ uri: menuImageUrl }} style={styles.image} resizeMode="contain" />
+          <Image source={{ uri: menuImageUrl }} style={styles.image} resizeMode="contain" alt="Seasonal Menu"/>
         ) : (
           <Text>Loading menu...</Text>
         )}
         {user?.role === "Admin" && (
           <TouchableOpacity onPress={pickNewImage} style={styles.uploadBtn}>
-            <Text style={{ color: "white" }}>Upload New Menu</Text>
+            <Text style={{ color: "white", fontSize: 20 }}>Upload New Menu</Text>
           </TouchableOpacity>
         )}
       </View>
@@ -68,30 +69,38 @@ export default function DealsScreen() {
 
 const styles = StyleSheet.create({
   background: {
-    flex: 1,
     alignItems: "center",
     justifyContent: "center",
     display: "flex",
     width: "100%",
-    height: "100%",
     backgroundColor: "rgb(250, 191, 212)",
+    flex: 1
+  },
+  header: {
+    fontSize: 34,
+    flex: .03,
+    fontFamily: "KenyanCoffeeRg",
   },
   container2: {
     display: "flex",
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "flex-start",
     flex: 1,
-    padding: 10,
+    padding: 20,
     width: "100%",
+    paddingBottom: 100,
   },
   image: {
-    height: "100%",
+    flex: 1,
     width: "100%",
   },
   uploadBtn: {
-    marginTop: 20,
     padding: 12,
     backgroundColor: "teal",
-    borderRadius: 8,
+    borderRadius: 10,
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    flex: .05
   },
 });

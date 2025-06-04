@@ -21,6 +21,15 @@ const corsOptions = {
   credentials: true, // Allow cookies if needed
 };
 
+// const path = require("path");
+
+// app.use(express.static(path.join(__dirname, "client")));
+
+// app.get("*", (req, res) => {
+//   res.sendFile(path.join(__dirname, "client", "index.html"));
+// });
+
+
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use("/api/stripe", stripeRoutes);

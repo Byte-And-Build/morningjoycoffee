@@ -207,9 +207,10 @@ const styles = StyleSheet.create({
     fontWeight: "100",
     fontFamily: "KenyanCoffeeRg",
     textAlign: "center",
-    paddingTop: 10,
-    color: "rgb(253, 203, 94)",
-    zIndex: 10
+    color: "rgb(230, 159, 68)",
+    zIndex: 10,
+    borderRadius: 15,
+    padding: 4
   },
   price: {
     color: "rgb(172, 232, 240)",
