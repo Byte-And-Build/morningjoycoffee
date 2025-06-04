@@ -7,6 +7,7 @@ import { CartProvider } from "./context/CartContext";
 import { AuthProvider } from "./context/AuthContext";
 import * as Font from "expo-font";
 import NavBar from "./components/NavBar";
+import Toast from 'react-native-toast-message';
 
 export default function RootLayoutWeb() {
   const [fontsLoaded, setFontsLoaded] = useState(false);
@@ -34,6 +35,7 @@ export default function RootLayoutWeb() {
         <CartProvider>
           <Slot />
           <NavBar />
+          <Toast />
         </CartProvider>
       </Elements>
     </AuthProvider>

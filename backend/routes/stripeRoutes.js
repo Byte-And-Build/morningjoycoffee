@@ -7,37 +7,47 @@ require("dotenv").config();
 const router = express.Router();
 const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
 
-// Create Payment Intent with Reward Logic
 router.post("/create-payment-intent", protect, async (req, res) => {
-  const { amount, connectedAccountId, redeemReward } = req.body;
+  const { amount, connectedAccountId, redeemReward, customerDetails, description } = req.body;
+  console.log("Received Payment Request:", req.body);
+
   const userId = req.user._id;
+  const user = await User.findById(userId);
+
+  let finalAmountInCents = amount; // Amount should already be in cents from frontend
+
+  if (redeemReward && user.rewards >= 10) {
+    finalAmountInCents = 50; // 🎉 Set a minimum of $0.50
+    user.rewards -= 10;
+  }
+
+  if (finalAmountInCents < 50) {
+    return res.status(400).json({ error: "Total amount must be at least $0.50 USD." });
+  }
 
   try {
-    const user = await User.findById(userId);
-
-    let finalAmount = amount;
-    if (redeemReward && user.rewards >= 10) {
-      finalAmount = 0; // 🎉 Free drink applied
-      user.rewards -= 10;
-    }
-
     const paymentIntent = await stripe.paymentIntents.create({
-      amount: Math.round(finalAmount * 100), 
+      amount: finalAmountInCents, // ✅ Correct cents amount
       currency: "usd",
-      application_fee_amount: Math.round(finalAmount * 0.02 * 100),
+      // automatic_tax: { enabled: true },
+      metadata: {
+        customer_name: customerDetails?.name || "Guest",
+        customer_email: customerDetails?.email || "No Email",
+        order_description: description,
+      },      
       transfer_data: { destination: connectedAccountId },
     });
-
+    console.log("Created PaymentIntent Metadata:", paymentIntent.metadata);
     // 🎁 Award 1 point if they didn't redeem
     if (!redeemReward) {
-      user.rewards += 1
-    };
+      user.rewards += 1;
+    }
     await user.save();
 
     res.status(200).json({ clientSecret: paymentIntent.client_secret, rewards: user.rewards });
   } catch (error) {
-    console.error(error);
-    res.status(500).send({ error: "Failed to create payment intent" });
+    console.error("Stripe Payment Intent Error:", error);
+    res.status(500).json({ error: "Failed to create payment intent" });
   }
 });
 

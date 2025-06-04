@@ -1,8 +1,7 @@
 import { useState } from "react";
-import { View, Text, TextInput, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, Image } from "react-native";
 import { useAuth } from "../context/AuthContext";
 import { useRouter } from "expo-router";
-import { BlurView } from "expo-blur";
 
 export default function RegisterScreen() {
   const { register } = useAuth();
@@ -18,7 +17,7 @@ export default function RegisterScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Register</Text>
+      <Image source={require('../../assets/images/Logo.png')} style={styles.logo} resizeMode="contain" />
       <TextInput style={styles.input} placeholder="Name" value={name} onChangeText={setName} />
       <TextInput style={styles.input} placeholder="Email" value={email} onChangeText={setEmail} />
       <TextInput style={styles.input} placeholder="Password" value={password} onChangeText={setPassword} secureTextEntry />
@@ -31,8 +30,9 @@ export default function RegisterScreen() {
 }
 
 const styles = StyleSheet.create({
-    container: { flex: 1, justifyContent: "center", padding: 20, backgroundColor: "rgb(255, 181, 236)" },
+    container: { flex: 1, justifyContent: "center", padding: 20, backgroundColor: "rgb(250, 191, 212)", },
     title: { fontSize: 24, textAlign: "center", marginBottom: 20, fontFamily: "CreatoDisplayLt" },
-    input: { borderWidth: 1, borderColor: "#ccc", padding: 8, borderRadius: 5, marginBottom: 10 },
-    buttons: {backgroundColor: "rgb(255, 111, 219)", padding: 10, borderRadius: 5}
+    input: { borderWidth: 1, borderColor: "#ccc", padding: 8, borderRadius: 5, marginBottom: 10, backgroundColor: "white" },
+    buttons: {backgroundColor: "rgb(255, 111, 219)", padding: 5, borderRadius: 5},
+    logo: {position: "relative", width: "100%"}
   });

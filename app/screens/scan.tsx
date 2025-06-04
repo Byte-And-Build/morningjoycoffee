@@ -1,9 +1,9 @@
 // screens/scan.tsx
 import { View, Text, StyleSheet, Image } from "react-native";
-import { BlurView } from "expo-blur";
 import { useAuth } from "../context/AuthContext";
 import { useRouter } from "expo-router";
 import { useEffect } from "react";
+import QRCode from 'react-native-qrcode-svg';
 
 export default function ScanScreen() {
   const { user, token } = useAuth();
@@ -19,14 +19,20 @@ export default function ScanScreen() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.blurBox}>
+      <View style={styles.mainWrapper}>
+        <View style={{flex: .2}}>
         <Text style={styles.title}>Scan Me For Rewards!</Text>
-        <Image
-          source={{ uri: "https://png.pngtree.com/pic_image.png" }}
-          style={styles.image}
-        />
+        <Text style={{fontSize: 12, textAlign: "center", fontStyle: "italic"}}>(10 points = 1 Free Drink!)</Text>
+        </View>
+        <View style={styles.qrWrapper}>
+          <QRCode value={user._id} size={256}/>
+        </View>
+        <View style={{flex: .5}}>
+          <Text style={{textAlign: "center", fontWeight: "bold", fontSize: 24}}>{user.name}</Text>
+          <Text style={{textAlign: "center", fontSize: 10}}>{user._id}</Text>
+        </View>
         <View style={styles.infoWrapperBottom}>
-          <View style={{padding: 10, width: "100%", flexDirection: "row", justifyContent: "space-between", backgroundColor: "rgb(243, 147, 222)", borderRadius: 5}}>
+          <View style={{padding: 15, width: "100%", flexDirection: "row", justifyContent: "space-between", backgroundColor: "rgb(243, 147, 222)", borderRadius: 5, alignContent: "center"}}>
             <Text style={styles.label}>Current Rewards:</Text>
             <Text style={styles.rewards}>{user.rewards} Points</Text>
           </View>
@@ -37,11 +43,11 @@ export default function ScanScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 20, alignItems: "center", backgroundColor: "rgb(255, 181, 236)" },
-  blurBox: { height: "90%", width: "90%", borderRadius: 10, padding: 20, borderColor: "rgb(255, 75, 144)", borderWidth: 1 },
-  title: { fontSize: 24, fontFamily: "KenyanCoffeeRg", textAlign: "center" },
-  image: { height: "70%", width: "100%", resizeMode: "contain" },
-  infoWrapperBottom: { flexDirection: "row", justifyContent: "space-between", width: "100%", padding: 10, borderRadius: 5, overflow: "hidden", position: "absolute", bottom: 0, left: 0 },
-  label: { fontSize: 18, color: "rgb(247, 14, 255)" },
-  rewards: { fontSize: 18, color: "rgb(255, 14, 183)", fontWeight: "bold" },
+  container: { flex: 1, padding: 30, alignItems: "center", backgroundColor: "rgb(255, 255, 255)" },
+  mainWrapper: { height: "95%", width: "100%", borderRadius: 10, padding: 20, display: "flex", alignItems: "center", justifyContent: "space-around", gap: 20 },
+  qrWrapper: { flex: 1, padding: 20, display: "flex", alignItems: "center", justifyContent: "space-around", gap: 20 },
+  title: { fontSize: 30, fontFamily: "KenyanCoffeeRg", textAlign: "center" },
+  infoWrapperBottom: { flexDirection: "row", justifyContent: "space-between", width: "100%", padding: 5, borderRadius: 5, overflow: "hidden", position: "absolute", bottom: 30, left: 0 },
+  label: { fontSize: 20, color: "rgb(247, 14, 255)" },
+  rewards: { fontSize: 24, color: "rgb(255, 14, 183)", fontWeight: "bold" },
 });

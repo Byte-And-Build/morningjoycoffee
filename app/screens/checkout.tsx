@@ -5,11 +5,12 @@ import { loadStripe } from "@stripe/stripe-js";
 import { useCart } from "../context/CartContext";
 import { api } from "../utils/api";
 import { useRouter } from "expo-router";
+import { useAuth } from "../context/AuthContext";
 
 const stripePromise = loadStripe("pk_test_51QuQJVKsD8c2Ud4tb2Px3I1faecKUlngul2OkNKpmcFXnNPcHRmUJTq70gmzVaJ02QAJRl7KX3mGgfeTD3fxTK5R00Oq8T7sat");
 
 function CheckoutForm({ clientSecret, userRewards, setUserRewards, redeemReward }: { clientSecret: string; userRewards: number; setUserRewards: (rewards: number) => void; redeemReward: boolean }) {
-  const { clearCart } = useCart();
+  const { clearCart, cart } = useCart();
   const router = useRouter();
   const stripe = useStripe();
   const elements = useElements();
@@ -27,7 +28,6 @@ function CheckoutForm({ clientSecret, userRewards, setUserRewards, redeemReward 
     } else if (paymentIntent?.status === "succeeded") {
       alert("Payment Successful!");
       clearCart();
-      setUserRewards(redeemReward ? userRewards - 10 : userRewards + 1); // 🎯 Update rewards
       router.push("/screens/profile");
     }
     setLoading(false);
@@ -43,17 +43,14 @@ function CheckoutForm({ clientSecret, userRewards, setUserRewards, redeemReward 
 
 export default function CheckoutMobileScreen() {
   const { cart } = useCart();
+  const { user } = useAuth();
   const [clientSecret, setClientSecret] = useState("");
   const [userRewards, setUserRewards] = useState(0);
   const [redeemReward, setRedeemReward] = useState(false);
 
-  const subtotal = cart.reduce((acc, item) => {
-    const basePrice = item.price * item.quantity;
-    const extrasPrice = item.customOptions
-      ? item.customOptions.reduce((extraAcc, extra) => extraAcc + extra.price, 0) * item.quantity
-      : 0;
-    return acc + basePrice + extrasPrice;
-  }, 0);
+  const subtotal = cart.reduce((acc, item) => acc + item.totalPrice, 0);
+  const amountInCents = Math.round(subtotal * 100); // Convert to cents
+
 
   const description = cart
     .map((item) => {
@@ -66,24 +63,38 @@ export default function CheckoutMobileScreen() {
 
   useEffect(() => {
     const createPaymentIntent = async () => {
-      const token = localStorage.getItem("token"); // ✅ Assuming you stored token after login
-      const { data } = await api.post(
-        "/stripe/create-payment-intent",
-        {
-          amount: subtotal,
-          connectedAccountId: "acct_1QuR72JJQIShDhAu",
-          description: description,
-          redeemReward,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`, // ✅ Add JWT token here
+      const token = localStorage.getItem("token"); 
+      const amountInCents = Math.round(subtotal * 100); // Convert to cents
+    
+      if (amountInCents < 50) {
+        alert("Total amount must be at least $0.50 USD.");
+        return;
+      }
+    
+      try {
+        const { data } = await api.post(
+          "/stripe/create-payment-intent",
+          {
+            amount: amountInCents,  // Send in cents
+            connectedAccountId: "acct_1QuR72JJQIShDhAu",
+            description: description,
+            redeemReward,
+            customerDetails: {
+              name: `${user?.name}` || "Guest", // Replace with actual user data
+              email: `${user?.email}` || "guest@email.com",
+            },
           },
-        }
-      );
-      setClientSecret(data.clientSecret);
-      setUserRewards(data.rewards);
-    };
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+        setClientSecret(data.clientSecret);
+        setUserRewards(data.rewards);
+      } catch (error) {
+        console.error("Error creating payment intent:", error);
+        alert("Failed to process payment. Please try again.");
+      }
+    };      
     createPaymentIntent();
   }, [subtotal, description, redeemReward]);
 
@@ -91,10 +102,12 @@ export default function CheckoutMobileScreen() {
     <View style={styles.container}>
       <Text style={styles.title}>Checkout - ${subtotal.toFixed(2)}</Text>
       <Text>Your Reward Points: {userRewards}</Text>
+      { userRewards && userRewards >= 10 && (
         <View>
-          <Text>Redeem 10 points for a free drink?</Text>
+            <Text>Redeem 10 points for a free drink?</Text>
           <Switch value={redeemReward} onValueChange={setRedeemReward} />
         </View>
+      )}
       {clientSecret && (
         <Elements stripe={stripePromise} options={{ clientSecret }}>
           <CheckoutForm clientSecret={clientSecret} userRewards={userRewards} setUserRewards={setUserRewards} redeemReward={redeemReward} />
@@ -105,6 +118,6 @@ export default function CheckoutMobileScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: "center", padding: 20 },
+  container: { flex: .9, justifyContent: "center", padding: 20, paddingBottom: 20, overflowY: "auto" },
   title: { fontSize: 24, textAlign: "center", marginBottom: 20 },
 });

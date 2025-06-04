@@ -3,16 +3,24 @@ import { BlurView } from "expo-blur";
 import { useAuth } from "../context/AuthContext";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
-import { api } from "../utils/api";
+import { api } from "../utils/api"
 
 export default function ProfileScreen() {
     const { user, token, logout } = useAuth(); 
     const router = useRouter();
     const [profile, setProfile] = useState(user || null);
+    const [isMounted, setIsMounted] = useState(false);
 
     useEffect(() => {
+        // ✅ Prevent navigation before app layout is fully mounted
+        setIsMounted(true);
+    }, []);
+
+    useEffect(() => {
+        if (!isMounted) return;
+
         if (!token) {
-            router.replace("/screens/login"); // Redirect to login if not logged in
+            router.replace("/screens/login");
         } else if (!user) {
             const fetchProfile = async () => {
                 try {
@@ -26,37 +34,40 @@ export default function ProfileScreen() {
             };
             fetchProfile();
         }
-    }, [token]);
+    }, [token, user, isMounted]);
 
-    if (!profile) return null; // Prevents rendering before redirect
+    if (!isMounted || (!profile && token)) return null;
 
     return (
         <View style={styles.container}>
-            <View style={styles.blurBox}>
-                <Text style={styles.greeting}>
-                    Hello, <Text>{profile?.name || "Guest"}!</Text>
-                </Text>
-                <View style={styles.infoMainWrapper}>
-                    <BlurView intensity={10} tint="extraLight" style={styles.infoWrapper}>
-                        <Text style={styles.infoLabel}>Email:</Text>
-                        <Text style={styles.infoText}>{profile?.email || "Not Available"}</Text>
-                    </BlurView>
-                    <BlurView intensity={10} tint="extraLight" style={styles.infoWrapper}>
-                        <Text style={styles.infoLabel}>Rewards:</Text>
-                        <Text style={styles.infoText}>{profile?.rewards || 0} Points</Text>
-                    </BlurView>
-                    <Image
-                        source={{ uri: "https://png.pngtree.com/png-vector/20241030/ourlarge/pngtree-mock-up-coffee-paper-cup-on-isolate-png-image_14172288.png" }}
-                        style={styles.profileImage}
-                    />
-                    <View style={{position: "absolute", width: "100%", bottom: 0, display: "flex", gap: 10}}>
-                        <TouchableOpacity style={styles.button} onPress={() => { router.push("/screens/userSettings")}}>
-                            <Text style={styles.buttonText}>Settings</Text>
+            <Text style={styles.greeting}>
+                Hello, <Text>{profile?.name || "Guest"}!</Text>
+            </Text>
+            <View style={styles.infoMainWrapper}>
+                <View  style={styles.infoWrapper}>
+                    <Text style={styles.infoLabel}>Email:</Text>
+                    <Text style={styles.infoText}>{profile?.email || "Not Available"}</Text>
+                </View>
+                <View style={styles.infoWrapper}>
+                    <Text style={styles.infoLabel}>Rewards:</Text>
+                    <Text style={styles.infoText}>{profile?.rewards || 0} Points</Text>
+                </View>
+                <Image
+                    source={{ uri: "https://png.pngtree.com/png-vector/20241030/ourlarge/pngtree-mock-up-coffee-paper-cup-on-isolate-png-image_14172288.png" }}
+                    style={styles.profileImage}
+                />
+                <View style={{ width: "100%", flex: 1, flexDirection: "column", gap: 10, paddingTop: 10 }}>
+                    <TouchableOpacity style={styles.button} onPress={() => router.push("/screens/userSettings")}>
+                        <Text style={styles.buttonText}>Settings</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.button} onPress={() => { logout(); router.replace("/") }}>
+                        <Text style={styles.buttonText}>Logout</Text>
+                    </TouchableOpacity>
+                    {(profile?.role === "Admin" || profile?.role === "Employee") && (
+                        <TouchableOpacity style={styles.button} onPress={() => router.push("/screens/inventory")}>
+                            <Text style={styles.buttonText}>Inventory</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={styles.button} onPress={() => { logout(); router.replace("/")}}>
-                            <Text style={styles.buttonText}>Logout</Text>
-                        </TouchableOpacity>
-                    </View>
+                    )}
                 </View>
             </View>
         </View>
@@ -68,7 +79,8 @@ const styles = StyleSheet.create({
         flex: 1,
         padding: 20,
         alignItems: "center",
-        backgroundColor: "rgb(255, 181, 236)",
+        backgroundColor: "rgb(250, 191, 212)",
+        justifyContent: "center"
     },
     blurBox: {
         height: "80%",
@@ -86,13 +98,13 @@ const styles = StyleSheet.create({
         fontWeight: "300",
         fontFamily: "KenyanCoffeeRg",
         textAlign: "center",
+        paddingBottom: 10
     },
     infoMainWrapper: {
         display: "flex",
         gap: 10,
         alignItems: "center",
-        minHeight: "90%",
-        overflow: "hidden",
+        height: "90%",
     },
     infoWrapper: {
         display: "flex",
@@ -102,29 +114,33 @@ const styles = StyleSheet.create({
         padding: 10,
         borderRadius: 10,
         overflow: "hidden",
+        backgroundColor: "rgb(245, 152, 189)",
+
     },
     infoLabel: {
+        color: "rgb(255, 255, 255)",
         fontSize: 18,
         fontWeight: "bold",
     },
     infoText: {
         fontSize: 18,
+        color: "rgb(191, 48, 226)",
     },
     profileImage: {
-        height: "70%",
+        height: 300,
         width: "100%",
         resizeMode: "contain",
     },
     button: {
         width: "100%",
         paddingVertical: 10,
-        backgroundColor: "rgb(225, 125, 255)",
+        backgroundColor: "rgb(245, 152, 189)",
         borderRadius: 5,
         alignItems: "center",
     },
     buttonText: {
         fontSize: 20,
-        fontWeight: "300",
+        fontWeight: "200",
         color: "rgb(255, 255, 255)",
         fontFamily: "CreatoDisplayLt"
     },
