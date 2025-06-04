@@ -16,7 +16,7 @@ app.use(bodyParser.json({ limit: "10mb" })); // or higher if needed
 app.use(bodyParser.urlencoded({ extended: true, limit: "10mb" }));
 
 const corsOptions = {
-  origin: "http://localhost:8081", // Frontend URL
+  origin: "https://morningjoycoffee-8807d101e92a.herokuapp.com/", // Frontend URL
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   credentials: true, // Allow cookies if needed
 };
