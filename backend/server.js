@@ -21,6 +21,9 @@ const corsOptions = {
   credentials: true, // Allow cookies if needed
 };
 
+app.get("/", (req, res) => {
+  res.send("🚀 Morning Joy Coffee API is running!");
+});
 
 
 app.use(cors(corsOptions));
