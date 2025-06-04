@@ -21,9 +21,6 @@ const corsOptions = {
   credentials: true, // Allow cookies if needed
 };
 
-app.get("/", (req, res) => {
-  res.send("API running!");
-});
 
 
 app.use(cors(corsOptions));
