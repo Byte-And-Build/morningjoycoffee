@@ -21,10 +21,6 @@ const corsOptions = {
   credentials: true, // Allow cookies if needed
 };
 
-app.get("/", (req, res) => {
-  res.send("🚀 Morning Joy Coffee API is running!");
-});
-
 
 app.use(cors(corsOptions));
 app.use(express.json());
@@ -32,6 +28,16 @@ app.use("/api/stripe", stripeRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/drinks", drinkRoutes);
 app.use("/api/menu", menuRoutes);
+
+const path = require("path");
+
+// Serve static files from dist
+app.use(express.static(path.join(__dirname, "dist")));
+
+// Fallback to index.html for React Router / Expo Router routes
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "dist", "index.html"));
+});
 
 mongoose
   .connect(process.env.MONGO_URI)
