@@ -40,6 +40,7 @@ const styles = StyleSheet.create({
     width: "100%",
     justifyContent: "center",
     gap: 20,
+    height: 40
   },
   ratingContainer: {
     padding: 10,

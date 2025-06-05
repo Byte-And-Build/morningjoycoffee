@@ -5,6 +5,7 @@ import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
 import { CartProvider } from "./context/CartContext";
 import { AuthProvider } from "./context/AuthContext";
+import { MaterialIcons } from '@expo/vector-icons';
 import * as Font from "expo-font";
 import NavBar from "./components/NavBar";
 import Toast from 'react-native-toast-message';
@@ -25,6 +26,12 @@ export default function RootLayoutWeb() {
       setFontsLoaded(true);
     };
     loadResources();
+  }, []);
+
+  useEffect(() => {
+    (async () => {
+      await MaterialIcons.loadFont();
+    })();
   }, []);
 
   if (!fontsLoaded || !stripePromise) return <Text>Loading...</Text>;

@@ -88,7 +88,7 @@ export default function Index() {
   </ScrollView>
   <Image style={styles.backgroundImg} source={{ uri: 'https://bytenbuild.s3.us-east-2.amazonaws.com/clients/morningjoycoffee/images/Logo.PNG' }} resizeMode="center" />
   <FlatList
-    style={{overflow: "visible"}}
+    style={{overflowY: "auto", paddingBottom: 30}}
     data={filteredDrinks}
     numColumns={2}
     columnWrapperStyle={styles.flatList}
@@ -96,7 +96,7 @@ export default function Index() {
     contentContainerStyle={{ paddingBottom: 20 }}
     renderItem={({ item }) => (
       <Animatable.View animation="fadeInUp" duration={500} style={styles.drinkWrapper}>
-        <View style={{position: "absolute", display: "flex", flexDirection: "column", width: "100%", height: "100%", right: 5, top: 5, justifyContent: "flex-start", gap: 5 }}>
+        <View style={{position: "absolute", display: "flex", flexDirection: "column", width: "100%", height: "100%", right: 5, top: 5, justifyContent: "flex-start", gap: 5, }}>
               <View style={styles.ratingContainer}>
                 <Text style={styles.ratingText}>{item.rating.thumbsUp}</Text>
                 <FontAwesome5 name="thumbs-up" size={20} color="white" />
@@ -174,12 +174,12 @@ const styles = StyleSheet.create({
   },
   drinkWrapper: {
     borderRadius: 10,
-    backgroundColor: "rgb(116, 52, 102)",
+    backgroundColor: "rgb(105, 44, 100)",
     borderWidth: 2,
     borderStyle: "dashed",
-    borderColor: "rgb(253, 203, 94)",
+    borderColor: "rgb(236, 195, 11)",
     width: itemWidth,
-    marginBottom: 20,
+    marginVertical: 10,
     height: 210, // Ensures enough space for content
     position: "relative",
     overflow: "visible", // Allows image to overflow
@@ -207,7 +207,7 @@ const styles = StyleSheet.create({
     fontWeight: "100",
     fontFamily: "KenyanCoffeeRg",
     textAlign: "center",
-    color: "rgb(230, 159, 68)",
+    color: "rgb(236, 195, 11)",
     zIndex: 10,
     borderRadius: 15,
     padding: 4

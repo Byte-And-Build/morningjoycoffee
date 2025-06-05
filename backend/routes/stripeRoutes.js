@@ -44,6 +44,14 @@ router.post("/create-payment-intent", protect, async (req, res) => {
     }
     await user.save();
 
+    console.log("⚡ Emitting new-order event");
+    const io = req.app.get("io");
+      io.emit("new-order", {
+        description,
+        customer: customerDetails.name || "Guest",
+        items: description.split(", "),
+      });
+
     res.status(200).json({ clientSecret: paymentIntent.client_secret, rewards: user.rewards });
   } catch (error) {
     console.error("Stripe Payment Intent Error:", error);

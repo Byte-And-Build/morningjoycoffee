@@ -1,4 +1,4 @@
-import { View, Text, TextInput, Image, StyleSheet, TouchableOpacity, FlatList, ActivityIndicator } from "react-native";
+import { View, Text, TextInput, Image, StyleSheet, TouchableOpacity, FlatList, Dimensions } from "react-native";
 import React, { useState, useEffect, useMemo } from "react";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useCart } from "../context/CartContext";
@@ -98,90 +98,187 @@ export default function DrinkDetails() {
       <TouchableOpacity onPress={() => router.push("/")} style={styles.backBtn}>
         <AntDesign name="back" size={18} color="white" />
       </TouchableOpacity>
-
       <Image source={{ uri: drink.image }} style={styles.image} />
-
       <Text style={styles.drinkName}>{drink.name}</Text>
       <Rating item={drink} thumbsUp={thumbsUp} thumbsDown={thumbsDown} handleRatingUpdate={handleRatingUpdate} />
       <Text style={styles.priceText}>Total: ${totalPrice.toFixed(2)}</Text>
       <Text style={styles.ingredients}>{drink.ingrediants}</Text>
-
       {/* ✅ Ensure drink.price exists before using it */}
-      {drink.price?.length > 0 && (
+      <View style={styles.slideWrapper}>
+        {drink.price?.length > 0 && (
+          <FlatList
+            horizontal
+            data={Object.keys(drink.price[0])}
+            contentContainerStyle={styles.sizeWrapper}
+            keyExtractor={(item) => item}
+            renderItem={({ item }) => (
+              <TouchableOpacity
+                onPress={() => {
+                  setSelectedSize(item);
+                  setSelectedPrice(parseFloat(drink.price[0][item]));
+                }}
+                style={[styles.sizeOption, selectedSize === item && styles.optionSelected]}
+              >
+                <Text style={styles.optionText}>{item}</Text>
+              </TouchableOpacity>
+            )}
+          />
+        )}
         <FlatList
-          horizontal
-          data={Object.keys(drink.price[0])}
-          style={{width: "100%", height: "auto", flex: .5}}
-          contentContainerStyle={styles.sizeWrapper}
-          keyExtractor={(item) => item}
+          numColumns={2}
+          data={customOptions}
+          contentContainerStyle={styles.customOptions}
+          keyExtractor={(item) => item.name}
           renderItem={({ item }) => (
             <TouchableOpacity
-              onPress={() => {
-                setSelectedSize(item);
-                setSelectedPrice(parseFloat(drink.price[0][item]));
-              }}
-              style={[styles.sizeOption, selectedSize === item && styles.optionSelected]}
-            >
-              <Text style={styles.optionText}>{item}</Text>
+              onPress={() => toggleOption(item)}
+              style={[styles.optionButton, selectedOptions.some((o) => o.name === item.name) && styles.optionSelected]}>
+              <Text style={{ fontSize: 12, color: "white" }}>{item.name} (+${item.price.toFixed(2)})</Text>
             </TouchableOpacity>
           )}
         />
-      )}
-
-      <FlatList
-        numColumns={2}
-        data={customOptions}
-        style={styles.customOptions}
-        keyExtractor={(item) => item.name}
-        renderItem={({ item }) => (
+        <View style={styles.cartQtyWrapper}>
+          <View style={styles.qtyContainer}>
+            <TouchableOpacity onPress={() => setCount((prev) => Math.max(prev - 1, 1))} style={styles.qtyBtns}>
+              <AntDesign name="minus" size={15} color="white" />
+            </TouchableOpacity>
+            <TextInput style={styles.qtyInput} value={`${count}`} editable={false} />
+            <TouchableOpacity onPress={() => setCount((prev) => prev + 1)} style={styles.qtyBtns}>
+              <AntDesign name="plus" size={15.} color="white" />
+            </TouchableOpacity>
+          </View>
           <TouchableOpacity
-            onPress={() => toggleOption(item)}
-            style={[styles.optionButton, selectedOptions.some((o) => o.name === item.name) && styles.optionSelected]}>
-            <Text style={{ fontSize: 12, color: "white" }}>{item.name} (+${item.price.toFixed(2)})</Text>
-          </TouchableOpacity>
-        )}
-      />
-      <View style={styles.cartQtyWrapper}>
-        <View style={styles.qtyContainer}>
-          <TouchableOpacity onPress={() => setCount((prev) => Math.max(prev - 1, 1))} style={styles.qtyBtns}>
-            <AntDesign name="minus" size={20} color="white" />
-          </TouchableOpacity>
-          <TextInput style={styles.qtyInput} value={`${count}`} editable={false} />
-          <TouchableOpacity onPress={() => setCount((prev) => prev + 1)} style={styles.qtyBtns}>
-            <AntDesign name="plus" size={20} color="white" />
+            onPress={() => addToCart({ ...drink, quantity: count, selectedSize, selectedPrice, customOptions: selectedOptions, totalPrice: parseFloat(totalPrice.toFixed(2)) })}
+            style={styles.cartBtn}
+          >
+            <Text style={styles.cartText}>ADD TO CART</Text>
           </TouchableOpacity>
         </View>
-
-        <TouchableOpacity
-          onPress={() => addToCart({ ...drink, quantity: count, selectedSize, selectedPrice, customOptions: selectedOptions, totalPrice: parseFloat(totalPrice.toFixed(2)) })}
-          style={styles.cartBtn}
-        >
-          <Text style={styles.cartText}>ADD TO CART</Text>
-        </TouchableOpacity>
       </View>
     </View>
   );
 }
 
+const screen = Dimensions.get("window");
+const isSmallScreen = screen.width < 400;
 
 const styles = StyleSheet.create({
-  background: { flex: 1, padding: 20, alignItems: "center", backgroundColor: "white" },
-  image: { width: 250, height: 250, borderRadius: 10 },
-  drinkName: { color: "rgb(245, 104, 221)", fontSize: 22, fontWeight: "bold", marginVertical: 10 },
-  priceText: { fontSize: 18, color: "#888" },
-  ingredients: { color: "rgb(245, 104, 221)", textAlign: "center", marginVertical: 10 },
-  qtyContainer: { flexDirection: "row", justifyContent: "center" },
-  qtyBtns: { height:25, width: 25, backgroundColor: "rgb(245, 152, 189)", alignItems: "center", justifyContent: "center", paddingVertical: 5, borderRadius: 25 },
-  qtyText: { color: "white", fontSize: 20, fontWeight: "500" },
-  qtyInput: { height: 25, width: 40, textAlign: "center", fontSize: 18 },
-  sizeWrapper: { width: "100%", justifyContent: "space-evenly", height: 50 },
-  sizeOption: { width: 50, height: 50, padding: 8, backgroundColor: "rgb(245, 152, 189)", borderRadius: 25, alignItems: "center", justifyContent: "center" },
-  customOptions: { width: "100%", height: "auto", maxHeight: 165, },
-  optionButton: { flex: 1, padding: 8, backgroundColor: "rgb(245, 173, 201)", borderRadius: 5, marginVertical: 5, marginHorizontal: 5, alignItems: "center"},
-  optionSelected: { backgroundColor: "rgb(241, 97, 157)", },
-  optionText: { fontSize: 12, color: "white" },
+  background: {
+    flex: 1,
+    padding: 20,
+    paddingBottom: 75,
+    alignItems: "center",
+    backgroundColor: "white",
+  },
+  image: {
+    width: screen.width * 0.5,
+    height: screen.width * 0.5,
+    borderRadius: 10,
+  },
+  drinkName: {
+    color: "rgb(245, 104, 221)",
+    fontSize: isSmallScreen ? 20 : 24,
+    fontWeight: "bold",
+    paddingBottom: 10,
+    textAlign: "center",
+  },
+  priceText: {
+    fontSize: 18,
+    color: "#888",
+    paddingVertical: 4,
+  },
+  ingredients: {
+    color: "rgb(245, 104, 221)",
+    textAlign: "center",
+    fontSize: isSmallScreen ? 13 : 15,
+    paddingHorizontal: 10,
+    paddingBottom: 10,
+  },
+  qtyContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 10,
+  },
+  qtyBtns: {
+    height: 30,
+    width: 30,
+    backgroundColor: "rgb(245, 152, 189)",
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 15,
+  },
+  qtyInput: {
+    height: 30,
+    width: 50,
+    textAlign: "center",
+    fontSize: 18,
+    borderRadius: 5,
+    padding: 5,
+  },
+  sizeWrapper: {
+    width: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: isSmallScreen ? 30 : 20,
+  },
+  sizeOption: {
+    width: isSmallScreen ? 40 : 60,
+    height: isSmallScreen ? 40 : 60,
+    backgroundColor: "rgb(245, 152, 189)",
+    borderRadius: isSmallScreen ? 20 : 30,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  optionText: {
+    fontSize: 13,
+    color: "white",
+  },
+  customOptions: {
+    flex: 1,
+    maxHeight: 325,
+    width: "100%",
+    overflowY: "auto",
+  },
+  optionButton: {
+    flex: 1,
+    minWidth: screen.width / 2.2,
+    padding: 8,
+    backgroundColor: "rgb(245, 173, 201)",
+    borderRadius: 5,
+    marginVertical: 3,
+    marginHorizontal: 3,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  optionSelected: {
+    backgroundColor: "rgb(241, 97, 157)",
+  },
   backBtn: { backgroundColor: "rgb(245, 152, 189)", padding: 10, position: "absolute", top: 25, left: 25, borderRadius: 25, zIndex: 20 },
-  cartBtn: { height:40, backgroundColor: "rgb(245, 152, 189)", padding: 10, borderRadius: 5, justifyContent: "center" },
-  cartText: { color: "white", fontSize: 18 },
-  cartQtyWrapper: { flex: 1, width: "100%", display: "flex", flexDirection: "row", justifyContent: "space-evenly", alignItems: "baseline"}
+  cartBtn: {
+    height: 30,
+    backgroundColor: "rgb(245, 152, 189)",
+    paddingHorizontal: 20,
+    borderRadius: 8,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  cartText: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  cartQtyWrapper: {
+    flex: 1,
+    width: "100%",
+    flexDirection: "row",
+    gap: 10,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingBottom: 20,
+  },
+  slideWrapper: {
+    overflowY: "auto",
+    flex: 1
+  }
 });

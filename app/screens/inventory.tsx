@@ -85,7 +85,7 @@ export default function InventoryScreen() {
     <View style={{ flex: 1, padding: 10 }}>
       <View style={{ display: "flex", flexDirection: "row", zIndex: 50 }}>
         <Image source={require('../../assets/images/Logo.png')} style={styles.inventoryLogo} resizeMode="contain" />
-        <View style={{ flex: 1, flexDirection: "row", justifyContent: "space-between" }}>
+        <View style={{ flex: 1, flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
           <Text style={{ fontSize: 24 }}>Inventory</Text>
           <InventoryItem refreshDrinks={fetchDrinks}/>
         </View>

@@ -56,7 +56,10 @@ export default function ProfileScreen() {
                     source={{ uri: "https://png.pngtree.com/png-vector/20241030/ourlarge/pngtree-mock-up-coffee-paper-cup-on-isolate-png-image_14172288.png" }}
                     style={styles.profileImage}
                 />
-                <View style={{ width: "100%", flex: 1, flexDirection: "column", gap: 10, paddingTop: 10 }}>
+                <View style={{ width: "100%", flex: 1, flexDirection: "column", gap: 5, paddingTop: 10 }}>
+                    <TouchableOpacity style={styles.button} onPress={() => router.push("/screens/userOrders")}>
+                        <Text style={styles.buttonText}>Orders</Text>
+                    </TouchableOpacity>
                     <TouchableOpacity style={styles.button} onPress={() => router.push("/screens/userSettings")}>
                         <Text style={styles.buttonText}>Settings</Text>
                     </TouchableOpacity>
@@ -66,6 +69,11 @@ export default function ProfileScreen() {
                     {(profile?.role === "Admin" || profile?.role === "Employee") && (
                         <TouchableOpacity style={styles.button} onPress={() => router.push("/screens/inventory")}>
                             <Text style={styles.buttonText}>Inventory</Text>
+                        </TouchableOpacity>
+                    )}
+                    {(profile?.role === "Admin") && (
+                        <TouchableOpacity style={styles.button} onPress={() => router.push("/screens/metrics")}>
+                            <Text style={styles.buttonText}>View Metrics</Text>
                         </TouchableOpacity>
                     )}
                 </View>
@@ -80,18 +88,7 @@ const styles = StyleSheet.create({
         padding: 20,
         alignItems: "center",
         backgroundColor: "rgb(250, 191, 212)",
-        justifyContent: "center"
-    },
-    blurBox: {
-        height: "80%",
-        width: "90%",
-        position: "absolute",
-        top: 70,
-        borderRadius: 10,
-        borderColor: "white",
-        borderWidth: 1,
-        overflow: "hidden",
-        padding: 20,
+        justifyContent: "flex-start"
     },
     greeting: {
         fontSize: 24,
@@ -102,20 +99,19 @@ const styles = StyleSheet.create({
     },
     infoMainWrapper: {
         display: "flex",
-        gap: 10,
+        gap: 5,
         alignItems: "center",
-        height: "90%",
+        justifyContent: "flex-start"
     },
     infoWrapper: {
         display: "flex",
         flexDirection: "row",
         width: "100%",
         gap: 5,
-        padding: 10,
+        padding: 8,
         borderRadius: 10,
         overflow: "hidden",
         backgroundColor: "rgb(245, 152, 189)",
-
     },
     infoLabel: {
         color: "rgb(255, 255, 255)",
@@ -127,13 +123,14 @@ const styles = StyleSheet.create({
         color: "rgb(191, 48, 226)",
     },
     profileImage: {
-        height: 300,
+        height: 225,
         width: "100%",
         resizeMode: "contain",
+        borderRadius: 10
     },
     button: {
         width: "100%",
-        paddingVertical: 10,
+        paddingVertical: 5,
         backgroundColor: "rgb(245, 152, 189)",
         borderRadius: 5,
         alignItems: "center",
