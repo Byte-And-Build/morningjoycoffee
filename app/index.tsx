@@ -121,6 +121,7 @@ const styles = StyleSheet.create({
     minWidth: "100%",
     maxHeight: "100%",
     paddingTop: 20,
+    overflowY: "auto"
   },
   drinkWrapper: {
     backgroundColor: "rgb(105, 44, 100)",

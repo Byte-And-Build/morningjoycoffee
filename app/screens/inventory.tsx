@@ -90,7 +90,14 @@ export default function InventoryScreen() {
           <InventoryItem refreshDrinks={fetchDrinks}/>
         </View>
       </View>
-
+        <View style={styles.itemContainerTop}>
+              <Text>Image</Text>
+              <Text>Name</Text>
+              <Text>Prices</Text>
+              <Text>Category</Text>
+              <Text>Ratings</Text>
+              <Text>Settings</Text>
+            </View>
       <FlatList
         style={{ paddingBottom: 80 }}
         data={drinks}
@@ -173,6 +180,16 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 5,
     width: "100%",
+  },
+  itemContainerTop: {
+    display: "flex",
+      flexDirection: "row",
+      minHeight: 20,
+      padding: 10,
+      width: "100%",
+      backgroundColor: "rgb(250, 191, 212)",
+      borderRadius: 10,
+      gap: 5,
   },
   itemContainer: {
       display: "flex",
