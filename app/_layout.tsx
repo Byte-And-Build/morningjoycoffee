@@ -6,6 +6,7 @@ import { Elements } from "@stripe/react-stripe-js";
 import { CartProvider } from "./context/CartContext";
 import { AuthProvider } from "./context/AuthContext";
 import { MaterialIcons } from '@expo/vector-icons';
+import { FontAwesome5 } from "@expo/vector-icons";
 import * as Font from "expo-font";
 import NavBar from "./components/NavBar";
 import Toast from 'react-native-toast-message';
@@ -15,24 +16,19 @@ export default function RootLayoutWeb() {
   const [stripePromise, setStripePromise] = useState(null);
 
   useEffect(() => {
-    const loadResources = async () => {
-      await Font.loadAsync({
-        "KenyanCoffeeRg": require("../assets/fonts/Kenyan-Coffee-Rg.otf"),
-        "CreatoDisplayLt": require("../assets/fonts/CreatoDisplay-Light.otf"),
-      });
-      const stripe = await loadStripe("pk_test_51QuQJVKsD8c2Ud4tb2Px3I1faecKUlngul2OkNKpmcFXnNPcHRmUJTq70gmzVaJ02QAJRl7KX3mGgfeTD3fxTK5R00Oq8T7sat");
-      setStripePromise(stripe);
-      console.log("Stripe Promise Set")
-      setFontsLoaded(true);
-    };
-    loadResources();
-  }, []);
+  const loadResources = async () => {
+    await Font.loadAsync({
+      "KenyanCoffeeRg": require("../assets/fonts/Kenyan-Coffee-Rg.otf"),
+      "CreatoDisplayLt": require("../assets/fonts/CreatoDisplay-Light.otf"),
+    });
+    const stripe = await loadStripe("pk_test_...");
+    setStripePromise(stripe);
+    console.log("Stripe Promise Set");
+    setFontsLoaded(true);
+  };
+  loadResources();
+}, []);
 
-  useEffect(() => {
-    (async () => {
-      await MaterialIcons.loadFont();
-    })();
-  }, []);
 
   if (!fontsLoaded || !stripePromise) return <Text>Loading...</Text>;
 

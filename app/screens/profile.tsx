@@ -88,7 +88,8 @@ const styles = StyleSheet.create({
         padding: 20,
         alignItems: "center",
         backgroundColor: "rgb(250, 191, 212)",
-        justifyContent: "flex-start"
+        justifyContent: "flex-start",
+        overflowY: "auto"
     },
     greeting: {
         fontSize: 24,
