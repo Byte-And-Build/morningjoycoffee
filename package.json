@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "heroku-start": "npm run build && npm run start:server",
+    "start:server": "node backend/server.js",
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
