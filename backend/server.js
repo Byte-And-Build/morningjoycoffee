@@ -15,6 +15,7 @@ const stripeRoutes = require("./routes/stripeRoutes");
 app.use(bodyParser.json({ limit: "10mb" })); // or higher if needed
 app.use(bodyParser.urlencoded({ extended: true, limit: "10mb" }));
 
+const helmet = require("helmet");
 const corsOptions = {
   origin: [
     "http://localhost:8081",               // ✅ frontend dev
@@ -26,6 +27,21 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
+
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+        fontSrc: ["'self'", "https://fonts.gstatic.com"],
+        imgSrc: ["*", "data:", "blob:"],
+        scriptSrc: ["'self'", "'unsafe-inline'"],
+        connectSrc: ["*"],
+      },
+    },
+  })
+);
 
 const http = require("http");
 const { Server } = require("socket.io");
@@ -46,6 +62,12 @@ app.use("/api/drinks", drinkRoutes);
 app.use("/api/menu", menuRoutes);
 
 const path = require("path");
+
+app.use(express.static(path.join(__dirname, "../client/out")));
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "../client/out/index.html"));
+});
 
 mongoose
   .connect(process.env.MONGO_URI)
