@@ -1,10 +1,25 @@
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Quicksand, Sour_Gummy } from "next/font/google";
 import "./globals.css";
+import { CartProvider } from "../app/context/CartContext";
+import { AuthProvider } from "../app/context/AuthContext";
+import NavBar from "../app/components/NavBar";
+import { ToastContainer } from "react-toastify";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
 });
+
+const quicksand = Quicksand({
+  variable: "--font-quicksand",
+  subsets: ["latin"],
+});
+
+const sourGummy = Sour_Gummy({
+  variable: "--font-sourGummy",
+  subsets: ["latin"],
+});
+
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
@@ -19,8 +34,14 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        {children}
+      <body className={`${geistSans.variable} ${geistMono.variable} ${quicksand.variable} ${sourGummy.variable}`}>
+        <AuthProvider> {/* ✅ wrap AuthProvider */}
+          <CartProvider>
+            {children}
+            <NavBar />
+            <ToastContainer position="top-right" autoClose={2000} />
+          </CartProvider>
+        </AuthProvider>
       </body>
     </html>
   );
