@@ -6,7 +6,8 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "heroku-postbuild": "npm install && npm run build"
   },
   "dependencies": {
     "@stripe/react-stripe-js": "^3.7.0",
@@ -19,7 +20,7 @@
     "react-toastify": "^11.0.5",
     "socket.io-client": "^4.8.1"
   },
-  "devDependencies": {
+  "devDependencies": { 
     "@types/node": "22.15.30",
     "@types/react": "19.1.6",
     "typescript": "5.8.3"
