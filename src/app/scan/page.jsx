@@ -2,7 +2,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "../context/AuthContext";
-import QRCode from "qrcode.react";
+import { QRCodeCanvas } from "qrcode.react";
 
 export default function ScanScreen() {
   const { user, token } = useAuth();
@@ -25,7 +25,7 @@ export default function ScanScreen() {
         </div>
 
         <div className="qr-wrapper">
-          <QRCode value={user._id} size={256} />
+          <QRCodeCanvas value={user._id} size={256} />
         </div>
 
         <div className="user-info">

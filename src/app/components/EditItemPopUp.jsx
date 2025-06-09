@@ -77,12 +77,10 @@ export default function EditItemPopUp({ item, setEditPopUp, fetchDrinks }) {
 
   return (
     <div className={styles.overlay}>
-      <div className={styles.popupContainer}>
         <button className={styles.closeButton} onClick={() => setEditPopUp(false)}>
           ✕
         </button>
-
-        <div className={styles.row}>
+        <div className={styles.horizContainer}>
           <input
             className={styles.input}
             value={formData.name}
@@ -105,7 +103,7 @@ export default function EditItemPopUp({ item, setEditPopUp, fetchDrinks }) {
         </div>
 
         <textarea
-          className={styles.textarea}
+          className={styles.horizContainer}
           value={formData.ingrediants}
           onChange={(e) => setFormData({ ...formData, ingrediants: e.target.value })}
           placeholder="Ingredients"
@@ -113,7 +111,7 @@ export default function EditItemPopUp({ item, setEditPopUp, fetchDrinks }) {
 
         <h4>Sizes & Prices</h4>
         {availableSizes.map((size) => (
-          <div key={size} className={styles.sizeRow}>
+          <div key={size} className={styles.horizContainer}>
             <label>
               <input
                 type="checkbox"
@@ -140,7 +138,7 @@ export default function EditItemPopUp({ item, setEditPopUp, fetchDrinks }) {
           </div>
         ))}
 
-        <button className={styles.pickButton} onClick={pickImage}>
+        <button className={styles.btns} onClick={pickImage}>
           Upload Image
         </button>
 
@@ -148,10 +146,9 @@ export default function EditItemPopUp({ item, setEditPopUp, fetchDrinks }) {
           <img src={formData.image} alt="Preview" className={styles.preview} />
         )}
 
-        <button className={styles.saveButton} onClick={handleSave}>
+        <button className={styles.btns} onClick={handleSave}>
           Save
         </button>
       </div>
-    </div>
   );
 }

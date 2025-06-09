@@ -44,11 +44,11 @@ export default function ProfileScreen() {
       </h2>
 
       <div className={styles.vertContainer}>
-        <div className={styles.horizContainer}>
+        <div className={styles.userContainer}>
           <span className="info-label">Email:</span>
           <span className="info-value">{profile?.email || "Not Available"}</span>
         </div>
-        <div className={styles.horizContainer}>
+        <div className={styles.userContainer}>
           <span className="info-label">Rewards:</span>
           <span className="info-value">{profile?.rewards || 0} Points</span>
         </div>
