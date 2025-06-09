@@ -4,7 +4,7 @@
   --gray-alpha-100: rgba(var(--gray-rgb), 0.05);
   --colorTop: #f0b4ca;
   --colorBottom: #ff80ae;
-  --btnColor1: #743288;
+  --btnColor1: #ff80ae;
   --fontColor: #35281f;
   --selectedSizeTop: #3f1f47;
   --selectedSizeBottom: #5b2d66;
@@ -67,7 +67,7 @@
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    gap: 15;
+    gap: 1rem;
     display: flex;
     width: 100%;
   }
@@ -78,10 +78,10 @@
     align-items: center;
     border-radius: 15px;
     flex: 1;
-    max-width: 25px;
-    max-height: 25px;
-    min-width: 25px;
-    min-height: 25px;
+    max-width: 1.5rem;
+    max-height: 1.5rem;
+    min-width: 1.5rem;
+    min-height: 1.5rem;
   }
 
   .qtyInput {
@@ -101,11 +101,11 @@
 
 .backBtn {
   background-color: rgb(245, 152, 189);
-  padding: 10;
+  padding: .625rem;
   position: absolute; 
-  top: 25; 
-  left: 25; 
-  border-radius: 25;
+  top: 1.75rem; 
+  left: 1.75rem; 
+  border-radius: 2rem;
   z-index: 20;
   border: none;
   color: white;
@@ -135,7 +135,7 @@
 }
 
 .ratingContainerHome {
-  padding: .625rem;
+  padding: .35rem;
   align-items: center;
   background-color: var(--btnColor1);
   border-radius: .625rem;
@@ -145,6 +145,10 @@
   top: .5rem !important;
   right: .5rem !important;
   border: none;
+  display: flex;
+  gap: .25rem;
+  box-shadow: inset 3px 3px 15px var(--selectedInsetTop),
+              inset 3px 3px 15px var(--selectedInsetBottom);
 }
   
 .ratingText {
@@ -184,6 +188,29 @@
   flex-grow: 0;
   width: 100%;
 }
+
+.itemCheckbox {
+  width: 1.5em;
+  height: 1.5rem;
+  border-radius: 3rem;
+  color: var(--colorTop);
+}
+
+.preview{ 
+  width: 100%;
+  height: 100%;
+  background-position: center;
+  background-size: contain;
+}
+
+.InventoryHoriz{
+  width: 100%;
+  padding: .5rem;
+  box-shadow: inset 3px 3px 15px var(--selectedInsetTop),
+                  inset 3px 3px 15px var(--selectedInsetBottom);
+  border-radius: 5px;
+}
+
     .overlay {
       position: absolute;
       top: 0px;
@@ -193,21 +220,25 @@
       background-color: rgb(255, 166, 181);
       z-index: 999;
       align-items: "center";
-      flex: 1;
       max-height: 100%;
+      min-height: 100%;
       overflow: hidden;
     }
+
     .inventoryWrapper {
       padding: 1.8rem 0;
       justify-content: center;
     }
     .userInput {
-      border-width: 1px;
-      border-color: #ccc;
+      border: none;
       padding: .5rem;
       border-radius: 5px;
-      margin-bottom: 10px;
-      background-color: white;
+      margin-bottom: .625rem;
+      background-color: var(--colorTop);
+      width: 95%;
+      box-shadow: inset 3px 3px 15px var(--selectedInsetTop),
+                  inset 3px 3px 15px var(--selectedInsetBottom);
+      color: var(--fontColor);
     }
     .buttons {
       background-color: rgb(255, 111, 219);
@@ -312,6 +343,15 @@
               3px 3px 15px var(--selectedInsetBottom);
 }
 
+.popUpScroll{
+  overflow-y: auto;
+  height: 100%;
+}
+
+.popUp{
+  height: 100%;
+}
+
 .optionBtns{
   padding: .5rem 1rem;
   border-radius: 5px;
@@ -372,6 +412,7 @@ display: none;
 
 .dealsImage {
   height: 100%;
+  width: 100%;
   max-width: 100%;
   background-repeat: no-repeat;
   background-size: contain;
@@ -429,9 +470,11 @@ display: none;
 }
 
 .drinkWrapper {
-  background-color: rgb(105, 44, 100);
+  background-color: var(--colorTop);
+  box-shadow: 3px 3px 15px var(--selectedInsetTop),
+             3px 3px 15px var(--selectedInsetBottom);
   border-radius: 10px;
-  border: 2px dashed rgb(236, 195, 11);
+  /* border: 2px dashed rgb(236, 195, 11); */
   padding: .8rem;
   width: 48%;
   max-width: 12rem;
@@ -451,6 +494,7 @@ display: none;
 
 .drinkContent,
 .drinkDetails {
+  font-size: .8rem;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -459,11 +503,21 @@ display: none;
   color: var(--fontColorContrast);
 }
 
+.drinkDetailsPrice{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-size: 1.3rem;
+  color: var(--fontColorContrast);
+}
+
 .drinkName {
   font-size: 1.2rem;
   font-weight: bold;
   font-family: var(--font-sourGummy);
-  color: rgb(236, 195, 11);
+  color: var(--fontColor);
   text-align: center;
 }
 
@@ -484,10 +538,17 @@ display: none;
 .itemWrapper {
   display: flex;
   flex-direction: row;
+  justify-content: space-between;
   gap: .625rem;
   border-bottom: 1px dashed black;
   padding-bottom: .625rem;
   align-items: center;
+}
+
+.cartDetails {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
 }
 
 .itemName {
@@ -556,7 +617,6 @@ display: none;
   top: 0px;
   left: 0px;
   z-index: -1;
-  padding: 60px;
 }
 
 .categoryContainer {

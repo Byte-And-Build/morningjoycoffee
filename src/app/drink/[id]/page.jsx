@@ -101,7 +101,7 @@ export default function DrinkDetails() {
         handleRatingUpdate={handleRatingUpdate}
       />
       <p className={styles.drinkDetails}>{drink.ingrediants}</p>
-      <p className={styles.drinkDetails}>Total: ${totalPrice.toFixed(2)}</p>
+      <p className={styles.drinkDetailsPrice}>Total: ${totalPrice.toFixed(2)}</p>
 
       <div className={styles.horizContainer}>
         {Object.keys(drink.price[0]).map((size) => (

@@ -34,8 +34,9 @@ export default function CartPage() {
                   height={60}
                   className="rounded-lg"
                 />
-                <div className={styles.vertContainer}>
+                <div className={styles.cartDetails}>
                   <span className={styles.itemNameCart}>{item.name}</span>
+                  <div className={styles.vertContainer}>
                   {item.customOptions?.length > 0 && (
                     <ul>
                       <li className={styles.itemDetails}>Size: {item.selectedSize}</li>
@@ -45,7 +46,8 @@ export default function CartPage() {
                         </li>
                       ))}
                     </ul>
-                  )}            
+                  )}        
+                  </div>    
                 </div>
                 <div className={styles.vertContainer}>
                   <button
@@ -76,10 +78,11 @@ export default function CartPage() {
             ))}
           </div>
 
-          <div className="mt-6 text-xl font-bold">
-            Subtotal: ${subtotal.toFixed(2)}
-          </div>
-            <div className={styles.itemWrapper}>
+          
+            <div className={styles.vertContainer} style={{width: "100%", maxHeight: "fit-content"}}>
+              <div className="mt-6 text-xl font-bold">
+                Subtotal: ${subtotal.toFixed(2)}
+              </div>
               <button
                 className={styles.btns}
                 onClick={() => router.push("/checkout")}

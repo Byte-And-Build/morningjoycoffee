@@ -108,7 +108,7 @@ export default function CheckoutPage() {
     );
 
       setClientSecret(data.clientSecret);
-      setUserRewards(data.rewards);
+      // setUserRewards(data.rewards);
     } catch (err) {
       console.error("Error creating payment intent:", err);
       alert("Failed to create payment intent.");

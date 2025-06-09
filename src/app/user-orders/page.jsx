@@ -1,7 +1,10 @@
 "use client";
+import styles from "../../app/page.module.css"
+
+
 const userOrdersScreen = () => {
     return ( 
-        <div>
+        <div className={styles.page}>
             <span>Your Purchases</span>
         </div>
      );

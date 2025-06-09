@@ -1,4 +1,5 @@
 "use client";
+import styles from "../../app/page.module.css"
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "../context/AuthContext";
@@ -31,35 +32,35 @@ export default function UserSettings() {
   };
 
   return (
-    <div className="settings-container">
-      <h1 className="settings-title">Settings</h1>
-
+    <div className={styles.page}>
+      <h1 className={styles.heading}>Settings</h1>
+    <div className={styles.vertContainer}>
       <input
-        className={`settings-input ${!edit ? "disabled" : ""}`}
+        className={`${styles.userInput} settings-input ${!edit ? "disabled" : ""}`}
         placeholder="Name"
         value={name}
         onChange={(e) => setName(e.target.value)}
         disabled={!edit}
       />
       <input
-        className={`settings-input ${!edit ? "disabled" : ""}`}
+        className={`${styles.userInput} settings-input ${!edit ? "disabled" : ""}`}
         placeholder="Email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
         disabled={!edit}
       />
       <input
-        className={`settings-input ${!edit ? "disabled" : ""}`}
+        className={`${styles.userInput} settings-input ${!edit ? "disabled" : ""}`}
         placeholder="New Password"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
         type="password"
         disabled={!edit}
       />
-
-      <div className="button-group">
+    </div>
+      <div className={styles.vertContainer}>
         <button
-          className="settings-button"
+          className={styles.btns}
           onClick={() => {
             if (edit) saveSettings();
             setEdit(!edit);
@@ -69,7 +70,7 @@ export default function UserSettings() {
         </button>
 
         <button
-          className="settings-button"
+          className={styles.btns}
           onClick={() => router.push("/profile")}
         >
           Back to Profile

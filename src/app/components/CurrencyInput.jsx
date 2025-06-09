@@ -27,15 +27,14 @@ const CurrencyInput = ({ value, onChange, placeholder }) => {
   };
 
   return (
-    <div className={styles.currencyInputWrapper}>
-      <label className={styles.dollarSign}>$</label>
+    <div className={styles.userWrapper}>
       <input
         type="text"
         value={text}
         onChange={handleChange}
         onBlur={handleBlur}
         placeholder={placeholder?.replace("$", "")}
-        className={styles.currencyInput}
+        className={styles.userInput}
         inputMode="decimal" // optional for mobile keyboards
       />
     </div>

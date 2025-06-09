@@ -4,7 +4,11 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 import styles from "./page.module.css";
 
-export default function HomePage() {
+import { FaThumbsUp } from "react-icons/fa";
+import Image from "next/image";
+import Logo from '../app/assets/Logo.png';
+
+export default function HomePage({ setLaoding }) {
   const router = useRouter();
   const [drinks, setDrinks] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -30,7 +34,12 @@ export default function HomePage() {
     ? drinks
     : drinks.filter(drink => drink.category === selectedCategory);
 
-  if (loading) return <div className="loader">Loading...</div>;
+  if (loading) return (
+  <div className={styles.page}>
+    <Image src={Logo} width={256} height={256} alt="Logo" />
+    <span>Loading...</span>
+  </div>
+  )
 
   return (
     <div className={styles.page}>
@@ -62,7 +71,7 @@ export default function HomePage() {
           >
             <div className={styles.ratingContainerHome}>
               <span className={styles.ratingText}>{item.rating?.thumbsUp || 0}</span>
-              <span role="img" aria-label="thumbs-up">👍</span>
+              <FaThumbsUp size={16} className={styles.ratingText} />
             </div>
             <img src={item.image} alt={item.name} className="drink-image" loading="lazy" />
             <div className={styles.drinkDetails}>
@@ -73,6 +82,7 @@ export default function HomePage() {
         ))}
       </div>
       </div>
+      
     </div>
   );
 }

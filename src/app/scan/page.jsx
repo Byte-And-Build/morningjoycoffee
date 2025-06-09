@@ -1,4 +1,5 @@
 "use client";
+import styles from "../../app/page.module.css";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "../context/AuthContext";
@@ -17,27 +18,26 @@ export default function ScanScreen() {
   if (!user) return null;
 
   return (
-    <div className="scan-container">
-      <div className="main-wrapper">
-        <div className="header">
-          <h1 className="title">Scan Me For Rewards!</h1>
-          <p className="subtitle">(10 points = 1 Free Drink!)</p>
+    <div className={styles.page}>
+      <div className={styles.vertContainer}>
+        <div className={styles.vertContainer}>
+          <h1 className={styles.heading}>Scan Me For Rewards!</h1>
+          <p className={styles.itemDetails}>(10 points = 1 Free Drink!)</p>
         </div>
-
-        <div className="qr-wrapper">
+        <div className={styles.vertContainer}>
           <QRCodeCanvas value={user._id} size={256} />
         </div>
-
-        <div className="user-info">
-          <p className="user-name">{user.name}</p>
-          <p className="user-id">{user._id}</p>
+        <div className={styles.userContainer} style={{justifyContent: "center"}}>
+          <div className={styles.vertContainer}>
+            <p>{user.name}</p>
+            <p>{user._id}</p>
+          </div>
         </div>
-
-        <div className="info-wrapper-bottom">
-          <div className="rewards-box">
+      <div className={styles.userContainer} style={{justifyContent: "center"}}>
+        <div className={styles.horizContainer}>
             <span className="label">Current Rewards:</span>
             <span className="rewards">{user.rewards} Points</span>
-          </div>
+        </div>
         </div>
       </div>
     </div>

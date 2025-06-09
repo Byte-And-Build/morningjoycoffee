@@ -40,6 +40,34 @@ button {
   border: none;
 }
 
+input {
+  background-color: none !important;
+  border: none;
+  color: black;
+  background: transparent;
+}
+
+select {
+  background-color: none !important;
+  border: none;
+  color: black;
+  background: transparent;
+}
+
+textarea {
+  border-radius: .5rem;
+  width: 100%;
+  background-color: none !important;
+  border: none;
+  color: black;
+  background: transparent;
+  height: 100%;
+  min-height: 80px;
+  padding: 1rem;
+  box-shadow: inset 3px 3px 15px var(--selectedInsetTop),
+                  inset 3px 3px 15px var(--selectedInsetBottom);
+}
+
 @media (prefers-color-scheme: dark) {
   html {
     color-scheme: dark;

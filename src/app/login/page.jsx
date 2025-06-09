@@ -1,5 +1,6 @@
 'use client';
 import { useState, useEffect } from "react";
+import { Logo } from "../assets/Logo.png"
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useAuth } from "../../app/context/AuthContext";
@@ -29,8 +30,8 @@ export default function LoginPage() {
   };
 
   return (
-    <div className={styles.container}>
-      <Image src="/images/Logo.png" alt="Logo" width={200} height={100} className={styles.logo} />
+    <div className={styles.page}>
+      <Image src={Logo} alt="Logo" width={200} height={100} className={styles.logo} />
       <input
         type="email"
         placeholder="Email"
@@ -53,7 +54,7 @@ export default function LoginPage() {
           <div className={styles.buttonGroup}>
             <button className={styles.buttons} onClick={handleLogin}>LOGIN</button>
             <button className={styles.buttons} onClick={() => router.push("/register")}>REGISTER</button>
-            <button className={styles.forgot} onClick={() => router.push("/forgotpassword")}>
+            <button className={styles.btns} onClick={() => router.push("/forgotpassword")}>
               Forgot Password?
             </button>
           </div>
