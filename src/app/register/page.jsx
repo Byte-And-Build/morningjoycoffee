@@ -7,8 +7,9 @@ import { useAuth } from "../../app/context/AuthContext";
 import styles from "../../app/page.module.css";
 
 export default function LoginPage() {
-  const { user, login } = useAuth();
+  const { user, register } = useAuth();
   const router = useRouter();
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -19,12 +20,12 @@ export default function LoginPage() {
     }
   }, [user]);
 
-  const handleLogin = async () => {
+  const handleRegister = async () => {
     setLoading(true);
     try {
-      await login(email, password);
+      await register(name, email, password);
     } catch (error) {
-      console.error("Login failed:", error);
+      console.error("Register failed:", error);
     }
     setLoading(false);
   };
@@ -33,7 +34,14 @@ export default function LoginPage() {
     <div className={styles.page} style={{overflow: "hidden"}}>
       <Image src={Logo} alt="Logo" width={200} height={200} content="contain"/>
       <div className={styles.vertContainer} style={{overflow: "hidden"}}>
-      <div className={styles.vertContainer}> 
+      <div className={styles.vertContainer}>
+    <input
+        type="name"
+        placeholder="Name"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+        className={styles.userInput}
+      />
       <input
         type="email"
         placeholder="Email"
@@ -56,11 +64,8 @@ export default function LoginPage() {
         </div>
       ) : (
           <div className={styles.vertContainer} style={{paddingLeft: "1rem", paddingRight: "1rem"}}>
-            <button className={styles.btns} onClick={handleLogin}>LOGIN</button>
-            <button className={styles.btns} onClick={() => router.push("/register")}>REGISTER</button>
-            <button className={styles.btns} onClick={() => router.push("/forgotpassword")}>
-              Forgot Password?
-            </button>
+            <button className={styles.btns} onClick={handleRegister}>REGISTER</button>
+            <button className={styles.btns} onClick={() => router.push("/login")}>LOGIN</button>
           </div>
       )}
       </div>
