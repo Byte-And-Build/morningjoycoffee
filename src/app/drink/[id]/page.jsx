@@ -5,6 +5,7 @@ import { useRouter, useParams } from "next/navigation";
 import { useCart } from "../../context/CartContext";
 import { api } from "../../utils/api";
 import Rating from "../../components/Rating";
+import Image from "next/image";
 
 export default function DrinkDetails() {
   const router = useRouter();
@@ -91,7 +92,7 @@ export default function DrinkDetails() {
         ← Back
       </button>
       <div style={{width: "100%", display: "flex", justifyContent: "center"}}>
-      <img src={drink.image} alt={drink.name} className={styles.drinkImage} />
+      <Image src={drink.image} alt={drink.name} className={styles.drinkImage} width={256} height={256}/>
       </div>
       <h1 className={styles.itemName}>{drink.name}</h1>
       <Rating
@@ -103,7 +104,7 @@ export default function DrinkDetails() {
       <p className={styles.drinkDetails}>{drink.ingrediants}</p>
       <p className={styles.drinkDetailsPrice}>Total: ${totalPrice.toFixed(2)}</p>
 
-      <div className={styles.horizContainer}>
+      <div className={styles.horizContainer} style={{justifyContent: "space-around"}}>
         {Object.keys(drink.price[0]).map((size) => (
           <button
             key={size}

@@ -63,7 +63,7 @@ export default function EditItemPopUp({ item, setEditPopUp, fetchDrinks }) {
     };
 
     try {
-      await api.post("/drinks/editInventory", payload, {
+      await api.post("api/drinks/editInventory", payload, {
         headers: { Authorization: `Bearer ${token}` },
       });
       toast.success("Drink updated!");
@@ -77,17 +77,13 @@ export default function EditItemPopUp({ item, setEditPopUp, fetchDrinks }) {
 
   return (
     <div className={styles.overlay}>
-        <button className={styles.closeButton} onClick={() => setEditPopUp(false)}>
-          ✕
-        </button>
         <div className={styles.horizContainer}>
           <input
-            className={styles.input}
+            className={styles.userInput}
             value={formData.name}
             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
             placeholder="Name"
           />
-
           <select
             className={styles.select}
             value={formData.category}
@@ -101,14 +97,11 @@ export default function EditItemPopUp({ item, setEditPopUp, fetchDrinks }) {
             <option value="Other">Other</option>
           </select>
         </div>
-
         <textarea
-          className={styles.horizContainer}
           value={formData.ingrediants}
           onChange={(e) => setFormData({ ...formData, ingrediants: e.target.value })}
           placeholder="Ingredients"
         />
-
         <h4>Sizes & Prices</h4>
         {availableSizes.map((size) => (
           <div key={size} className={styles.horizContainer}>
@@ -148,6 +141,9 @@ export default function EditItemPopUp({ item, setEditPopUp, fetchDrinks }) {
 
         <button className={styles.btns} onClick={handleSave}>
           Save
+        </button>
+        <button className={styles.btns} onClick={() => setEditPopUp(false)}>
+          Close
         </button>
       </div>
   );

@@ -48,10 +48,28 @@ input {
 }
 
 select {
-  background-color: none !important;
+  /* background-color: none !important; */
+  /* border: none; */
+  /* color: black; */
+  /* background: transparent; */
+  margin-top: .5rem;
+  margin-bottom: .5rem;
+  padding: 0 .75rem;
+  border-radius: 5px;
+  background-color: rgb(245, 152, 189);
   border: none;
-  color: black;
-  background: transparent;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  height: 2rem;
+  cursor: pointer;
+  text-align: center;
+  width: 100%;
+  justify-content: center;
+  font-size: 1.2rem;
+  font-family: var(--font-sourGummy);
+  box-shadow: 3px 3px 15px var(--selectedInsetTop),
+              3px 3px 15px var(--selectedInsetBottom);
 }
 
 textarea {
