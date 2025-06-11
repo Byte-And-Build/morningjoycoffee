@@ -10,7 +10,7 @@ import { api } from "../../app/utils/api";
 
 const stripePromise = loadStripe("pk_test_51QuQJVKsD8c2Ud4tb2Px3I1faecKUlngul2OkNKpmcFXnNPcHRmUJTq70gmzVaJ02QAJRl7KX3mGgfeTD3fxTK5R00Oq8T7sat");
 
-function CheckoutForm({ clientSecret, userRewards, setUserRewards, redeemReward }) {
+function CheckoutForm({ clientSecret, userRewards, setUserRewards, redeemReward, cart, user }) {
   const { clearCart } = useCart();
   const router = useRouter();
   const stripe = useStripe();
@@ -18,26 +18,48 @@ function CheckoutForm({ clientSecret, userRewards, setUserRewards, redeemReward 
   const [loading, setLoading] = useState(false);
 
   const handlePayment = async () => {
-    if (!stripe || !elements) return;
+  if (!stripe || !elements) return;
 
-    setLoading(true);
-    const { error, paymentIntent } = await stripe.confirmPayment({
-      elements,
-      confirmParams: {
-        return_url: window.location.origin,
-      },
-    });
+  setLoading(true);
+  const { error, paymentIntent } = await stripe.confirmPayment({
+    elements,
+    confirmParams: {
+      return_url: window.location.origin,
+    },
+    redirect: "if_required"
+  });
 
-    if (error) {
-      alert(`Payment failed: ${error.message}`);
-    } else if (paymentIntent?.status === "succeeded") {
+  if (error) {
+    alert(`Payment failed: ${error.message}`);
+  } else if (paymentIntent?.status === "succeeded") {
+    try {
+      const token = localStorage.getItem("token");
+
+      await api.post(
+        "/api/orders/new",
+        {
+          customer: user?.name || "Guest",
+          items: cart.map((item) => {
+            const opts = item.customOptions?.map((opt) => opt.name).join(", ");
+            return `${item.quantity}x ${item.name}${opts ? ` (${opts})` : ""}`;
+          }),
+        },
+        {
+          headers: token ? { Authorization: `Bearer ${token}` } : {},
+        }
+      );
+
       alert("Payment successful!");
       clearCart();
       router.push("/profile");
+    } catch (error) {
+      console.error("Order emit/save error:", error);
+      alert("Payment succeeded, but order processing failed.");
     }
+  }
 
-    setLoading(false);
-  };
+  setLoading(false);
+};
 
   return (
     <div style={styles.formWrapper}>
@@ -120,7 +142,7 @@ export default function CheckoutPage() {
   return (
     <div className={styles.page}>
       <h1 className={styles.heading}>Checkout - ${subtotal.toFixed(2)}</h1>
-      <p className={styles.rewardsText}>Your Reward Points: {userRewards}</p>
+      {/* <p className={styles.rewardsText}>Your Reward Points: {userRewards}</p> */}
 
       {userRewards >= 10 && (
         <div className={styles.switchRow}>
@@ -141,6 +163,8 @@ export default function CheckoutPage() {
             userRewards={userRewards}
             setUserRewards={setUserRewards}
             redeemReward={redeemReward}
+            cart={cart}
+            user={user}
           />
         </Elements>
       )}

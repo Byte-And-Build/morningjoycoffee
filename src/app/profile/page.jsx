@@ -39,7 +39,7 @@ export default function ProfileScreen() {
 
   return (
     <div className={styles.page}>
-      <div className={styles.vertContainer}>
+      <div className={styles.vertContainer} style={{paddingLeft: "1rem", paddingRight: "1rem"}}>
         <h2 className={styles.heading}>
           Hello, <span>{profile?.name || "Guest"}!</span>
         </h2>
@@ -59,16 +59,19 @@ export default function ProfileScreen() {
           className={styles.profileImage}
         />
 
-        <div className={styles.vertContainer}>
+        <div className={styles.vertContainer} style={{paddingLeft: "1rem", paddingRight: "1rem"}}>
           <button onClick={() => router.push("/user-orders")} className={styles.btns}>Orders</button>
           <button onClick={() => router.push("/user-settings")} className={styles.btns}>Settings</button>
           <button onClick={() => { logout(); router.replace("/") }} className={styles.btns}>Logout</button>
 
           {(profile?.role === "Admin" || profile?.role === "Employee") && (
-            <button onClick={() => router.push("/inventory")} className={styles.btns}>Inventory</button>
+            <div className={styles.vertContainer}>
+              <button onClick={() => router.push("/inventory")} className={styles.btns}>Inventory</button>
+              <button onClick={() => router.push("/incoming-orders")} className={styles.btns}>View Orders</button>
+            </div>
           )}
           {profile?.role === "Admin" && (
-            <button onClick={() => router.push("/metrics")} className={styles.btns}>View Metrics</button>
+            <button onClick={() => router.push("/metrics")} className={styles.btns}>Metrics</button>
           )}
         </div>
       </div>

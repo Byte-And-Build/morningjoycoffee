@@ -1,7 +1,9 @@
 const express = require("express");
 const Stripe = require("stripe");
 const User = require("../models/User");
+const Order = require("../models/Order");
 const { protect } = require("./userRoutes");
+const { PaymentElement } = require("@stripe/react-stripe-js");
 require("dotenv").config();
 
 const router = express.Router();
@@ -11,14 +13,16 @@ router.post("/create-payment-intent", async (req, res) => {
   const { amount, connectedAccountId, redeemReward, customerDetails, description } = req.body;
   console.log("Received Payment Request:", req.body);
 
-  const userId = req.user._id;
-  const user = await User.findById(userId);
+  let user;
+  let finalAmountInCents = amount;
 
-  let finalAmountInCents = amount; // Amount should already be in cents from frontend
+  if (req.user) {
+    user = await User.findById(req.user._id);
 
-  if (redeemReward && user.rewards >= 10) {
-    finalAmountInCents = 50; // 🎉 Set a minimum of $0.50
-    user.rewards -= 10;
+    if (redeemReward && user.rewards >= 10) {
+      finalAmountInCents = 50;
+      user.rewards -= 10;
+    }
   }
 
   if (finalAmountInCents < 50) {
@@ -26,33 +30,34 @@ router.post("/create-payment-intent", async (req, res) => {
   }
 
   try {
+  const feePercent = 0.03;
+  const applicationFee = Math.floor(finalAmountInCents * feePercent);
+
     const paymentIntent = await stripe.paymentIntents.create({
-      amount: finalAmountInCents, // ✅ Correct cents amount
+      amount: finalAmountInCents,
       currency: "usd",
-      // automatic_tax: { enabled: true },
+      payment_method_types: ["card"],
       metadata: {
         customer_name: customerDetails?.name || "Guest",
         customer_email: customerDetails?.email || "No Email",
         order_description: description,
-      },      
-      transfer_data: { destination: connectedAccountId },
+      },
+      transfer_data: {
+        destination: connectedAccountId,
+      },
+      application_fee_amount: applicationFee, // 💸 Platform fee
+      statement_descriptor_suffix: "MorningJoy Coffee", // 22 char max
     });
-    console.log("Created PaymentIntent Metadata:", paymentIntent.metadata);
-    // 🎁 Award 1 point if they didn't redeem
-    if (!redeemReward) {
+
+    if (user && !redeemReward) {
       user.rewards += 1;
+      await user.save();
     }
-    await user.save();
 
-    console.log("⚡ Emitting new-order event");
-    const io = req.app.get("io");
-      io.emit("new-order", {
-        description,
-        customer: customerDetails.name || "Guest",
-        items: description.split(", "),
-      });
-
-    res.status(200).json({ clientSecret: paymentIntent.client_secret, rewards: user.rewards });
+    res.status(200).json({
+      clientSecret: paymentIntent.client_secret,
+      rewards: user?.rewards || 0,
+    });
   } catch (error) {
     console.error("Stripe Payment Intent Error:", error);
     res.status(500).json({ error: "Failed to create payment intent" });
