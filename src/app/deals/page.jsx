@@ -50,7 +50,7 @@ export default function DealsPage() {
         )}
 
         {user?.role === 'Admin' && (
-          <div style={{display: "flex", flexDirection: "row", width: "100%"}}>
+          <div>
             <label className={styles.btns} htmlFor="menu">
               Upload New Menu
               <input

@@ -67,7 +67,7 @@
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    gap: 1rem;
+    gap: 2rem;
     display: flex;
     width: 100%;
     padding-left: 1rem;
@@ -76,6 +76,8 @@
 
   .qtyBtns {
     background-color: var(--btnColor1);
+    box-shadow: 3px 3px 15px var(--selectedInsetTop),
+                3px 3px 15px var(--selectedInsetTop);
     border: none;
     align-items: center;
     border-radius: 2rem;
@@ -95,6 +97,7 @@
     padding: 5;
     border: none;
     background-color: transparent;
+    color: white;
   }
 
 .drinkImage{
@@ -311,11 +314,11 @@
   flex-direction: row;
   align-items: center;
   gap: .625rem;
-  width: 100%;
   flex-wrap: wrap;
   max-height: 325px;
   padding-left: 1rem;
   padding-right: 1rem;
+  max-width: "80%";
 }
 
 .btnsSmall{
@@ -428,7 +431,7 @@ display: none;
 .dealsImage {
   height: 100%;
   width: 100%;
-  max-width: 100%;
+  max-width: 500px;
   background-repeat: no-repeat;
   background-size: contain;
 }
@@ -638,11 +641,12 @@ display: none;
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
+  align-items: center;
   gap: 1rem;
   z-index: 60;
   overflow-x: auto;
-  height: 3.2rem;
-  margin: .5rem 0;
+  height: 4.5rem;
+  padding: .5rem 1rem;
 }
 
 .categoryButton {

@@ -39,20 +39,20 @@ export default function ProfileScreen() {
 
   return (
     <div className={styles.page}>
-      <h2 className={styles.heading}>
-        Hello, <span>{profile?.name || "Guest"}!</span>
-      </h2>
-
       <div className={styles.vertContainer}>
-        <div className={styles.userContainer}>
-          <span className="info-label">Email:</span>
-          <span className="info-value">{profile?.email || "Not Available"}</span>
+        <h2 className={styles.heading}>
+          Hello, <span>{profile?.name || "Guest"}!</span>
+        </h2>
+        <div className={styles.vertContainer}>
+          <div className={styles.userContainer}>
+            <span className="info-label">Email:</span>
+            <span className="info-value">{profile?.email || "Not Available"}</span>
+          </div>
+          <div className={styles.userContainer}>
+            <span className="info-label">Rewards:</span>
+            <span className="info-value">{profile?.rewards || 0} Points</span>
+          </div>
         </div>
-        <div className={styles.userContainer}>
-          <span className="info-label">Rewards:</span>
-          <span className="info-value">{profile?.rewards || 0} Points</span>
-        </div>
-
         <img
           src="https://png.pngtree.com/png-vector/20241030/ourlarge/pngtree-mock-up-coffee-paper-cup-on-isolate-png-image_14172288.png"
           alt="coffee"

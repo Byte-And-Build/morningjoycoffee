@@ -104,7 +104,7 @@ export default function DrinkDetails() {
       <p className={styles.drinkDetails}>{drink.ingrediants}</p>
       <p className={styles.drinkDetailsPrice}>Total: ${totalPrice.toFixed(2)}</p>
 
-      <div className={styles.horizContainer} style={{justifyContent: "space-around"}}>
+      <div className={styles.horizContainer} style={{justifyContent: "space-around", maxWidth: "80%"}}>
         {Object.keys(drink.price[0]).map((size) => (
           <button
             key={size}
@@ -132,9 +132,11 @@ export default function DrinkDetails() {
       </div>
       <div className={styles.horizContainer}>
         <div className={styles.qtyContainer}>
-          <button onClick={() => setCount((c) => Math.max(c - 1, 1))} className={styles.qtyBtns}>-</button>
-          <input value={count} readOnly className={styles.qtyInput} />
-          <button onClick={() => setCount((c) => c + 1)} className={styles.qtyBtns}>+</button>
+          <div style={{display: "flex",}}>
+            <button onClick={() => setCount((c) => Math.max(c - 1, 1))} className={styles.qtyBtns}>-</button>
+            <input value={count} readOnly className={styles.qtyInput} />
+            <button onClick={() => setCount((c) => c + 1)} className={styles.qtyBtns}>+</button>
+          </div>
           <button
             onClick={() => addToCart({
               ...drink,

@@ -7,7 +7,7 @@ require("dotenv").config();
 const router = express.Router();
 const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
 
-router.post("/create-payment-intent", protect, async (req, res) => {
+router.post("/create-payment-intent", async (req, res) => {
   const { amount, connectedAccountId, redeemReward, customerDetails, description } = req.body;
   console.log("Received Payment Request:", req.body);
 

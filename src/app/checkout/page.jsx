@@ -1,6 +1,6 @@
 "use client";
 import styles from "../../app/page.module.css";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useCart } from "../../app/context/CartContext";
 import { useAuth } from "../../app/context/AuthContext";
 import { useRouter } from "next/navigation";
@@ -65,7 +65,8 @@ export default function CheckoutPage() {
   const subtotal = cart.reduce((acc, item) => acc + item.totalPrice, 0);
   const amountInCents = Math.round(subtotal * 100);
 
-  const description = cart
+  const description = useMemo(() => {
+  return cart
     .map((item) => {
       const options = item.customOptions?.length
         ? ` (Options: ${item.customOptions.map((opt) => opt.name).join(", ")})`
@@ -73,14 +74,12 @@ export default function CheckoutPage() {
       return `${item.quantity}x ${item.name}${options}`;
     })
     .join(", ");
+}, [cart]);
 
   useEffect(() => {
+  if (!description) return;
   const createPaymentIntent = async () => {
     const token = localStorage.getItem("token");
-    if (!token) {
-      alert("No auth token found. Please log in again.");
-      return;
-    }
 
     if (amountInCents < 50) {
   alert("Total amount must be at least $0.50 USD.");
@@ -89,7 +88,7 @@ export default function CheckoutPage() {
 
     const headers = token
       ? { Authorization: `Bearer ${token}` }
-      : {}; // No auth header if not logged in
+      : {};
 
     try {
       const { data } = await api.post(
