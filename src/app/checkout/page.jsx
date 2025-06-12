@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { api } from "../../app/utils/api";
+import { toast } from "react-toastify";
 
 const stripePromise = loadStripe(
   process.env.NODE_ENV === "development"
@@ -31,16 +32,16 @@ function CheckoutForm({ clientSecret, userRewards, setUserRewards, redeemReward,
     confirmParams: {
       return_url: window.location.origin,
     },
-    redirect: "if_required"
+    redirect: "if_required",
   });
 
   if (error) {
-    alert(`Payment failed: ${error.message}`);
+    toast.error(`Payment failed: ${error.message}`);
   } else if (paymentIntent?.status === "succeeded") {
     try {
       const token = localStorage.getItem("token");
 
-      await api.post(
+      const { data: savedOrder } = await api.post(
         "/api/orders/new",
         {
           user: user?._id || "Guest",
@@ -55,12 +56,14 @@ function CheckoutForm({ clientSecret, userRewards, setUserRewards, redeemReward,
         }
       );
 
-      alert("Payment successful!");
+      toast.success("Payment successful!");
       clearCart();
-      router.push("/profile");
+
+      router.push(`/order/${savedOrder._id}`);
+
     } catch (error) {
       console.error("Order emit/save error:", error);
-      alert("Payment succeeded, but order processing failed.");
+      toast.err("Payment succeeded, but order processing failed.");
     }
   }
 

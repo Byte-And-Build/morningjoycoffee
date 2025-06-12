@@ -1,6 +1,9 @@
 'use client';
 import { useState } from "react";
 import { api } from "../utils/api";
+import styles from "../../app/page.module.css";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState("");
@@ -8,18 +11,20 @@ export default function ForgotPassword() {
   const handleForgotPassword = async () => {
     try {
       await api.post("/users/forgot-password", { email });
-      window.alert("Check your inbox for a reset link.");
+      toast.success("Check your inbox for a reset link.");
     } catch (err) {
       console.error(err);
-      window.alert("Something went wrong.");
+      toast.err("Something went wrong.");
     }
   };
 
   return (
-    <div style={{ padding: 20, maxWidth: 400, margin: "100px auto", textAlign: "center" }}>
-      <h2>Reset Your Password</h2>
+    <div className={styles.page}>
+      <h2 className={styles.heading}>Reset Your Password</h2>
+      <div className={styles.vertConatiner}>
       <label htmlFor="email">Email:</label>
       <input
+        className={styles.userInput}
         id="email"
         type="email"
         placeholder="Enter your email"
@@ -34,20 +39,15 @@ export default function ForgotPassword() {
           border: "1px solid #ccc"
         }}
       />
+      <div className={styles.horizWrapper}>
       <button
         onClick={handleForgotPassword}
-        style={{
-          backgroundColor: "rgb(255, 111, 219)",
-          color: "white",
-          padding: 10,
-          border: "none",
-          borderRadius: 6,
-          cursor: "pointer",
-          width: "100%",
-        }}
+        className={styles.btns}
       >
         Send Reset Link
       </button>
+      </div>
+      </div>
     </div>
   );
 }
