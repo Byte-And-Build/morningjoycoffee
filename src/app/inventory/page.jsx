@@ -28,9 +28,17 @@ export default function InventoryPage() {
     }
   };
 
+  const token = localStorage.getItem("token");
+
   const handleDelete = async (_id) => {
     try {
-      await api.post("api/drinks/deleteInventory", { _id });
+      await api.post("api/drinks/deleteInventory", { _id },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       setDrinks((prev) => prev.filter((d) => d._id !== _id));
       setDeletePopUp(false);
     } catch (err) {
@@ -113,23 +121,25 @@ export default function InventoryPage() {
       )}
 
       {deletePopUp && (
-        <div className="fixed inset-0 bg-white/90 flex flex-col items-center justify-center p-4">
-          <h2 className="text-2xl font-bold mb-6 text-center">
+        <div className={styles.overlay}>
+          <div className={styles.vertContainer}>
+          <h2 className={styles.heading}>
             Are you sure you want to delete <br /> {selectedItem?.name}?
           </h2>
-          <div className="flex flex-col gap-4">
-            <button
-              className="bg-red-600 text-white px-4 py-2 rounded"
-              onClick={() => handleDelete(selectedItem?._id)}
-            >
-              Yes, Delete {selectedItem?.name}
-            </button>
-            <button
-              className="bg-green-500 text-white px-4 py-2 rounded"
-              onClick={() => setDeletePopUp(false)}
-            >
-              Cancel
-            </button>
+            <div className={styles.horizWrapper}>
+              <button
+                className={styles.btns}
+                onClick={() => handleDelete(selectedItem?._id)}
+              >
+                Yes, Delete {selectedItem?.name}
+              </button>
+              <button
+                className={styles.btns}
+                onClick={() => setDeletePopUp(false)}
+              >
+                Cancel
+              </button>
+            </div>
           </div>
         </div>
       )}
