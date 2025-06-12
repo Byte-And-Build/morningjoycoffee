@@ -126,7 +126,7 @@ export default function CheckoutPage() {
       "/api/stripe/create-payment-intent",
       {
         amount: amountInCents,
-        connectedAccountId: "ca_Ro33UaNAfOU7l5J48QchteHLXOkFvtvW",
+        connectedAccountId: "acct_1QuR72JJQIShDhAu",
         description,
         redeemReward,
         customerDetails: {
