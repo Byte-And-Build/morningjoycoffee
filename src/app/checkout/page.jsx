@@ -8,7 +8,12 @@ import { loadStripe } from "@stripe/stripe-js";
 import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { api } from "../../app/utils/api";
 
-const stripePromise = loadStripe("pk_test_51QuQJVKsD8c2Ud4tb2Px3I1faecKUlngul2OkNKpmcFXnNPcHRmUJTq70gmzVaJ02QAJRl7KX3mGgfeTD3fxTK5R00Oq8T7sat");
+const stripePromise = loadStripe(
+  process.env.NODE_ENV === "development"
+    ? process.env.NEXT_PUBLIC_STRIPE_TEST_KEY
+    : process.env.STRIPE_LIVE_KEY
+);
+
 
 function CheckoutForm({ clientSecret, userRewards, setUserRewards, redeemReward, cart, user }) {
   const { clearCart } = useCart();

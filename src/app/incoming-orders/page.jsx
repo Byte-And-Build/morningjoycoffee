@@ -84,7 +84,7 @@ const IncomingOrders = () => {
 
   return (
     <div className={styles.page}>
-      <ToastContainer />
+      <ToastContainer position="top-right" autoClose={2000}/>
       {orders.length === 0 ? (
         <p>No incoming orders yet.</p>
       ) : (
