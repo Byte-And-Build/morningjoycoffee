@@ -14,9 +14,12 @@ export default function InventoryPage() {
   const [selectedItem, setSelectedItem] = useState(null);
   const [editPopUp, setEditPopUp] = useState(false);
   const [deletePopUp, setDeletePopUp] = useState(false);
+  const [token, setToken] = useState("");
 
   useEffect(() => {
     fetchDrinks();
+    const t = localStorage.getItem("token");
+      setToken(t);
   }, []);
 
   const fetchDrinks = async () => {
@@ -27,8 +30,6 @@ export default function InventoryPage() {
       console.error("Error fetching drinks:", error);
     }
   };
-
-  const token = localStorage.getItem("token");
 
   const handleDelete = async (_id) => {
     try {
