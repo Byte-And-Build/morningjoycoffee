@@ -68,7 +68,7 @@ const InventoryItem = ({ refreshDrinks }) => {
 
     try {
       const token = localStorage.getItem("token");
-      await api.post("/drinks/addInventory", payload, {
+      await api.post("api/drinks/addInventory", payload, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -105,12 +105,14 @@ const InventoryItem = ({ refreshDrinks }) => {
             <div className={styles.vertContainer}>
             <div className={styles.InventoryHoriz}>
               <input
-              style={{padding:".25rem"}}
+                name="Item Name"
+                style={{padding:".25rem"}}
                 placeholder="Name"
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               />
               <select
+                id="category"
                 className={styles.select}
                 value={formData.category}
                 onChange={(e) => setFormData({ ...formData, category: e.target.value })}
@@ -129,6 +131,7 @@ const InventoryItem = ({ refreshDrinks }) => {
             </div>
             
             <textarea
+              name="ingrediants"
               className={styles.textarea}
               placeholder="Ingredients"
               value={formData.ingrediants}
