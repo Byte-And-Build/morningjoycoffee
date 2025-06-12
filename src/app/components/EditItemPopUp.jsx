@@ -1,5 +1,6 @@
 "use client";
 import styles from "../../app/page.module.css";
+import Image from "next/image";
 import { useState } from "react";
 import { api } from "../../app/utils/api";
 import CurrencyInput from "../../app/components/CurrencyInput";
@@ -136,7 +137,7 @@ export default function EditItemPopUp({ item, setEditPopUp, fetchDrinks }) {
         </button>
 
         {formData.image && (
-          <img src={formData.image} alt="Preview" className={styles.preview} />
+          <Image src={formData.image} alt="Preview" width={256} height={256} content="contain" className={styles.preview}/>
         )}
 
         <button className={styles.btns} onClick={handleSave}>

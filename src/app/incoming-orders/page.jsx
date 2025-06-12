@@ -9,8 +9,13 @@ import "react-toastify/dist/ReactToastify.css";
 import { useAuth } from "../context/AuthContext";
 
 const socket = io(
-  process.env.NEXT_PUBLIC_SOCKET_URL || "http://localhost:5050",
-  { transports: ["websocket"] }
+  typeof window !== "undefined" && process.env.NEXT_PUBLIC_SOCKET_URL
+    ? process.env.NEXT_PUBLIC_SOCKET_URL
+    : "http://localhost:5050",
+  {
+    transports: ["websocket"],
+    secure: process.env.NODE_ENV === "production",
+  }
 );
 
 const IncomingOrders = () => {

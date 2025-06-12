@@ -2,27 +2,33 @@ import styles from "../../app/page.module.css";
 import { useState, useEffect } from "react";
 
 const CurrencyInput = ({ value, onChange, placeholder }) => {
-  const [text, setText] = useState(value?.toFixed(2) || "");
+  const [text, setText] = useState(value !== undefined ? value.toString() : "");
 
   useEffect(() => {
-    setText(value?.toFixed(2) || "");
+    if (value !== undefined && !isNaN(value)) {
+      setText(value.toString());
+    }
   }, [value]);
 
   const handleChange = (e) => {
     const val = e.target.value;
-    const cleaned = val.replace(/[^0-9.]/g, "");
-    const decimalCount = (cleaned.match(/\./g) || []).length;
-    if (decimalCount > 1) return;
 
-    setText(cleaned);
-    const float = parseFloat(cleaned);
-    onChange(isNaN(float) ? 0 : float);
+    // Allow only digits and one decimal point
+    if (/^\d*\.?\d{0,2}$/.test(val)) {
+      setText(val);
+
+      // Convert to float only if it's a valid number
+      const floatVal = parseFloat(val);
+      onChange(!isNaN(floatVal) ? floatVal : 0);
+    }
   };
 
   const handleBlur = () => {
     const float = parseFloat(text);
     if (!isNaN(float)) {
-      setText(float.toFixed(2));
+      const formatted = float.toFixed(2);
+      setText(formatted);
+      onChange(parseFloat(formatted));
     }
   };
 
@@ -35,7 +41,7 @@ const CurrencyInput = ({ value, onChange, placeholder }) => {
         onBlur={handleBlur}
         placeholder={placeholder?.replace("$", "")}
         className={styles.userInput}
-        inputMode="decimal" // optional for mobile keyboards
+        inputMode="decimal"
       />
     </div>
   );

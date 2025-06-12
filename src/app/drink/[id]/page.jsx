@@ -58,6 +58,17 @@ export default function DrinkDetails() {
     { name: "Oat Milk", price: 1.0 },
     { name: "Whole Milk/Cream", price: 1.0 },
     { name: "Glitter", price: 0.25 },
+    { name: "Caramel Drizzle", price: 1.0 },
+    { name: "Whipped Cream", price: 1.0 },
+    { name: "Half/Half (splash)", price: 1.0 },
+    { name: "Cold Foam", price: 1.0 },
+    { name: "Heavy Whipping Cream (splash)", price: 1.0 },
+    { name: "Extra Pump Lotus", price: 1.0 },
+    { name: "Blended", price: 1.0 },
+    { name: "Breve (half/half)", price: 1.0 },
+    { name: "Skim Milk", price: 1.0 },
+    { name: "Coconut Milk", price: 1.0 },
+    { name: "Whole Milk", price: 1.0 },
   ];
 
   const toggleOption = (option) => {
