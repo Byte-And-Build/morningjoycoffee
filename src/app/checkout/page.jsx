@@ -38,6 +38,7 @@ function CheckoutForm({ clientSecret, userRewards, setUserRewards, redeemReward,
       await api.post(
         "/api/orders/new",
         {
+          user: user?._id || "Guest",
           customer: user?.name || "Guest",
           items: cart.map((item) => {
             const opts = item.customOptions?.map((opt) => opt.name).join(", ");
@@ -62,7 +63,7 @@ function CheckoutForm({ clientSecret, userRewards, setUserRewards, redeemReward,
 };
 
   return (
-    <div style={styles.formWrapper}>
+    <div className={styles.vertContainer} style={{maxWidth: "90%", alignItems: "stretch"}}>
       <PaymentElement />
       <button
         className={styles.btns}

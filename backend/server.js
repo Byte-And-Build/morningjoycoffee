@@ -14,7 +14,6 @@ dotenv.config();
 const dev = process.env.NODE_ENV !== "production";
 const appNext = next({ dev, dir: path.join(__dirname, "..") }); // point to Next.js root
 const handle = appNext.getRequestHandler();
-const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 // Express app
 const app = express();

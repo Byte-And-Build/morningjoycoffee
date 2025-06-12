@@ -23,7 +23,7 @@ export default function ProfileScreen() {
     } else if (!user) {
       const fetchProfile = async () => {
         try {
-          const response = await api.get("/users/profile", {
+          const response = await api.get("api/users/profile", {
             headers: { Authorization: `Bearer ${token}` },
           });
           setProfile(response.data);
@@ -44,11 +44,11 @@ export default function ProfileScreen() {
           Hello, <span>{profile?.name || "Guest"}!</span>
         </h2>
         <div className={styles.vertContainer}>
-          <div className={styles.userContainer}>
+          <div className={styles.userInput}>
             <span className="info-label">Email:</span>
             <span className="info-value">{profile?.email || "Not Available"}</span>
           </div>
-          <div className={styles.userContainer}>
+          <div className={styles.userInput}>
             <span className="info-label">Rewards:</span>
             <span className="info-value">{profile?.rewards || 0} Points</span>
           </div>
@@ -65,14 +65,15 @@ export default function ProfileScreen() {
           <button onClick={() => { logout(); router.replace("/") }} className={styles.btns}>Logout</button>
 
           {(profile?.role === "Admin" || profile?.role === "Employee") && (
-            <div className={styles.vertContainer}>
-              <button onClick={() => router.push("/inventory")} className={styles.btns}>Inventory</button>
-              <button onClick={() => router.push("/incoming-orders")} className={styles.btns}>View Orders</button>
+            <div className={styles.horizWrapper}>
+              <button onClick={() => router.push("/inventory")} className={styles.btnsSmall}>Inventory</button>
+              <button onClick={() => router.push("/incoming-orders")} className={styles.btnsSmall}>View Orders</button>
+              {profile?.role === "Admin" && (
+                <button onClick={() => router.push("/metrics")} className={styles.btnsSmall}>Metrics</button>
+              )}
             </div>
           )}
-          {profile?.role === "Admin" && (
-            <button onClick={() => router.push("/metrics")} className={styles.btns}>Metrics</button>
-          )}
+          
         </div>
       </div>
     </div>

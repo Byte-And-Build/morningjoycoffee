@@ -16,7 +16,6 @@ export default function CartPage() {
   return (
     <div className={styles.page}>
       <h1 className={styles.heading}>Your Cart</h1>
-
       {cart.length === 0 ? (
         <p>Your cart is empty.</p>
       ) : (
@@ -25,7 +24,7 @@ export default function CartPage() {
             {cart.map((item) => (
               <div
                 key={item.id}
-                className={styles.itemWrapper}
+                className={styles.cartWrapper}
               >
                 <Image
                   src={item.image}
@@ -69,7 +68,7 @@ export default function CartPage() {
                   <span className="font-semibold">${item.totalPrice.toFixed(2)}</span>
                   <button
                     onClick={() => removeFromCart(item.id)}
-                    className={styles.btns}
+                    className={styles.btnsSmall}
                   >
                     Remove
                   </button>
@@ -79,10 +78,10 @@ export default function CartPage() {
           </div>
 
           
-            <div className={styles.vertContainer} style={{width: "100%", maxHeight: "fit-content"}}>
-              <div className="mt-6 text-xl font-bold">
+            <div className={styles.vertContainer} style={{width: "60%", maxHeight: "fit-content"}}>
+              <h2 className={styles.heading}>
                 Subtotal: ${subtotal.toFixed(2)}
-              </div>
+              </h2>
               <button
                 className={styles.btns}
                 onClick={() => router.push("/checkout")}
