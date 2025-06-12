@@ -11,7 +11,7 @@ import { api } from "../../app/utils/api";
 const stripePromise = loadStripe(
   process.env.NODE_ENV === "development"
     ? process.env.NEXT_PUBLIC_STRIPE_TEST_KEY
-    : process.env.STRIPE_LIVE_KEY
+    : process.env.NEXT_PUBLIC_STRIPE_LIVE_KEY
 );
 
 
