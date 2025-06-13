@@ -41,7 +41,7 @@ function CheckoutForm({ clientSecret, userRewards, setUserRewards, redeemReward,
         "/api/orders/new",
         {
           user: user?._id || "Guest",
-          customer: custName || "Guest",
+          customer: customerName || "Guest",
           items: cart.map((item) => {
             const opts = item.customOptions?.map((opt) => opt.name).join(", ");
             return `${item.quantity}x ${item.name}${opts ? ` (${opts})` : ""}`;
@@ -68,7 +68,8 @@ function CheckoutForm({ clientSecret, userRewards, setUserRewards, redeemReward,
 
   return (
     <div className={styles.vertContainer} style={{maxWidth: "90%", alignItems: "stretch"}}>
-      <div>
+      <div className={styles.horizWrapper}>
+        <h2 className={styles.drinkName}>Name for order</h2>
         <input
         type="name"
         placeholder="Name for Order"

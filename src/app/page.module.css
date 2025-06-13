@@ -592,6 +592,7 @@ display: none;
   border-bottom: 1px dashed black;
   padding-bottom: .625rem;
   align-items: center;
+  width: 80%;
 }
 
 .horizWrapper {
