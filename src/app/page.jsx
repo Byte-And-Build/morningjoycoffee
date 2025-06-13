@@ -1,9 +1,8 @@
 "use client";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import styles from "./page.module.css";
-
 import { FaThumbsUp } from "react-icons/fa";
 import Image from "next/image";
 import Logo from '../app/assets/Logo.png';
@@ -44,24 +43,21 @@ export default function HomePage({ setLaoding }) {
   return (
     <div className={styles.page}>
       <div className={styles.vertContainer}>
-      <div className={styles.horizContainer}>
-        <div className={styles.categoryContainer}>
-          {categories.map(cat => (
-            <button
-              key={cat}
-              className={`${styles.categoryButton} ${selectedCategory === cat ? `${styles.categoryButtonSelected}` : ""}`}
-              onClick={() => setSelectedCategory(cat)}
-            >
-              {cat}
-            </button>
-          ))}
-        </div>
+        <div className={styles.horizWrapper}>
+          <Image src={Logo} width={75} height={75} alt="Logo" content="contain" />
+            <div className={styles.categoryContainer}>
+            {categories.map(cat => (
+              <button
+                style={{flex: 1}}
+                key={cat}
+                className={`${styles.categoryButton} ${selectedCategory === cat ? `${styles.categoryButtonSelected}` : ""}`}
+                onClick={() => setSelectedCategory(cat)}
+              >
+                {cat}
+              </button>
+            ))}
+            </div>
       </div>
-      {/* <img
-        className={styles.backgroundImg}
-        src="https://bytenbuild.s3.us-east-2.amazonaws.com/clients/morningjoycoffee/images/Logo.PNG"
-        alt="Background"
-      /> */}
       <div className={styles.gridContainer}>
         {filteredDrinks.map((item, index) => (
           <div

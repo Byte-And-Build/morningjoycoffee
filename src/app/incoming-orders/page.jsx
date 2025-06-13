@@ -97,7 +97,6 @@ const IncomingOrders = () => {
           <div key={index} className={styles.orderWrapper}>
             <div className={styles.vertContainer} style={{flex: .5, textAlign: "center"}}>
               <Image src={Placeholder} alt="Drink" width={60} height={60} />
-              <strong className={styles.strong}>Customer:</strong> 
               <span className={styles.ingrediants}> {order.customer}</span>
             </div>
             <div className={styles.vertContainer} style={{flex: 1, textAlign: "left", justifyContent: "flex-start"}}>

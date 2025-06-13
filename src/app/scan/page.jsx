@@ -19,7 +19,7 @@ export default function ScanScreen() {
 
   return (
     <div className={styles.page}>
-      <div className={styles.vertContainer}>
+      <div className={styles.vertContainer} style={{maxWidth: "80%"}}>
         <div className={styles.vertContainer}>
           <h1 className={styles.heading}>Scan Me For Rewards!</h1>
           <p className={styles.itemDetails}>(10 points = 1 Free Drink!)</p>

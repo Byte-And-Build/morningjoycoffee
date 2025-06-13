@@ -22,6 +22,7 @@ function CheckoutForm({ clientSecret, userRewards, setUserRewards, redeemReward,
   const stripe = useStripe();
   const elements = useElements();
   const [loading, setLoading] = useState(false);
+  const [customerName, setCustomerName] = useState(user?.name ?? "");
 
   const handlePayment = async () => {
   if (!stripe || !elements) return;
@@ -45,7 +46,7 @@ function CheckoutForm({ clientSecret, userRewards, setUserRewards, redeemReward,
         "/api/orders/new",
         {
           user: user?._id || "Guest",
-          customer: user?.name || "Guest",
+          customer: custName || "Guest",
           items: cart.map((item) => {
             const opts = item.customOptions?.map((opt) => opt.name).join(", ");
             return `${item.quantity}x ${item.name}${opts ? ` (${opts})` : ""}`;
@@ -72,6 +73,15 @@ function CheckoutForm({ clientSecret, userRewards, setUserRewards, redeemReward,
 
   return (
     <div className={styles.vertContainer} style={{maxWidth: "90%", alignItems: "stretch"}}>
+      <div>
+        <input
+        type="name"
+        placeholder="Name for Order"
+        value={customerName}
+        onChange={(e) => setCustomerName(e.target.value)}
+        className={styles.userInput}
+      />
+      </div>
       <PaymentElement />
       <button
         className={styles.btns}
@@ -126,7 +136,7 @@ export default function CheckoutPage() {
       "/api/stripe/create-payment-intent",
       {
         amount: amountInCents,
-        connectedAccountId: "acct_1QuR72JJQIShDhAu",
+        connectedAccountId: process.env.NEXT_PUBLIC_CONNECT_ID,
         description,
         redeemReward,
         customerDetails: {

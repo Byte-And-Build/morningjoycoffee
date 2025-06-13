@@ -2,8 +2,6 @@ const express = require("express");
 const Stripe = require("stripe");
 const User = require("../models/User");
 const Order = require("../models/Order");
-const { protect } = require("./userRoutes");
-const { PaymentElement } = require("@stripe/react-stripe-js");
 require("dotenv").config();
 
 const router = express.Router();
@@ -46,7 +44,7 @@ router.post("/create-payment-intent", async (req, res) => {
         destination: connectedAccountId,
       },
       application_fee_amount: applicationFee, // 💸 Platform fee
-      statement_descriptor_suffix: "MorningJoy Coffee", // 22 char max
+      statement_descriptor_suffix: "Morning Joy Coffee", // 22 char max
     });
 
     if (user && !redeemReward) {

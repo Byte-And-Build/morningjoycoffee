@@ -1,5 +1,6 @@
 "use client";
 import styles from "../../app/page.module.css"
+import dynamic from "next/dynamic";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "../context/AuthContext";
@@ -10,6 +11,7 @@ export default function ProfileScreen() {
   const router = useRouter();
   const [profile, setProfile] = useState(user || null);
   const [isMounted, setIsMounted] = useState(false);
+  const PunchCard = dynamic(() => import("../components/PunchCard"), { ssr: false });
 
   useEffect(() => {
     setIsMounted(true);
@@ -48,17 +50,9 @@ export default function ProfileScreen() {
             <span className="info-label">Email:</span>
             <span className="info-value">{profile?.email || "Not Available"}</span>
           </div>
-          <div className={styles.userInput}>
-            <span className="info-label">Rewards:</span>
-            <span className="info-value">{profile?.rewards || 0} Points</span>
-          </div>
+          <PunchCard rewards={profile?.rewards || 0} />
         </div>
-        <img
-          src="https://png.pngtree.com/png-vector/20241030/ourlarge/pngtree-mock-up-coffee-paper-cup-on-isolate-png-image_14172288.png"
-          alt="coffee"
-          className={styles.profileImage}
-        />
-
+        
         <div className={styles.vertContainer} style={{paddingLeft: "1rem", paddingRight: "1rem"}}>
           <button onClick={() => router.push("/user-orders")} className={styles.btns}>Orders</button>
           <button onClick={() => router.push("/user-settings")} className={styles.btns}>Settings</button>
@@ -68,9 +62,9 @@ export default function ProfileScreen() {
             <div className={styles.horizWrapper}>
               <button onClick={() => router.push("/inventory")} className={styles.btnsSmall}>Inventory</button>
               <button onClick={() => router.push("/incoming-orders")} className={styles.btnsSmall}>View Orders</button>
-              {profile?.role === "Admin" && (
+              {/* {profile?.role === "Admin" && (
                 <button onClick={() => router.push("/metrics")} className={styles.btnsSmall}>Metrics</button>
-              )}
+              )} */}
             </div>
           )}
           
