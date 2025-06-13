@@ -28,7 +28,7 @@ router.post("/create-payment-intent", async (req, res) => {
   }
 
   try {
-  const feePercent = 0.03;
+  const feePercent = 0.10;
   const applicationFee = Math.floor(finalAmountInCents * feePercent);
   const shortDesc = description.length > 200
   ? description.slice(0, 197) + "..."
