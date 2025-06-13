@@ -30,17 +30,21 @@ router.post("/create-payment-intent", async (req, res) => {
   try {
   const feePercent = 0.03;
   const applicationFee = Math.floor(finalAmountInCents * feePercent);
+  const shortDesc = description.length > 200
+  ? description.slice(0, 197) + "..."
+  : description;
 
   const paymentIntentConfig = {
   amount: finalAmountInCents,
   currency: "usd",
-  payment_method_types: ["card"],
+  // payment_method_types: ["card"],
+  description: shortDesc,
   metadata: {
     customer_name: customerDetails?.name || "Guest",
     customer_email: customerDetails?.email || "No Email",
     order_description: description,
   },
-  statement_descriptor_suffix: "Morning Joy Coffee",
+  statement_descriptor_suffix: "Morning Joy Cof.",
 };
 
 // ✅ Only apply platform fee if destination is valid
