@@ -31,21 +31,25 @@ router.post("/create-payment-intent", async (req, res) => {
   const feePercent = 0.03;
   const applicationFee = Math.floor(finalAmountInCents * feePercent);
 
-    const paymentIntent = await stripe.paymentIntents.create({
-      amount: finalAmountInCents,
-      currency: "usd",
-      payment_method_types: ["card"],
-      metadata: {
-        customer_name: customerDetails?.name || "Guest",
-        customer_email: customerDetails?.email || "No Email",
-        order_description: description,
-      },
-      transfer_data: {
-        destination: connectedAccountId,
-      },
-      application_fee_amount: applicationFee, // 💸 Platform fee
-      statement_descriptor_suffix: "Morning Joy Coffee", // 22 char max
-    });
+  const paymentIntentConfig = {
+  amount: finalAmountInCents,
+  currency: "usd",
+  payment_method_types: ["card"],
+  metadata: {
+    customer_name: customerDetails?.name || "Guest",
+    customer_email: customerDetails?.email || "No Email",
+    order_description: description,
+  },
+  statement_descriptor_suffix: "Morning Joy Coffee",
+};
+
+// ✅ Only apply platform fee if destination is valid
+if (connectedAccountId && connectedAccountId.startsWith("acct_")) {
+  paymentIntentConfig.transfer_data = { destination: connectedAccountId };
+  paymentIntentConfig.application_fee_amount = applicationFee;
+}
+
+const paymentIntent = await stripe.paymentIntents.create(paymentIntentConfig);
 
     if (user && !redeemReward) {
       user.rewards += 1;
