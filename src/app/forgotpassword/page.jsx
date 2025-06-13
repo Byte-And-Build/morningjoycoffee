@@ -22,7 +22,6 @@ export default function ForgotPassword() {
     <div className={styles.page}>
       <h2 className={styles.heading}>Reset Your Password</h2>
       <div className={styles.vertConatiner}>
-      <label htmlFor="email">Email:</label>
       <input
         className={styles.userInput}
         id="email"
@@ -45,6 +44,12 @@ export default function ForgotPassword() {
         className={styles.btns}
       >
         Send Reset Link
+      </button>
+      <button
+        onClick={() => router.push("/login")}
+        className={styles.btns}
+      >
+        Back
       </button>
       </div>
       </div>

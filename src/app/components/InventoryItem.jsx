@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import styles from "../../app/page.module.css";
 import { api } from "../utils/api";
 import CurrencyInput from "./CurrencyInput";
+import { toast, ToastContainer } from "react-toastify";
 
 const InventoryItem = ({ refreshDrinks }) => {
   const [showForm, setShowForm] = useState(false);
@@ -14,6 +15,11 @@ const InventoryItem = ({ refreshDrinks }) => {
     price: [{}],
     rating: { thumbsUp: 0, thumbsDown: 0 },
   });
+
+  useEffect(() => {
+  if (showForm) document.body.style.overflow = "hidden";
+  return () => (document.body.style.overflow = "");
+}, [showForm]);
 
   const availableSizes = ["Kids", "16oz", "20oz", "24oz", "32oz"];
   const [sizes, setSizes] = useState(() =>
@@ -78,7 +84,8 @@ const InventoryItem = ({ refreshDrinks }) => {
       refreshDrinks();
     } catch (err) {
       console.error("Save error:", err);
-      alert("Failed to save drink");
+      toast.error("Failed :( ")
+      // alert("Failed to save drink");
     }
   };
 
@@ -100,13 +107,14 @@ const InventoryItem = ({ refreshDrinks }) => {
     <>
       <button onClick={() => setShowForm(true)} className={styles.btns}>➕ Add Item</button>
       {showForm && (
-        <div className={styles.popupScroll}>
-          <div className={styles.popup}>
+        <div className={styles.overlay} onClick={() => setShowForm(false)}>
+          <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+            <ToastContainer theme="dark"/>
             <div className={styles.vertContainer}>
-            <div className={styles.InventoryHoriz}>
+            <div className={styles.horizWrapper}>
               <input
+                className={styles.userInput}
                 name="Item Name"
-                style={{padding:".25rem"}}
                 placeholder="Name"
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}

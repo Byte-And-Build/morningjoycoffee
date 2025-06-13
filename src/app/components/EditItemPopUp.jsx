@@ -1,7 +1,7 @@
 "use client";
 import styles from "../../app/page.module.css";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { api } from "../../app/utils/api";
 import CurrencyInput from "../../app/components/CurrencyInput";
 import { toast } from "react-toastify";
@@ -32,6 +32,11 @@ export default function EditItemPopUp({ item, setEditPopUp, fetchDrinks }) {
       return acc;
     }, {});
   });
+
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => (document.body.style.overflow = '');
+  }, []);
 
   const pickImage = async () => {
     const input = document.createElement("input");
@@ -77,7 +82,8 @@ export default function EditItemPopUp({ item, setEditPopUp, fetchDrinks }) {
   };
 
   return (
-    <div className={styles.overlay}>
+    <div className={styles.overlay} onClick={() => setEditPopUp(false)}>
+      <div className={styles.modal} onClick={e => e.stopPropagation()}>
         <div className={styles.horizContainer}>
           <input
             className={styles.userInput}
@@ -90,7 +96,7 @@ export default function EditItemPopUp({ item, setEditPopUp, fetchDrinks }) {
             value={formData.category}
             onChange={(e) => setFormData({ ...formData, category: e.target.value })}
           >
-            <option value="">Select a category</option>
+            <option value={formData.category}>{formData.category}</option>
             <option value="Specialty Drink">Specialty Drink</option>
             <option value="Coffee">Coffee</option>
             <option value="Tea">Tea</option>
@@ -146,6 +152,7 @@ export default function EditItemPopUp({ item, setEditPopUp, fetchDrinks }) {
         <button className={styles.btns} onClick={() => setEditPopUp(false)}>
           Close
         </button>
+        </div>
       </div>
   );
 }

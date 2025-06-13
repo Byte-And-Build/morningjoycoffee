@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useAuth } from "../../app/context/AuthContext";
 import styles from "../../app/page.module.css";
+import { toast } from "react-toastify";
 
 export default function LoginPage() {
   const { user, login } = useAuth();
@@ -24,6 +25,7 @@ export default function LoginPage() {
     try {
       await login(email, password);
     } catch (error) {
+      toast.error("Login failed")
       console.error("Login failed:", error);
     }
     setLoading(false);
