@@ -10,7 +10,7 @@ import { api } from "../../app/utils/api";
 import { toast } from "react-toastify";
 
 // const stripePromise = loadStripe("pk_live_51QuQJVKsD8c2Ud4tJ31d0GyK32xIaKcafuoBMPNmIW4UWgCmQwLgYio3yJhZH1fwp2IUNgMpsoSiQaUmcS8xGEx100sA0LCFTY");
-const stripePromise = loadStripe("pk_test_51QuR72JJQIShDhAuGlERBmxmsH8QWxcEc00WEmuG3mfIbdypk0c5m2TdGfiArVgxeVcw0WlsVAi5SevUEhd5lr2g00QuLPSJjh");
+const stripePromise = loadStripe("pk_test_51QuQJVKsD8c2Ud4tb2Px3I1faecKUlngul2OkNKpmcFXnNPcHRmUJTq70gmzVaJ02QAJRl7KX3mGgfeTD3fxTK5R00Oq8T7sat");
 
 function CheckoutForm({ clientSecret, userRewards, setUserRewards, redeemReward, cart, user }) {
   const { clearCart } = useCart();
