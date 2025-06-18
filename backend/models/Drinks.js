@@ -9,17 +9,4 @@ const drinkSchema = new mongoose.Schema({
   rating: Object,
 });
 
-// const drinkSchema = new mongoose.Schema({
-//   name: String,
-//   category: String,
-//   price: [{ type: Object }],
-//   ingrediants: String,
-//   image: String,
-//   rating: {
-//     thumbsUp: { type: Number, },
-//     thumbsDown: { type: Number, }
-//   }
-// });
-
-
 module.exports = mongoose.model("Drinks", drinkSchema);

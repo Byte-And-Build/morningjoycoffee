@@ -58,7 +58,7 @@ export default function UserSettings() {
         disabled={!edit}
       />
     </div>
-      <div className={styles.vertContainer}>
+      <div className={styles.vertContainer} style={{paddingLeft: "1rem", paddingRight: "1rem"}}>
         <button
           className={styles.btns}
           onClick={() => {

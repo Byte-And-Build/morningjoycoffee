@@ -57,17 +57,15 @@ export default function ProfileScreen() {
           <button onClick={() => router.push("/user-orders")} className={styles.btns}>Orders</button>
           <button onClick={() => router.push("/user-settings")} className={styles.btns}>Settings</button>
           <button onClick={() => { logout(); router.replace("/") }} className={styles.btns}>Logout</button>
-
           {(profile?.role === "Admin" || profile?.role === "Employee") && (
             <div className={styles.horizWrapper}>
               <button onClick={() => router.push("/inventory")} className={styles.btnsSmall}>Inventory</button>
               <button onClick={() => router.push("/incoming-orders")} className={styles.btnsSmall}>View Orders</button>
-              {/* {profile?.role === "Admin" && (
-                <button onClick={() => router.push("/metrics")} className={styles.btnsSmall}>Metrics</button>
-              )} */}
             </div>
           )}
-          
+          {profile?.role === "Admin" && (
+            <button onClick={() => router.push("/metrics")} className={styles.btnsSmall}>Metrics</button>
+          )}
         </div>
       </div>
     </div>

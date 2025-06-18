@@ -44,7 +44,7 @@ const UserOrdersScreen = () => {
 }, [token]);
 
   return (
-    <div className={styles.page}>
+    <div className={styles.page} style={{justifyContent: "flex-start"}}>
       <h2>Your Purchases</h2>
       {loading ? (
         <p>Loading orders...</p>
@@ -53,12 +53,11 @@ const UserOrdersScreen = () => {
           <div key={index} className={styles.orderWrapper}>
             <div className={styles.vertContainer} style={{flex: .5, textAlign: "center"}}>
               <Image src={Placeholder} alt="Drink" width={60} height={60} />
-              <strong className={styles.strong}>Customer:</strong> 
               <span className={styles.ingrediants}> {order.customer}</span>
             </div>
             <div className={styles.vertContainer} style={{flex: 1, textAlign: "left", justifyContent: "flex-start"}}>
-              <strong className={styles.strong}>Items:</strong>{" "}
               <ul>
+              <strong className={styles.strong}>Items:</strong>{" "}
                 {Array.isArray(order.items)
                   ? order.items.map((item, index) => <li key={index} className={styles.itemDetails}>{item}</li>)
                   : <li className={styles.itemDetails} style={{textAlign: "left"}}>{order.items}</li>}
@@ -66,7 +65,7 @@ const UserOrdersScreen = () => {
             </div>
             <div className={styles.vertContainer} style={{flex: 1, padding: "0 .25rem"}}>
               <Link href={`/order/${order._id}`}>
-                <button className={styles.btnsSmall}>Track Order</button>
+                <button className={styles.btnsSmall}>{order.status}</button>
             </Link>
             </div>
           </div>

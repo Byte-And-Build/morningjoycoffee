@@ -10,6 +10,7 @@
   --selectedSizeBottom: #5b2d66;
   --selectedInsetTop: #d46a90;
   --selectedInsetBottom: #ff96cc;
+  --colorComplete: #229713;
   --fontColorContrast: #ffffff;
   --button-primary-hover: #383838;
   --button-secondary-hover: #f2f2f2;
@@ -67,7 +68,7 @@
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    gap: 2rem;
+    gap: 1rem;
     display: flex;
     width: 100%;
     padding-left: 1rem;
@@ -94,7 +95,6 @@
     text-align: center;
     font-size: 1.5rem;
     border-radius: 5px;
-    padding: .5rem;
     border: none;
     background-color: transparent;
     color: white;
@@ -194,6 +194,18 @@
   width: 100%;
 }
 
+.vertContainerInset{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: .25rem;
+  align-items: center;
+  width: 100%;
+  box-shadow: inset 3px 3px 15px var(--selectedInsetTop),
+              inset 3px 3px 15px var(--selectedInsetBottom);
+  border-radius: .625rem;
+}
+
 .itemCheckbox {
   width: 1.5em;
   height: 1.5rem;
@@ -256,6 +268,12 @@
                   inset 3px 3px 15px var(--selectedInsetBottom);
       color: var(--fontColor);
     }
+  .statusComplete{
+    background-color: var(--colorComplete);
+    box-shadow: inset 3px 3px 15px rgb(49, 49, 49),
+                 inset 3px 3px 15px rgb(153, 153, 153);
+    color: var(--fontColorContrast);
+  }
     .buttons {
       background-color: rgb(255, 111, 219);
       padding: 10px;
@@ -306,6 +324,18 @@
   border-radius: .625rem;
 }
 
+.visitorContainer{
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  padding: .25rem 1.5rem;
+  background-color: rgb(245, 152, 189);
+  box-shadow: inset 3px 3px 15px var(--selectedInsetTop),
+              inset 3px 3px 15px var(--selectedInsetBottom);
+  border-radius: .625rem;
+  gap: .5rem;
+}
+
 .horizContainer{
   display: flex;
   flex-direction: row;
@@ -324,7 +354,7 @@
   flex-wrap: wrap;
   max-height: 230px;
   padding: .625rem;
-  max-width: 80%;
+  max-width: 95%;
   overflow-y: auto;
   border-radius: .625rem;
   box-shadow: inset 3px 3px 15px var(--selectedInsetTop),
@@ -344,7 +374,7 @@
   text-align: center;
   width: 100%;
   justify-content: center;
-  font-size: .8em;
+  font-size: 1em;
   font-family: var(--font-sourGummy);
   box-shadow: 3px 3px 15px var(--selectedInsetTop),
               3px 3px 15px var(--selectedInsetBottom);
@@ -354,7 +384,7 @@
   display: flex;
   flex-direction: row;
   justify-content: space-around;
-  width: 100%;
+  width: 90%;
   padding: .5rem 0;
   gap: 1.5rem;
   border-bottom: 2px dashed var(--fontColor);
@@ -363,7 +393,7 @@
 .btns{
   margin-top: .5rem;
   margin-bottom: .5rem;
-  padding: 0 1rem;
+  padding: 0 .75rem;
   border-radius: 5px;
   background-color: rgb(245, 152, 189);
   border: none;
@@ -375,7 +405,7 @@
   text-align: center;
   width: 100%;
   justify-content: center;
-  font-size: 1.4rem;
+  font-size: 1.2rem;
   font-family: var(--font-sourGummy);
   box-shadow: 3px 3px 15px var(--selectedInsetTop),
               3px 3px 15px var(--selectedInsetBottom);
@@ -602,6 +632,19 @@ display: none;
   gap: .625rem;
   align-items: center;
   width: 100%;
+}
+
+.horizWrapperInset{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: .625rem;
+  align-items: center;
+  width: 100%;
+  box-shadow: inset 3px 3px 15px var(--selectedInsetTop),
+              inset 3px 3px 15px var(--selectedInsetBottom);
+  border-radius: .625rem;
+  padding: .5rem;
 }
 
 .cartDetails {

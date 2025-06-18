@@ -9,7 +9,8 @@ import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-
 import { api } from "../../app/utils/api";
 import { toast } from "react-toastify";
 
-const stripePromise = loadStripe("pk_live_51QuQJVKsD8c2Ud4tJ31d0GyK32xIaKcafuoBMPNmIW4UWgCmQwLgYio3yJhZH1fwp2IUNgMpsoSiQaUmcS8xGEx100sA0LCFTY");
+// const stripePromise = loadStripe("pk_live_51QuQJVKsD8c2Ud4tJ31d0GyK32xIaKcafuoBMPNmIW4UWgCmQwLgYio3yJhZH1fwp2IUNgMpsoSiQaUmcS8xGEx100sA0LCFTY");
+const stripePromise = loadStripe("pk_test_51QuR72JJQIShDhAuGlERBmxmsH8QWxcEc00WEmuG3mfIbdypk0c5m2TdGfiArVgxeVcw0WlsVAi5SevUEhd5lr2g00QuLPSJjh");
 
 function CheckoutForm({ clientSecret, userRewards, setUserRewards, redeemReward, cart, user }) {
   const { clearCart } = useCart();
@@ -132,7 +133,7 @@ export default function CheckoutPage() {
       "/api/stripe/create-payment-intent",
       {
         amount: amountInCents,
-        connectedAccountId: "acct_1RZKIMCANmS9iWHx",
+        connectedAccountId: "acct_1QuR72JJQIShDhAu",
         description,
         redeemReward,
         customerDetails: {

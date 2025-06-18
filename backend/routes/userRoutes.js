@@ -163,6 +163,46 @@ router.post("/reset-password", async (req, res) => {
   res.status(200).json({ message: "Password reset successful" });
 });
 
+router.get("/all", protect, async (req, res) => {
+  const requester = await User.findById(req.user._id);
+  if (!requester || requester.role !== "Admin") {
+    return res.status(403).json({ message: "Access denied" });
+  }
 
-// ✅ Use CommonJS export
+  const users = await User.find().select("-password");
+  res.json(users);
+});
+
+router.put("/:id", protect, async (req, res) => {
+  const requester = await User.findById(req.user._id);
+  if (!requester || requester.role !== "Admin") {
+    return res.status(403).json({ message: "Access denied" });
+  }
+
+  const { email, rewards, role } = req.body;
+  const user = await User.findById(req.params.id);
+
+  if (!user) return res.status(404).json({ message: "User not found" });
+
+  user.email = email || user.email;
+  user.rewards = rewards ?? user.rewards;
+  user.role = role || user.role;
+
+  await user.save();
+  res.json({ message: "User updated" });
+});
+
+router.delete("/:id", protect, async (req, res) => {
+  const requester = await User.findById(req.user._id);
+  if (!requester || requester.role !== "Admin") {
+    return res.status(403).json({ message: "Access denied" });
+  }
+
+  const user = await User.findById(req.params.id);
+  if (!user) return res.status(404).json({ message: "User not found" });
+
+  await user.deleteOne();
+  res.json({ message: "User deleted" });
+});
+
 module.exports = { router, protect };

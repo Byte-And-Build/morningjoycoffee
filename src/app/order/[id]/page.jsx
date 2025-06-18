@@ -37,9 +37,9 @@ export default function OrderPage() {
               ))}
             </ul>
           </div>
-          <div className={styles.vertContainer} style={{gap: ".5rem", alignItems: "center", flex: .5}}>
+          <div className={styles.vertContainer} style={{gap: ".5rem", alignItems: "center", flex: .75}}>
               <div className={styles.itemDetails} style={{textAlign: "center"}}>Created At: {new Date(order.createdAt).toLocaleString()}</div>
-              <div className={styles.userInput} style={{textAlign: "center"}}>{order.status}</div>
+              <div className={order.status === "Complete!" ? `${styles.userInput} ${styles.statusComplete}` : `${styles.userInput}`} style={{textAlign: "center"}}>{order.status}</div>
               <div className={styles.itemDetails} style={{textAlign: "center"}}>Updated At: {new Date(order.updatedAt).toLocaleString()}</div>
           </div>
         

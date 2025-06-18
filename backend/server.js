@@ -28,9 +28,17 @@ const io = new Server(server, {
 });
 
 app.set("io", io);
+let onlineUsers = 0; 
 
 io.on("connection", (socket) => {
   console.log("✅ New client connected:", socket.id);
+  onlineUsers++;
+  io.emit("online-count", onlineUsers);
+
+  socket.on("disconnect", () => {
+    onlineUsers--;
+    io.emit("online-count", onlineUsers);
+  });
 });
 
 // Middleware
@@ -43,12 +51,14 @@ const drinkRoutes = require("./routes/drinkRoutes");
 const menuRoutes = require("./routes/menuRoutes");
 const stripeRoutes = require("./routes/stripeRoutes");
 const orderRoutes = require("./routes/orderRoutes");
+const metricsRoutes = require("./routes/metricRoutes");
 
 app.use("/api/stripe", stripeRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/drinks", drinkRoutes);
 app.use("/api/menu", menuRoutes);
 app.use("/api/orders", orderRoutes);
+app.use("/api/metrics", metricsRoutes);
 
 // Connect MongoDB
 mongoose
