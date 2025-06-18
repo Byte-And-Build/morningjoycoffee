@@ -123,6 +123,7 @@ export default function InventoryPage() {
 
       {deletePopUp && (
         <div className={styles.overlay}>
+          <div className={styles.modal}>
           <div className={styles.vertContainer}>
           <h2 className={styles.heading}>
             Are you sure you want to delete <br /> {selectedItem?.name}?
@@ -132,7 +133,7 @@ export default function InventoryPage() {
                 className={styles.btns}
                 onClick={() => handleDelete(selectedItem?._id)}
               >
-                Yes, Delete {selectedItem?.name}
+                Yes, Delete
               </button>
               <button
                 className={styles.btns}
@@ -141,6 +142,7 @@ export default function InventoryPage() {
                 Cancel
               </button>
             </div>
+          </div>
           </div>
         </div>
       )}

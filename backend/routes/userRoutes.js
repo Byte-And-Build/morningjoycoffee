@@ -205,4 +205,26 @@ router.delete("/:id", protect, async (req, res) => {
   res.json({ message: "User deleted" });
 });
 
+router.post("/scan/:id", protect, async (req, res) => {
+  const scanner = await User.findById(req.user._id);
+
+  if (!scanner || (scanner.role !== "Admin" && scanner.role !== "Employee")) {
+    return res.status(403).json({ message: "Only Admins or Employees can scan QR codes" });
+  }
+
+  try {
+    const scannedUser = await User.findById(req.params.id);
+    if (!scannedUser) return res.status(404).json({ message: "User not found" });
+
+    scannedUser.rewards += 1;
+    await scannedUser.save();
+
+    res.json({ message: "1 point added", rewards: scannedUser.rewards });
+  } catch (error) {
+    console.error("Error adding reward point:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+
 module.exports = { router, protect };
