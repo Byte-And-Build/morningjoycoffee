@@ -1,5 +1,6 @@
 const express = require("express");
 const Drink = require("../models/Drinks");
+const Ingredient = require("../models/Ingredient");
 const { protect } = require("./userRoutes");
 const requireRole = require("../middleware/requireRole");
 
@@ -8,7 +9,7 @@ const router = express.Router();
 // Get all drinks
 router.get("/", async (req, res) => {
   try {
-    const drinks = await Drink.find();
+    const drinks = await Drink.find().populate("ingredients.ingredientId");
     res.status(200).json(drinks);
   } catch (error) {
     console.error(error);
@@ -16,11 +17,31 @@ router.get("/", async (req, res) => {
   }
 });
 
+router.get("/ingredients", async (req, res) => {
+  try {
+    const Ingredients = await Ingredient.find();
+    res.status(200).json(Ingredients);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Failed to fetch ingredients" });
+  }
+});
+
+router.get("/supplies", protect, requireRole(["Admin", "Employee"]), async (req, res) => {
+  try {
+    const supplies = await Ingredient.find();
+    res.json(supplies);
+  } catch (err) {
+    console.error("Failed to get supplies:", err);
+    res.status(500).json({ message: "Failed to fetch supplies" });
+  }
+});
+
 // Get a single drink by ID
 router.get("/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const drink = await Drink.findById(id);
+    const drink = await Drink.findById(id).populate("ingredients.ingredientId");
     if (!drink) {
       return res.status(404).json({ message: "Drink not found" });
     }
@@ -61,6 +82,18 @@ router.post("/:id/rate", async (req, res) => {
   }
 });
 
+router.post("/addIngredient", protect, requireRole(["Admin"]), async (req, res) => {
+  try {
+    const newIngredient = new Ingredient(req.body);
+    await newIngredient.save();
+    res.status(201).json(newIngredient);
+  } catch (error) {
+    console.error("Add ingredient error", error);
+    res.status(500).json({ message: "Failed to add ingredient" });
+  }
+});
+
+
 router.post("/addInventory", protect, requireRole(["Admin"]), async (req, res) => {
   try {
     const newDrink = new Drink(req.body);
@@ -97,5 +130,6 @@ router.post("/deleteInventory", protect, requireRole(["Admin"]), async (req, res
     res.status(500).json({ message: "Failed to delete drink" });
   }
 });
+
 
 module.exports = router;

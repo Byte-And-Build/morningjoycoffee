@@ -48,6 +48,15 @@ export default function InventoryPage() {
     }
   };
 
+  const calculateCost = (ingredients = []) => {
+    return ingredients.reduce((acc, i) => {
+      if (i.ingredientId?.costPerUnit && i.quantity) {
+        acc += i.ingredientId.costPerUnit * i.quantity;
+      }
+      return acc;
+    }, 0).toFixed(2);
+  };
+
   const formatPriceBySize = (priceArray) => {
     const sizes = ["Kids", "20oz", "24oz", "32oz"];
     const priceObj = Array.isArray(priceArray) ? priceArray[0] : {};
@@ -71,12 +80,21 @@ export default function InventoryPage() {
       < div className={styles.vertContainer}>
       {drinks.map((item) => (
         <div key={item._id} className={styles.inventoryWrapper}>
-          <div className={styles.vertContainer}> 
+          <div className={styles.vertContainer} onClick={() => router.push(`/drink/${item._id}`)}> 
             <p className={styles.ingrediants}>{item.name}</p>
-            <Image src={item.image} width={80} height={80} alt={item.name} className="object-contain" />
+            <Image src={item.image} width={80} height={80} alt={item.name} className="object-contain" style={{cursor: "pointer"}}/>
+            {/* <p className={styles.ingredients}>
+              Cost to Make: ${calculateCost(item.ingredients)}
+            </p> */}
           </div>
           <div className={styles.vertContainer}>
-            <p className={styles.ingrediantsInventory}>{item.ingrediants}</p>
+            <p className={styles.ingrediantsInventory}>
+              {item.ingredients.map((i, idx) => {
+                const ing = i.ingredientId;
+                if (!ing || typeof ing === "string") return null; // skip if not populated yet
+                return `${ing.name} (${i.quantity})${idx < item.ingredients.length - 1 ? ', ' : ''}`;
+              })}
+            </p>
           </div>
           <pre>{formatPriceBySize(item.price)}</pre>
           <p className={styles.ingrediants}>{item.category}</p>

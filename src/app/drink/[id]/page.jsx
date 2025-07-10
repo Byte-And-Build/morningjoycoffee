@@ -29,7 +29,7 @@ export default function DrinkDetails() {
         const response = await api.get(`/api/drinks/${id}`);
         const drinkData = response.data;
         setDrink(drinkData);
-
+        console.log(drinkData)
         if (drinkData?.price?.length > 0) {
           const defaultSize = Object.keys(drinkData.price[0])[0];
           setSelectedSize(defaultSize);
@@ -112,7 +112,7 @@ export default function DrinkDetails() {
         thumbsDown={thumbsDown}
         handleRatingUpdate={handleRatingUpdate}
       />
-      <p className={styles.drinkDetails}>{drink.ingrediants}</p>
+      <p className={styles.drinkDetails}>{drink.description}</p>
       <p className={styles.drinkDetailsPrice}>Total: ${totalPrice.toFixed(2)}</p>
 
       <div className={styles.horizContainer} style={{justifyContent: "space-around", maxWidth: "80%"}}>

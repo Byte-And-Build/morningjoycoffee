@@ -18,6 +18,7 @@ export default function MetricsPage() {
   const { token } = useAuth();
   const [liveVisitors, setLiveVisitors] = useState(0);
   const [todaySummary, setTodaySummary] = useState({ totalOrders: 0, totalRevenue: 0 });
+  const [supplies, setSupplies] = useState([]);
   const [topSelling, setTopSelling] = useState({
     day: null,
     week: null,
@@ -31,6 +32,22 @@ export default function MetricsPage() {
     socket.on("online-count", setLiveVisitors);
     return () => socket.off("online-count", setLiveVisitors);
   }, []);
+
+  useEffect(() => {
+  const fetchSupplies = async () => {
+    try {
+      const res = await fetch("/api/drinks/supplies", {
+        headers: token ? { Authorization: `Bearer ${token}` } : {}
+      });
+      const data = await res.json();
+      setSupplies(data);
+    } catch (err) {
+      console.error("Failed to fetch supplies:", err);
+    }
+  };
+
+  if (token) fetchSupplies();
+}, [token]);
 
   useEffect(() => {
     const fetchTodaySummary = async () => {
@@ -154,9 +171,13 @@ const deleteUser = async (id) => {
             </div>
           </div>
           <h2>Supplies Levels</h2>
-          <div className={styles.vertContainerInset}>
-            <span>Coming Soon...</span>
-          </div>
+            <div className={styles.vertContainerInset}>
+              {supplies.map(supply => (
+                <p key={supply._id}>
+                  {supply.name}: {supply.inStock} {supply.unit}
+                </p>
+              ))}
+            </div>
           <h2>Users</h2>
             <div className={styles.vertContainerInset} style={{maxHeight: "175px", overflowY: "auto", alignItems: "center", padding: ".5rem", justifyContent: "flex-start"}}>
               {users.map(user => (

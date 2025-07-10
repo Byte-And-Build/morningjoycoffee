@@ -7,19 +7,22 @@ import CurrencyInput from "../../app/components/CurrencyInput";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-
 const availableSizes = ["Kids", "20oz", "24oz", "32oz"];
 
 export default function EditItemPopUp({ item, setEditPopUp, fetchDrinks }) {
+  
+  const [availableIngredients, setAvailableIngredients] = useState([]);
   const [formData, setFormData] = useState({
     _id: item._id,
     name: item.name,
     category: item.category,
-    ingrediants: item.ingrediants,
+    ingredients: item.ingredients,
+    description: item.description,
     image: item.image,
     rating: item.rating || { thumbsUp: 0, thumbsDown: 0 },
   });
-
+  const [ingredientSearch, setIngredientSearch] = useState("");
+  const [ingredientSuggestions, setIngredientSuggestions] = useState([]);
   const [sizes, setSizes] = useState(() => {
     const priceArray = item.price || [{}];
     const priceObj = priceArray[0];
@@ -34,9 +37,76 @@ export default function EditItemPopUp({ item, setEditPopUp, fetchDrinks }) {
   });
 
   useEffect(() => {
-    document.body.style.overflow = 'hidden';
-    return () => (document.body.style.overflow = '');
-  }, []);
+  const fetchIngredients = async () => {
+    try {
+      const res = await api.get("api/drinks/ingredients");
+      const allIngredients = res.data || [];
+      setAvailableIngredients(allIngredients);
+
+      // Normalize only if needed
+      const normalized = (item.ingredients || []).map((ing) => {
+        if (typeof ing === "string") {
+          return { ingredientId: ing, quantity: 1 };
+        }
+        if (ing.ingredientId) {
+          return ing;
+        }
+        if (ing._id) {
+          return { ingredientId: ing._id, quantity: ing.quantity || 1 };
+        }
+        return ing;
+      });
+
+      setFormData((prev) => ({
+        ...prev,
+        ingredients: normalized,
+      }));
+    } catch (err) {
+      console.error("Failed to fetch ingredients:", err);
+    }
+  };
+
+  document.body.style.overflow = "hidden";
+  fetchIngredients();
+  return () => {
+    document.body.style.overflow = "";
+  };
+}, []);
+
+  useEffect(() => {
+  if (ingredientSearch.length >= 3) {
+    const matches = availableIngredients.filter((ing) =>
+      ing.name.toLowerCase().includes(ingredientSearch.toLowerCase()) &&
+      !formData.ingredients.some(i => i.ingredientId === ing._id)
+    );
+    setIngredientSuggestions(matches);
+  } else {
+    setIngredientSuggestions([]);
+  }
+}, [ingredientSearch, availableIngredients, formData.ingredients]);
+
+const handleAddNewIngredient = async (name) => {
+  const token = localStorage.getItem("token");
+  try {
+    const res = await api.post(
+      "api/drinks/addIngredient",
+      { name },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    setAvailableIngredients((prev) => [...prev, res.data]);
+    const updated = [...formData.ingredients.split(", "), name].filter(Boolean).join(", ");
+    setFormData({ ...formData, ingredients: updated });
+    setIngredientSearch("");
+    toast.success(`Ingredient "${name}" added!`);
+  } catch (error) {
+    console.error("Error adding new ingredient:", error);
+    toast.error("Failed to add new ingredient");
+  }
+};
 
   const pickImage = async () => {
     const input = document.createElement("input");
@@ -84,7 +154,7 @@ export default function EditItemPopUp({ item, setEditPopUp, fetchDrinks }) {
   return (
     <div className={styles.overlay} onClick={() => setEditPopUp(false)}>
       <div className={styles.modal} onClick={e => e.stopPropagation()}>
-        <div className={styles.horizContainer}>
+        <div className={styles.horizWrapper}>
           <input
             className={styles.userInput}
             value={formData.name}
@@ -104,14 +174,80 @@ export default function EditItemPopUp({ item, setEditPopUp, fetchDrinks }) {
             <option value="Other">Other</option>
           </select>
         </div>
+        <div className={styles.vertContainer}>
+          <label>Ingredients</label>
+          <div className={styles.userInput}>
+            {formData.ingredients.map((ingredientObj, idx) => {
+            return (
+              ingredientObj && (
+                <div key={ingredientObj.ingredientId + idx} className={styles.horizWrapper} style={{ marginBottom: ".5rem" }}>
+                  <button
+                    className={styles.btnsSmall}
+                    onClick={() => {
+                      const updated = formData.ingredients.filter(i => i.ingredientId !== ingredientObj._id);
+                      setFormData({ ...formData, ingredients: updated });
+                    }}
+                  >
+                    {ingredientObj.name} ×
+                  </button>
+                  <input
+                    type="number"
+                    min={1}
+                    className={styles.userInput}
+                    value={ingredientObj.quantity}
+                    onChange={(e) => {
+                      const qty = parseInt(e.target.value);
+                      const updated = formData.ingredients.map((i) =>
+                        i.ingredientId === ingredientObj._id ? { ...i, quantity: qty } : i
+                      );
+                      setFormData({ ...formData, ingredients: updated });
+                    }}
+                  />
+                  <span style={{ whiteSpace: "nowrap" }}>/{ingredientObj.unit || "unit"}</span>
+                </div>
+              )
+            );
+          })}
+            <input
+              type="text"
+              value={ingredientSearch}
+              onChange={(e) => setIngredientSearch(e.target.value)}
+              placeholder="Add ingredients..."
+              className={styles.userInput}
+            />
+          </div>
+            <div className={styles.horizWrapper} style={{flex: "1", fontSize: ".75rem"}}>
+              {availableIngredients
+                .filter((ing) =>
+                  ing.name.toLowerCase().includes(ingredientSearch.toLowerCase()) &&
+                  !formData.ingredients.some((i) => i.ingredientId === ing._id)
+                )
+                .map((ing) => (
+                  <button
+                    key={ing._id}
+                    className={styles.btnsSmall} style={{flex: "1"}}
+                    onClick={() => {
+                      const updated = [
+                        ...formData.ingredients,
+                        { ingredientId: ing._id, name: ing.name, quantity: 1, unit: ing.unit }
+                      ];
+                      setFormData({ ...formData, ingredients: updated });
+                      setIngredientSearch("");
+                    }}
+                  >
+                   {ing.name}
+                  </button>
+                ))}
+            </div>
+        </div>
         <textarea
-          value={formData.ingrediants}
-          onChange={(e) => setFormData({ ...formData, ingrediants: e.target.value })}
-          placeholder="Ingredients"
+          value={formData.description}
+          onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+          placeholder="Description"
         />
         <h4>Sizes & Prices</h4>
         {availableSizes.map((size) => (
-          <div key={size} className={styles.horizContainer}>
+          <div key={size} className={styles.horizWrapper}>
             <label>
               <input
                 type="checkbox"

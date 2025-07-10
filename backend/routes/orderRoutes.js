@@ -3,6 +3,8 @@ const Order = require("../models/Order");
 const router = express.Router();
 const jwt = require("jsonwebtoken");
 const User = require("../models/User.js");
+const Drink = require("../models/Drinks");
+const Ingredient = require("../models/Ingredient");
 
 const protect = async (req, res, next) => {
   let token;
@@ -30,24 +32,39 @@ router.get("/", async (req, res) => {
 });
 
 router.post("/new", async (req, res) => {
-  console.log(req.body)
   try {
     const { customer, items, user } = req.body;
+
+    // Fetch all involved drinks
+    const drinkIds = items.map(item => item._id);
+    const drinks = await Drink.find({ _id: { $in: drinkIds } }).populate("ingredients.ingredientId");
+
+    // Deduct ingredients
+    for (let item of items) {
+      const drink = drinks.find(d => d._id.toString() === item._id);
+      if (drink) {
+        for (let ing of drink.ingredients) {
+          const ingredient = await Ingredient.findById(ing.ingredientId._id);
+          if (ingredient) {
+            const totalUsed = ing.quantity * item.quantity;
+            ingredient.inStock = Math.max(0, ingredient.inStock - totalUsed);
+            await ingredient.save();
+          }
+        }
+      }
+    }
 
     const newOrder = new Order({
       customer,
       items,
       status: "Queued",
       createdAt: new Date(),
-      user: user ? user : "Guest",
+      user: user || "Guest",
     });
 
     const savedOrder = await newOrder.save();
 
-    // Emit to all connected clients
-    const io = req.app.get("io");
-    io.emit("new-order", savedOrder);
-
+    req.app.get("io").emit("new-order", savedOrder);
     res.status(201).json(savedOrder);
   } catch (error) {
     console.error("Order creation error:", error);
