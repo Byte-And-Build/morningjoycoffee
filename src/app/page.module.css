@@ -242,7 +242,7 @@
 .modal {
   background: var(--colorTop);          /* or white */
   width: 100%;
-  max-width: 500px;                     /* tweak as you like */
+  max-width: 800px;                     /* tweak as you like */
   max-height: 90vh;                     /* keep it inside the viewport */
   overflow-y: auto;                     /* scroll inside modal if needed */
   border-radius: 1rem;
@@ -645,6 +645,22 @@ display: none;
               inset 3px 3px 15px var(--selectedInsetBottom);
   border-radius: .625rem;
   padding: .5rem;
+}
+
+.vertWrapperInset{
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  /* gap: .5rem; */
+  align-items: center;
+  width: 100%;
+  box-shadow: inset 3px 3px 15px var(--selectedInsetTop),
+              inset 3px 3px 15px var(--selectedInsetBottom);
+  border-radius: .5rem;
+  padding: .75rem;
+  overflow-y: auto;
+  flex: 1;
+  max-height: 250px;
 }
 
 .cartDetails {

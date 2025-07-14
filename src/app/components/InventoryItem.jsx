@@ -9,6 +9,8 @@ const InventoryItem = ({ refreshDrinks }) => {
   const [showForm, setShowForm] = useState(false);
   const [showIngForm, setShowIngForm] = useState(false);
   const [availableIngredients, setAvailableIngredients] = useState([]);
+  const [ingredneantForm , setIngrediantForm ] = useState(false)
+  const [editIngredient, setEditIngredient] = useState(null);
   const [newIngredient, setNewIngredient] = useState({
   name: "",
   unit: "piece",
@@ -28,6 +30,8 @@ const InventoryItem = ({ refreshDrinks }) => {
     price: [{}],
     rating: { thumbsUp: 0, thumbsDown: 0 },
   });
+  console.log(availableIngredients)
+  
   useEffect(() => {
   if (showForm) document.body.style.overflow = "hidden";
   const fetchIngredients = async () => {
@@ -78,29 +82,22 @@ const handleAddIngredient = async () => {
   }
 };
 
-  const availableExtras = [
-    { name: "Extra Shot", price: 1.0 },
-    { name: "Extra Flavor", price: 0.7 },
-    { name: "Almond Milk", price: 1.0 },
-    { name: "Oat Milk", price: 1.0 },
-    { name: "Whole Milk/Cream", price: 1.0 },
-    { name: "Glitter", price: 0.25 },
-    { name: "Caramel Drizzle", price: 1.0 },
-    { name: "Whipped Cream", price: 1.0 },
-    { name: "Half/Half (splash)", price: 1.0 },
-    { name: "Cold Foam", price: 1.0 },
-    { name: "Heavy Whipping Cream (splash)", price: 1.0 },
-    { name: "Extra Pump Lotus", price: 1.0 },
-    { name: "Blended", price: 1.0 },
-    { name: "Breve (half/half)", price: 1.0 },
-    { name: "Skim Milk", price: 1.0 },
-    { name: "Coconut Milk", price: 1.0 },
-    { name: "Whole Milk", price: 1.0 },
-  ];
-
-  const [extras, setExtras] = useState(() =>
-    Object.fromEntries(availableExtras.map(extra => [extra.name, { selected: false, price: extra.price }]))
-  );
+const handleSaveEditIngredient = async () => {
+  try {
+    const token = localStorage.getItem("token");
+    await api.post("/api/drinks/editIngredient", editIngredient, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    toast.success("Ingredient updated!");
+    setEditIngredient(null);
+    setIngrediantForm(false);
+    const refreshed = await axios.get("/api/drinks/ingredients");
+    setAvailableIngredients(refreshed.data || []);
+  } catch (err) {
+    console.error("Edit ingredient error:", err);
+    toast.error("Failed to update ingredient");
+  }
+};
 
   const pickImage = (e) => {
     const file = e.target.files[0];
@@ -258,19 +255,123 @@ const handleAddIngredient = async () => {
               {availableIngredients.length === 0 ? (
                 <p>No ingredients found.</p>
               ) : (
-                <ul className={styles.ingredientList}>
-                  {availableIngredients.map((ingredient) => (
-                    <li key={ingredient._id} className={styles.ingredientItem}>
-                      <strong>{ingredient.name}</strong> – $
-                      {ingredient.costPerUnit.toFixed(2)}/{ingredient.unit}
-                    </li>
-                  ))}
-                </ul>
+                <div className={styles.vertContainer}>
+                  <div className={styles.horizWrapper}>
+                    <span className={styles.ingrediants} style={{flex: 1, textAlign: "left"}}>Name</span>
+                    <span className={styles.ingrediants} style={{flex: 1}}>Cost/Unit</span>
+                    <span className={styles.ingrediants} style={{flex: 1}}>Extra Price</span>
+                    <span className={styles.ingrediants} style={{flex: 1}}>In Stock</span>
+                    <span className={styles.ingrediants} style={{flex: .5}}>Is Extra</span>
+                    <span className={styles.ingrediants} style={{flex: .6}}>Edit/Save</span>
+                  </div>
+                  <div className={styles.vertWrapperInset}>
+                    {availableIngredients.map((ingredient) => (
+                      <div className={styles.cartWrapper} key={ingredient._id} style={{borderBottom: "1px black dashed", width: "inherit"}}>
+                        <span className={styles.ingrediants} style={{flex: 1, textAlign: "left"}}>{ingredient.name}</span>
+                        <span className={styles.ingrediants} style={{flex: 1}}>${ingredient.costPerUnit.toFixed(2)}/{ingredient.unit}</span>
+                        <span className={styles.ingrediants} style={{flex: 1}}>${ingredient.extraPrice.toFixed(2)}/{ingredient.unit}</span>
+                        <span className={styles.ingrediants} style={{flex: 1}}>{ingredient.inStock} {ingredient.unit}{ingredient.inStock > 1 ? "(s)" : ""}</span>
+                        <input type="checkbox" defaultChecked={ingredient?.isExtra ? "checked" : ""} style={{flex: .4}}/>
+                        <button className={styles.btnsSmall} style={{flex: .5}} onClick={() => { setEditIngredient(ingredient); setIngrediantForm(true); }}>Edit</button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               )}
 
               <button className={styles.btns} onClick={() => setShowIngForm(false)}>
                 Close
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {ingredneantForm && editIngredient && (
+        <div className={styles.overlay} onClick={() => { setEditIngredient(null); setIngrediantForm(false) }}>
+          <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+            <div className={styles.vertContainer}>
+              <h3>Edit Ingredient</h3>
+              <div className={styles.horizWrapper}>
+                <label htmlFor={editIngredient.name} className={styles.ingrediants} style={{flex: 1, textAlign: "left"}}>Name:</label>
+                <input className={styles.userInput} id={editIngredient.name} placeholder="Name" value={editIngredient.name} onChange={(e) => setEditIngredient({ ...editIngredient, name: e.target.value })} />
+                <label htmlFor={editIngredient.name} className={styles.ingrediants} style={{flex: 1, textAlign: "left"}}>Unit:</label>
+                <select
+                  className={styles.select}
+                  value={editIngredient.unit}
+                  onChange={(e) =>
+                    setEditIngredient({ ...editIngredient, unit: e.target.value })
+                  }
+                >
+                  <option value="ml">ml</option>
+                  <option value="oz">oz</option>
+                  <option value="g">g</option>
+                  <option value="piece">piece</option>
+                </select>
+              </div>
+              <div className={styles.horizWrapper}>
+                <label htmlFor={editIngredient.name} className={styles.ingrediants} style={{flex: 1, textAlign: "left"}}>Current Stock:</label>
+                <input
+                  className={styles.userInput}
+                  placeholder="In Stock"
+                  type="number"
+                  value={editIngredient.inStock}
+                  onChange={(e) =>
+                    setEditIngredient({ ...editIngredient, inStock: parseFloat(e.target.value) })
+                  }
+                />
+              </div>
+              <div className={styles.horizWrapper}>
+                <label htmlFor={editIngredient.name} className={styles.ingrediants} style={{flex: 1, textAlign: "left"}}>Reorder At:</label>
+                <input
+                  className={styles.userInput}
+                  placeholder="Reorder At"
+                  type="number"
+                  value={editIngredient.reorderAt}
+                  onChange={(e) =>
+                    setEditIngredient({ ...editIngredient, reorderAt: parseFloat(e.target.value) })
+                  }
+                />
+              </div>
+              <div className={styles.horizWrapper}>
+                <label htmlFor={editIngredient.name} className={styles.ingrediants} style={{flex: 1, textAlign: "left"}}>Cost Per Unit</label>
+                <CurrencyInput
+                  value={editIngredient.costPerUnit}
+                  onChange={(val) =>
+                    setEditIngredient({ ...editIngredient, costPerUnit: val })
+                  }
+                  placeholder="Cost Per Unit"
+                />
+                </div>
+                <div className={styles.horizWrapper}>
+                  <label htmlFor={editIngredient.name} className={styles.ingrediants} style={{flex: 1, textAlign: "left"}}>Is Extra?</label>
+                  <input type="checkbox" checked={editIngredient.isExtra} onChange={(e) => setEditIngredient({ ...editIngredient, isExtra: e.target.checked })}/>
+                    {editIngredient.isExtra && (
+                      <CurrencyInput
+                        value={editIngredient.extraPrice}
+                        onChange={(val) =>
+                          setEditIngredient({ ...editIngredient, extraPrice: val })
+                        }
+                        placeholder="Extra Price"
+                      />
+                    )}
+                  </div>
+              <div className={styles.horizWrapper}>
+                <button
+                  className={styles.btns}
+                  onClick={handleSaveEditIngredient}
+                >
+                  Save Changes
+                </button>
+                <button
+                  className={styles.btns}
+                  onClick={() => {
+                    setIngrediantForm(false);
+                    setEditIngredient(null);
+                  }}
+                >
+                  Cancel
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -322,7 +423,7 @@ const handleAddIngredient = async () => {
                 {extraIngredients.map((ingredient) => {
                   const found = formData.ingredients.find((i) => i.ingredientId === ingredient._id);
                   return (
-                    <div key={ingredient._id} className={styles.ingredientItem}>
+                    <div key={ingredient._id} className={styles.ingredientItem} style={{flex: 1}}>
                       <input
                         hidden
                         id={ingredient.name}

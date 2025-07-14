@@ -2,7 +2,7 @@ import styles from "../../app/page.module.css";
 import { useState, useEffect } from "react";
 
 const CurrencyInput = ({ value, onChange, placeholder }) => {
-  const [text, setText] = useState(value !== undefined ? value.toString() : "");
+  const [text, setText] = useState(value !== undefined ? value : "");
 
   useEffect(() => {
     if (value !== undefined && !isNaN(value)) {
@@ -33,16 +33,17 @@ const CurrencyInput = ({ value, onChange, placeholder }) => {
   };
 
   return (
-    <div className={styles.userWrapper}>
+    <div className={styles.userWrapper} style={{flexDirection: "row", display: "flex"}}>
       <input
         type="text"
-        value={text}
+        value={`${text}`}
         onChange={handleChange}
         onBlur={handleBlur}
         placeholder={placeholder?.replace("$", "")}
         className={styles.userInput}
         inputMode="decimal"
       />
+      
     </div>
   );
 };

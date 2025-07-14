@@ -27,6 +27,18 @@ router.get("/ingredients", async (req, res) => {
   }
 });
 
+router.post("/editIngredient", protect, requireRole(["Admin"]), async (req, res) => {
+  try {
+    const { _id, ...rest } = req.body;
+    console.log(_id)
+    const updated = await Ingredient.findByIdAndUpdate(_id, rest, { new: true });
+    res.status(200).json(updated);
+  } catch (error) {
+    console.error("Edit ingredient error:", error);
+    res.status(500).json({ message: "Failed to update ingredient" });
+  }
+});
+
 router.get("/supplies", protect, requireRole(["Admin", "Employee"]), async (req, res) => {
   try {
     const supplies = await Ingredient.find();
