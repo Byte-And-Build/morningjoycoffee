@@ -6,6 +6,7 @@ import styles from "./page.module.css";
 import { FaThumbsUp } from "react-icons/fa";
 import Image from "next/image";
 import Logo from '../app/assets/Logo.png';
+import Ingredient from "../../backend/models/Ingredient";
 
 export default function HomePage({ setLaoding }) {
   const router = useRouter();
@@ -72,7 +73,9 @@ export default function HomePage({ setLaoding }) {
             <img src={item.image} alt={item.name} className="drink-image" loading="lazy" />
             <div className={styles.drinkDetails}>
               <h3 className={styles.drinkName}>{item.name}</h3>
-              <p className={styles.ingrediants}>{item.ingrediants}</p>
+              {item.extras?.map((extra, i) => (
+                <p key={i} className={styles.ingredients}>{extra.name}</p>
+              ))}
             </div>
           </div>
         ))}

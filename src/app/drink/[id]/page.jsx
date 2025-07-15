@@ -51,25 +51,17 @@ export default function DrinkDetails() {
     return (selectedPrice + optionsTotal) * count;
   }, [selectedPrice, selectedOptions, count]);
 
-  const customOptions = [
-    { name: "Extra Shot", price: 1.0 },
-    { name: "Extra Flavor", price: 0.7 },
-    { name: "Almond Milk", price: 1.0 },
-    { name: "Oat Milk", price: 1.0 },
-    { name: "Whole Milk/Cream", price: 1.0 },
-    { name: "Glitter", price: 0.25 },
-    { name: "Caramel Drizzle", price: 1.0 },
-    { name: "Whipped Cream", price: 1.0 },
-    { name: "Half/Half (splash)", price: 1.0 },
-    { name: "Cold Foam", price: 1.0 },
-    { name: "Heavy Whipping Cream (splash)", price: 1.0 },
-    { name: "Extra Pump Lotus", price: 1.0 },
-    { name: "Blended", price: 1.0 },
-    { name: "Breve (half/half)", price: 1.0 },
-    { name: "Skim Milk", price: 1.0 },
-    { name: "Coconut Milk", price: 1.0 },
-    { name: "Whole Milk", price: 1.0 },
-  ];
+  console.log(drink?.ingredients)
+
+  const customOptions = useMemo(() => {
+  if (!drink?.ingredients) return [];
+  return drink.ingredients
+    .filter((ing) => ing.ingredientId?.isExtra)
+    .map((ing) => ({
+      name: ing.name,
+      price: ing.ingredientId.costPerUnit || 0,
+    }));
+}, [drink]);
 
   const toggleOption = (option) => {
     setSelectedOptions((prev = []) => {

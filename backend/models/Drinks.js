@@ -16,6 +16,18 @@ const drinkSchema = new mongoose.Schema({
       quantity: { type: Number, default: 1, }
     }
   ],
+  extras: [
+    {
+      ingredientId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Ingredient",
+        required: true,
+},
+      name: { type: String },
+      unit: { type: String },
+      quantity: { type: Number, default: 1, }
+    }
+  ],
   description: String,
   image: String,
   rating: Object,

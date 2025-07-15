@@ -214,6 +214,7 @@
 }
 
 .preview{ 
+  max-width: 300px;
   width: 100%;
   height: 100%;
   background-position: center;
@@ -242,7 +243,7 @@
 .modal {
   background: var(--colorTop);          /* or white */
   width: 100%;
-  max-width: 800px;                     /* tweak as you like */
+  max-width: 90vw;                     /* tweak as you like */
   max-height: 90vh;                     /* keep it inside the viewport */
   overflow-y: auto;                     /* scroll inside modal if needed */
   border-radius: 1rem;
@@ -359,6 +360,22 @@
   border-radius: .625rem;
   box-shadow: inset 3px 3px 15px var(--selectedInsetTop),
               inset 3px 3px 15px var(--selectedInsetBottom);
+}
+
+.ingredientList{
+  display: flex;
+  flex-wrap: wrap;
+  flex: 1;
+  gap: .5rem;
+  width: 100%;
+  justify-content: flex-start;
+}
+
+.ingredientItem{
+  display: flex;
+  max-width: 250px;
+  font-size: .8rem;
+  color: var(--fontColorContrast);
 }
 
 .btnsSmall{

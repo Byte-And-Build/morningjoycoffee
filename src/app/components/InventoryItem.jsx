@@ -48,6 +48,7 @@ const InventoryItem = ({ refreshDrinks }) => {
   return () => (document.body.style.overflow = "");
 }, [showForm]);
 
+  const regularIngredients = availableIngredients.filter(i => !i.isExtra);
   const extraIngredients = availableIngredients.filter(i => i.isExtra);
 
   const availableSizes = ["Kids", "16oz", "20oz", "24oz", "32oz"];
@@ -415,37 +416,34 @@ const handleSaveEditIngredient = async () => {
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
             />
             <div className={styles.vertContainer}>
-            <h4>Select Ingredients/Extras</h4>
-            {extraIngredients === 0 ? (
-              <p>No ingredients found.</p>
-            ) : (
-              <div className={styles.ingredientList}>
-                {extraIngredients.map((ingredient) => {
-                  const found = formData.ingredients.find((i) => i.ingredientId === ingredient._id);
-                  return (
-                    <div key={ingredient._id} className={styles.ingredientItem} style={{flex: 1}}>
-                      <input
-                        hidden
-                        id={ingredient.name}
-                        className={ingredient.name}
-                        type="checkbox"
-                        checked={!!found}
-                        onChange={(e) => {
-                          let updatedIngredients;
-                          if (e.target.checked) {
-                            updatedIngredients = [...formData.ingredients, { ingredientId: ingredient._id, name: ingredient.name, unit: ingredient.unit, quantity: 1 }];
-                          } else {
-                            updatedIngredients = formData.ingredients.filter((i) => i.ingredientId !== ingredient._id);
-                          }
-                          setFormData({ ...formData, ingredients: updatedIngredients });
-                        }}
-                      />
-                      <div className={styles.qtyContainer}>
-                      <label className={styles.btnsSmall} htmlFor={ingredient.name} style={{ cursor: "pointer" }}>
-                        {ingredient.name}
-                      </label>
-                      {found && (
-                        <>
+            <h4>Ingredients</h4>
+            <div className={styles.ingredientList}>
+              {regularIngredients.map((ingredient) => {
+                const found = formData.ingredients.find((i) => i.ingredientId === ingredient._id);
+                return (
+                  <div key={ingredient._id} className={styles.ingredientItem}>
+                    <input
+                      hidden
+                      id={`ing-${ingredient._id}`}
+                      type="checkbox"
+                      checked={!!found}
+                      onChange={(e) => {
+                        let updated = e.target.checked
+                          ? [...formData.ingredients, {
+                              ingredientId: ingredient._id,
+                              name: ingredient.name,
+                              unit: ingredient.unit,
+                              quantity: 1,
+                            }]
+                          : formData.ingredients.filter((i) => i.ingredientId !== ingredient._id);
+                        setFormData({ ...formData, ingredients: updated });
+                      }}
+                    />
+                    <label className={styles.btnsSmall} htmlFor={`ing-${ingredient._id}`}>
+                      {ingredient.name}
+                    </label>
+                    {found && (
+                      <>
                         <input
                           type="number"
                           className={styles.userInput}
@@ -459,18 +457,61 @@ const handleSaveEditIngredient = async () => {
                             setFormData({ ...formData, ingredients: updated });
                           }}
                         />
-                        <label className={styles.ingrediants}>
-                        {ingredient.unit}
-                        </label>
-                        </>
-                      )}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-          </div>
+                        <label className={styles.ingrediants}>{ingredient.unit}</label>
+                      </>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+            <h4 style={{ marginTop: "1rem" }}>Extras</h4>
+            <div className={styles.ingredientList}>
+              {extraIngredients.map((ingredient) => {
+                const found = formData.extras?.find((i) => i.ingredientId === ingredient._id);
+                return (
+                  <div key={ingredient._id} className={styles.ingredientItem}>
+                    <input
+                      hidden
+                      id={`extra-${ingredient._id}`}
+                      type="checkbox"
+                      checked={!!found}
+                      onChange={(e) => {
+                        let updated = e.target.checked
+                          ? [...(formData.extras || []), {
+                              ingredientId: ingredient._id,
+                              name: ingredient.name,
+                              unit: ingredient.unit,
+                              quantity: 1,
+                            }]
+                          : formData.extras?.filter((i) => i.ingredientId !== ingredient._id);
+                        setFormData({ ...formData, extras: updated });
+                      }}
+                    />
+                    <label className={styles.btnsSmall} htmlFor={`extra-${ingredient._id}`}>
+                      {ingredient.name}
+                    </label>
+                    {/* {found && (
+                      <>
+                        <input
+                          type="number"
+                          className={styles.userInput}
+                          min="1"
+                          value={found.quantity}
+                          onChange={(e) => {
+                            const quantity = parseInt(e.target.value);
+                            const updated = formData.extras.map((i) =>
+                              i.ingredientId === ingredient._id ? { ...i, quantity } : i
+                            );
+                            setFormData({ ...formData, extras: updated });
+                          }}
+                        />
+                        <label className={styles.ingrediants}>{ingredient.unit}</label>
+                      </>
+                    )} */}
+                  </div>
+                );
+              })}
+            </div>
             </div>
             <div className={styles.vertContainer}>
               <h4>Sizes & Prices</h4>
@@ -512,6 +553,7 @@ const handleSaveEditIngredient = async () => {
             <button className={styles.btns} onClick={handleAddOrEdit}>Save</button>
             <button className={styles.btns} onClick={() => setShowForm(false)}>Close</button>
           </div>
+        </div>
         </div>
       )}
     </>
