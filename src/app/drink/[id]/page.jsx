@@ -30,10 +30,10 @@ export default function DrinkDetails() {
         const drinkData = response.data;
         setDrink(drinkData);
         console.log(drinkData)
-        if (drinkData?.price?.length > 0) {
-          const defaultSize = Object.keys(drinkData.price[0])[0];
-          setSelectedSize(defaultSize);
-          setSelectedPrice(parseFloat(drinkData.price[0][defaultSize]));
+        if (drinkData?.sizes?.length > 0) {
+          const defaultSize = drinkData.sizes[0];
+          setSelectedSize(defaultSize.size);
+          setSelectedPrice(parseFloat(defaultSize.price || 0));
         }
 
         setThumbsUp(drinkData?.rating?.thumbsUp || 0);
@@ -54,13 +54,11 @@ export default function DrinkDetails() {
   console.log(drink?.ingredients)
 
   const customOptions = useMemo(() => {
-  if (!drink?.ingredients) return [];
-  return drink.ingredients
-    .filter((ing) => ing.ingredientId?.isExtra)
-    .map((ing) => ({
-      name: ing.name,
-      price: ing.ingredientId.costPerUnit || 0,
-    }));
+  if (!drink?.extras) return [];
+  return drink.extras.map((ing) => ({
+    name: ing.name,
+    price: ing.ingredientId?.costPerUnit || 0, // you may want to store costPerUnit at top-level
+  }));
 }, [drink]);
 
   const toggleOption = (option) => {
@@ -108,14 +106,14 @@ export default function DrinkDetails() {
       <p className={styles.drinkDetailsPrice}>Total: ${totalPrice.toFixed(2)}</p>
 
       <div className={styles.horizContainer} style={{justifyContent: "space-around", maxWidth: "80%"}}>
-        {Object.keys(drink.price[0]).map((size) => (
+        {drink.sizes.map(({ size, price }) => (
           <button
             key={size}
             onClick={() => {
               setSelectedSize(size);
-              setSelectedPrice(parseFloat(drink.price[0][size]));
+              setSelectedPrice(parseFloat(price));
             }}
-            className={` ${selectedSize === size ? `${styles.selectedSize}` : `${styles.sizeBtns}`}`}
+            className={`${selectedSize === size ? styles.selectedSize : styles.sizeBtns}`}
           >
             {size}
           </button>

@@ -5,7 +5,7 @@ import { api } from "../utils/api";
 import CurrencyInput from "./CurrencyInput";
 import { toast, ToastContainer } from "react-toastify";
 
-const InventoryItem = ({ refreshDrinks }) => {
+const InventoryItem = ({ refreshDrinks, item }) => {
   const [showForm, setShowForm] = useState(false);
   const [showIngForm, setShowIngForm] = useState(false);
   const [availableIngredients, setAvailableIngredients] = useState([]);
@@ -20,17 +20,28 @@ const InventoryItem = ({ refreshDrinks }) => {
   extraCost: 0,
   isExtra: false
 });
-  const [formData, setFormData] = useState({
-    _id: null,
-    name: "",
-    category: "",
-    description: "",
-    ingredients: [],
-    image: "",
-    price: [{}],
-    rating: { thumbsUp: 0, thumbsDown: 0 },
-  });
-  console.log(availableIngredients)
+
+const availableSizes = ["Kids", "16oz", "20oz", "24oz", "32oz"];
+
+const [sizesConfig, setSizesConfig] = useState(
+  availableSizes.map(size => ({
+    size,
+    selected: true,
+    price: 0,
+    ingredients: []
+  }))
+);
+
+const [formData, setFormData] = useState({
+  _id: null,
+  name: "",
+  category: "",
+  description: "",
+  image: "",
+  extras: [],
+  sizes: sizesConfig,
+  rating: { thumbsUp: 0, thumbsDown: 0 },
+});
   
   useEffect(() => {
   if (showForm) document.body.style.overflow = "hidden";
@@ -44,17 +55,71 @@ const InventoryItem = ({ refreshDrinks }) => {
       }
     };
     fetchIngredients();
-    console.log("INGREDIENTS", availableIngredients)
   return () => (document.body.style.overflow = "");
 }, [showForm]);
 
   const regularIngredients = availableIngredients.filter(i => !i.isExtra);
   const extraIngredients = availableIngredients.filter(i => i.isExtra);
 
-  const availableSizes = ["Kids", "16oz", "20oz", "24oz", "32oz"];
-  const [sizes, setSizes] = useState(() =>
-    Object.fromEntries(availableSizes.map(size => [size, { selected: false, price: 0 }]))
+const toggleSize = (idx) => {
+  setSizesConfig(prev => {
+    const next = [...prev];
+    next[idx].selected = !next[idx].selected;
+    formData.sizes = next.filter(s => s.selected);
+    return next;
+  });
+};
+
+const updateSizePrice = (idx, price) => {
+  setSizesConfig(prev => {
+    const next = [...prev];
+    next[idx].price = price;
+    formData.sizes = next.filter(s => s.selected);
+    return next;
+  });
+};
+
+const calculateProfit = (size, availableIngredients) => {
+  let totalCost = 0;
+
+  for (const ing of size.ingredients) {
+    const fullIngredient = availableIngredients.find(i => i._id === ing.ingredientId);
+    if (!fullIngredient) continue;
+
+    const unitCost = (parseFloat(fullIngredient.costPerUnit) / 100) * parseFloat(ing.quantity) || 0;
+    totalCost += unitCost;
+    console.log(fullIngredient)
+  }
+
+  const sellPrice = parseFloat(size.price) || 0;
+  const profit = sellPrice - totalCost;
+  return profit.toFixed(2);
+};
+
+const multipliers = {
+  "Kids": 0.5,
+  "16oz": 1,
+  "20oz": 1.25,
+  "24oz": 1.5,
+  "32oz": 2
+};
+
+const prefillSizes = (baseSize) => {
+  const base = sizesConfig.find(s => s.size === baseSize);
+  if (!base) return;
+  setSizesConfig(prev =>
+    prev.map(s => {
+      if (s.size === baseSize || !s.selected) return s;
+      return {
+        ...s,
+        ingredients: base.ingredients.map(i => ({
+          ...i,
+          quantity: Math.ceil(i.quantity * multipliers[s.size])
+        }))
+      };
+    })
   );
+};
 
 const handleAddIngredient = async () => {
   try {
@@ -111,31 +176,28 @@ const handleSaveEditIngredient = async () => {
   };
 
   const handleAddOrEdit = async () => {
-    const selectedPrices = Object.fromEntries(
-      Object.entries(sizes)
-        .filter(([_, data]) => data.selected)
-        .map(([key, data]) => [key, data.price])
-    );
-
     const payload = {
       ...formData,
-      price: [selectedPrices],
+      sizes: sizesConfig.filter(s => s.selected).map(s => ({
+        size: s.size,
+        price: s.price,
+        ingredients: s.ingredients
+      })),
     };
 
     try {
       const token = localStorage.getItem("token");
-      await api.post("api/drinks/addInventory", payload, {
+      await api.post("/api/drinks/addInventory", payload, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      alert("Drink added!");
+      toast.success("Drink added!");
       resetForm();
       setShowForm(false);
       refreshDrinks();
     } catch (err) {
       console.error("Save error:", err);
-      toast.error("Failed :( ")
-      // alert("Failed to save drink");
+      toast.error("Failed :( ");
     }
   };
 
@@ -144,15 +206,17 @@ const handleSaveEditIngredient = async () => {
       _id: null,
       name: "",
       category: "",
-      ingredients: [],
       description: "",
       image: "",
-      price: [{}],
+      extras: [],
+      sizes: sizesConfig,
       rating: { thumbsUp: 0, thumbsDown: 0 },
     });
     setSizes(Object.fromEntries(availableSizes.map(size => [size, { selected: false, price: 0 }])));
     setExtras(Object.fromEntries(availableExtras.map(extra => [extra.name, { selected: false, price: extra.price }])));
   };
+
+  const selectedIngredients = formData.sizes?.flatMap(s => s.ingredients) || []
 
   return (
     <>
@@ -416,33 +480,112 @@ const handleSaveEditIngredient = async () => {
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
             />
             <div className={styles.vertContainer}>
+              <h4>Sizes & Prices</h4>
+              {sizesConfig.map((s, idx) => (
+                <div key={s.size} className={styles.horizWrapper}>
+                  <label>
+                    <input
+                      type="checkbox"
+                      checked={s.selected}
+                      onChange={() => toggleSize(idx)}
+                    />{" "}
+                    {s.size}
+                  </label>
+                  {s.ingredients.map((ing) => (
+                    <div key={ing.ingredientId} className={styles.horizWrapper} style={{flex:1, justifyContent: "flex-start", maxWidth: "150px"}}>
+                      <span className={styles.ingrediants} style={{flex:.3, textAlign: "right"}}>{ing.name}</span>
+                      <input
+                        className={styles.userInput}
+                        type="number"
+                        value={ing.quantity}
+                        onChange={(e) => {
+                          const newQty = parseInt(e.target.value, 10);
+                          setSizesConfig(prev => {
+                            const copy = [...prev];
+                            const sizeObj = copy.find(x => x.size === s.size);
+                            sizeObj.ingredients = sizeObj.ingredients.map(x =>
+                              x.ingredientId === ing.ingredientId ? { ...x, quantity: newQty } : x
+                            );
+                            formData.sizes = copy.filter(s => s.selected);
+                            return copy;
+                          });
+                        }}
+                      />
+                      <span>{ing.unit}</span>
+                    </div>
+                  ))}
+                  <div className={styles.horizWrapper} style={{flex:.4, textAlign: "right"}}>
+                    <span className={styles.ingrediants} style={{flex:1, textAlign: "right"}}>Sell Price: </span> 
+                    {s.selected && (
+                      <CurrencyInput
+                        value={s.price}
+                        onChange={(val) => updateSizePrice(idx, val)}
+                        placeholder={`$ Price for ${s.size}`}
+                      />
+                    )}
+                    <span className={styles.ingrediants} style={{flex:1, textAlign: "right"}}>Your Cost: </span> 
+                    <span className={styles.ingrediants}>${calculateProfit(s, availableIngredients)}</span>
+                    <span className={styles.ingrediants} style={{flex:1, textAlign: "right"}}>Profit: </span> 
+                      <span className={styles.ingrediants} style={{ color: calculateProfit(s, availableIngredients) < 0 ? 'red' : 'green' }}>
+                        ${calculateProfit(s, availableIngredients)}
+                      </span>
+                    </div>
+                </div>
+              ))}
+            </div>
+            <div className={styles.vertContainer}>
             <h4>Ingredients</h4>
             <div className={styles.ingredientList}>
               {regularIngredients.map((ingredient) => {
-                const found = formData.ingredients.find((i) => i.ingredientId === ingredient._id);
+                const selectedIngredients = formData.sizes?.flatMap(s => s.ingredients) || [];
+                const found = selectedIngredients.find(i => i.ingredientId === ingredient._id);
                 return (
                   <div key={ingredient._id} className={styles.ingredientItem}>
                     <input
-                      hidden
                       id={`ing-${ingredient._id}`}
                       type="checkbox"
                       checked={!!found}
                       onChange={(e) => {
-                        let updated = e.target.checked
-                          ? [...formData.ingredients, {
-                              ingredientId: ingredient._id,
-                              name: ingredient.name,
-                              unit: ingredient.unit,
-                              quantity: 1,
-                            }]
-                          : formData.ingredients.filter((i) => i.ingredientId !== ingredient._id);
-                        setFormData({ ...formData, ingredients: updated });
+                        const checked = e.target.checked;
+                        const updatedSizes = formData.sizes.map((size) => {
+                          if (!size.selected) return size;
+
+                          const hasIng = size.ingredients.some(i => i.ingredientId === ingredient._id);
+                          let newIngredients;
+
+                          if (checked && !hasIng) {
+                            newIngredients = [
+                              ...size.ingredients,
+                              {
+                                ingredientId: ingredient._id,
+                                name: ingredient.name,
+                                unit: ingredient.unit,
+                                quantity: 1,
+                              },
+                            ];
+                          } else if (!checked && hasIng) {
+                            newIngredients = size.ingredients.filter(i => i.ingredientId !== ingredient._id);
+                          } else {
+                            newIngredients = size.ingredients;
+                          }
+
+                          return { ...size, ingredients: newIngredients };
+                        });
+
+                        setSizesConfig(prev => {
+                          const merged = prev.map(s => {
+                            const found = updatedSizes.find(x => x.size === s.size);
+                            return found || s;
+                          });
+                          setFormData({ ...formData, sizes: merged.filter(s => s.selected) });
+                          return merged;
+                        });
                       }}
                     />
                     <label className={styles.btnsSmall} htmlFor={`ing-${ingredient._id}`}>
                       {ingredient.name}
                     </label>
-                    {found && (
+                    {/* {found && (
                       <>
                         <input
                           type="number"
@@ -451,7 +594,7 @@ const handleSaveEditIngredient = async () => {
                           value={found.quantity}
                           onChange={(e) => {
                             const quantity = parseInt(e.target.value);
-                            const updated = formData.ingredients.map((i) =>
+                            const updated = formData.sizes.map((i) =>
                               i.ingredientId === ingredient._id ? { ...i, quantity } : i
                             );
                             setFormData({ ...formData, ingredients: updated });
@@ -459,7 +602,7 @@ const handleSaveEditIngredient = async () => {
                         />
                         <label className={styles.ingrediants}>{ingredient.unit}</label>
                       </>
-                    )}
+                    )} */}
                   </div>
                 );
               })}
@@ -471,7 +614,6 @@ const handleSaveEditIngredient = async () => {
                 return (
                   <div key={ingredient._id} className={styles.ingredientItem}>
                     <input
-                      hidden
                       id={`extra-${ingredient._id}`}
                       type="checkbox"
                       checked={!!found}
@@ -490,57 +632,10 @@ const handleSaveEditIngredient = async () => {
                     <label className={styles.btnsSmall} htmlFor={`extra-${ingredient._id}`}>
                       {ingredient.name}
                     </label>
-                    {/* {found && (
-                      <>
-                        <input
-                          type="number"
-                          className={styles.userInput}
-                          min="1"
-                          value={found.quantity}
-                          onChange={(e) => {
-                            const quantity = parseInt(e.target.value);
-                            const updated = formData.extras.map((i) =>
-                              i.ingredientId === ingredient._id ? { ...i, quantity } : i
-                            );
-                            setFormData({ ...formData, extras: updated });
-                          }}
-                        />
-                        <label className={styles.ingrediants}>{ingredient.unit}</label>
-                      </>
-                    )} */}
                   </div>
                 );
               })}
             </div>
-            </div>
-            <div className={styles.vertContainer}>
-              <h4>Sizes & Prices</h4>
-              {availableSizes.map(size => (
-                <div key={size} className={styles.horizContainer}>
-                  <input
-                    className={styles.itemCheckbox}
-                    type="checkbox"
-                    checked={sizes[size].selected}
-                    onChange={() =>
-                      setSizes(prev => ({
-                        ...prev,
-                        [size]: { ...prev[size], selected: !prev[size].selected },
-                      }))
-                    }
-                  />
-                  <label>{size}</label>
-                  <CurrencyInput
-                    value={sizes[size].price}
-                    onChange={(val) =>
-                      setSizes(prev => ({
-                        ...prev,
-                        [size]: { ...prev[size], price: val },
-                      }))
-                    }
-                    placeholder={`$ Price for ${size}`}
-                  />
-                </div>
-              ))}
             </div>
             <div className={styles.vertContainer}>
               <label className={styles.uploadLabel}>Upload Image</label>

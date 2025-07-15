@@ -16,7 +16,7 @@ export default function EditItemPopUp({ item, setEditPopUp, fetchDrinks }) {
     _id: item._id,
     name: item.name,
     category: item.category,
-    ingredients: item.ingredients,
+    ingredients: item.ingredients || [],
     description: item.description,
     image: item.image,
     rating: item.rating || { thumbsUp: 0, thumbsDown: 0 },
@@ -99,7 +99,18 @@ const handleAddNewIngredient = async (name) => {
     );
     setAvailableIngredients((prev) => [...prev, res.data]);
     const updated = [...formData.ingredients.split(", "), name].filter(Boolean).join(", ");
-    setFormData({ ...formData, ingredients: updated });
+    setFormData({
+      ...formData,
+      ingredients: [
+        ...formData.ingredients,
+        {
+          ingredientId: res.data._id,
+          name: res.data.name,
+          quantity: 1,
+          unit: res.data.unit || "unit"
+        }
+      ]
+    });
     setIngredientSearch("");
     toast.success(`Ingredient "${name}" added!`);
   } catch (error) {
@@ -174,6 +185,41 @@ const handleAddNewIngredient = async (name) => {
             <option value="Other">Other</option>
           </select>
         </div>
+        <textarea
+          value={formData.description}
+          onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+          placeholder="Description"
+        />
+        <div className={styles.horizWrapper} style={{ justifyContent: "flex-start", gap: "2rem", borderBottom: "1px dashed black"}}>
+        <h4>Sizes & Prices</h4>
+        {availableSizes.map((size) => (
+          <div key={size} className={styles.horizWrapper}>
+            <label>
+              <input
+                type="checkbox"
+                checked={sizes[size].selected}
+                onChange={() =>
+                  setSizes((prev) => ({
+                    ...prev,
+                    [size]: { ...prev[size], selected: !prev[size].selected },
+                  }))
+                }
+              />
+              {size}
+            </label>
+            <CurrencyInput
+              value={sizes[size].price}
+              onChange={(val) =>
+                setSizes((prev) => ({
+                  ...prev,
+                  [size]: { ...prev[size], price: val },
+                }))
+              }
+              placeholder={`$ Price for ${size}`}
+            />
+          </div>
+        ))}
+        </div>
         <div className={styles.vertContainer}>
           <label>Ingredients</label>
           <div className={styles.userInput}>
@@ -240,40 +286,6 @@ const handleAddNewIngredient = async (name) => {
                 ))}
             </div>
         </div>
-        <textarea
-          value={formData.description}
-          onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-          placeholder="Description"
-        />
-        <h4>Sizes & Prices</h4>
-        {availableSizes.map((size) => (
-          <div key={size} className={styles.horizWrapper}>
-            <label>
-              <input
-                type="checkbox"
-                checked={sizes[size].selected}
-                onChange={() =>
-                  setSizes((prev) => ({
-                    ...prev,
-                    [size]: { ...prev[size], selected: !prev[size].selected },
-                  }))
-                }
-              />
-              {size}
-            </label>
-            <CurrencyInput
-              value={sizes[size].price}
-              onChange={(val) =>
-                setSizes((prev) => ({
-                  ...prev,
-                  [size]: { ...prev[size], price: val },
-                }))
-              }
-              placeholder={`$ Price for ${size}`}
-            />
-          </div>
-        ))}
-
         <button className={styles.btns} onClick={pickImage}>
           Upload Image
         </button>

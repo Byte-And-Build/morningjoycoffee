@@ -43,8 +43,11 @@ router.post("/new", async (req, res) => {
     for (let item of items) {
       const drink = drinks.find(d => d._id.toString() === item._id);
       if (drink) {
-        for (let ing of drink.ingredients) {
-          const ingredient = await Ingredient.findById(ing.ingredientId._id);
+        const sizeData = drink.sizes.find(s => s.size === item.size);
+        if (!sizeData) continue;
+
+        for (let ing of sizeData.ingredients) {
+          const ingredient = await Ingredient.findById(ing.ingredientId);
           if (ingredient) {
             const totalUsed = ing.quantity * item.quantity;
             ingredient.inStock = Math.max(0, ingredient.inStock - totalUsed);

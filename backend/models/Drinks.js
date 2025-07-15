@@ -1,21 +1,26 @@
 const mongoose = require("mongoose");
 
-const drinkSchema = new mongoose.Schema({
-  name: String,
-  category: String,
-  price: Array,
+const SizeSubschema = new mongoose.Schema({
+  size: { type: String, required: true },
+  price: { type: Number, required: true },
   ingredients: [
     {
       ingredientId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Ingredient",
         required: true,
-},
-      name: { type: String },
-      unit: { type: String },
-      quantity: { type: Number, default: 1, }
+      },
+      name: String,
+      unit: String,
+      quantity: { type: Number, default: 1 },
     }
-  ],
+  ]
+}, { _id: false });
+
+const drinkSchema = new mongoose.Schema({
+  name: String,
+  category: String,
+  sizes: [ SizeSubschema ],
   extras: [
     {
       ingredientId: {

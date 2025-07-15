@@ -89,12 +89,14 @@ export default function InventoryPage() {
           </div>
           <div className={styles.vertContainer}>
             <p className={styles.ingrediantsInventory}>
-              {item.ingredients.map((i, idx) => {
-                const ing = i.ingredientId;
-                if (!ing || typeof ing === "string") return null; // skip if not populated yet
-                return `${ing.name} (${i.quantity})${idx < item.ingredients.length - 1 ? ', ' : ''}`;
-              })}
-            </p>
+            {item.sizes
+              ?.flatMap(s => s.ingredients.map(i => ({
+                name: i.ingredientId?.name || '',
+                quantity: i.quantity,
+              })))
+              .filter(i => i.name)
+              .map((i, idx, arr) => `${i.name} (${i.quantity})${idx < arr.length - 1 ? ', ' : ''}`)}
+          </p>
           </div>
           <pre>{formatPriceBySize(item.price)}</pre>
           <p className={styles.ingrediants}>{item.category}</p>
