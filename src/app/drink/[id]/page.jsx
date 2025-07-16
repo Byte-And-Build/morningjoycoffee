@@ -102,7 +102,15 @@ export default function DrinkDetails() {
         thumbsDown={thumbsDown}
         handleRatingUpdate={handleRatingUpdate}
       />
-      <p className={styles.drinkDetails}>{drink.description}</p>
+      {drink.sizes?.[0] && (
+        <ul className={styles.horizWrapper}>
+          {drink.sizes[0].ingredients.map((ing, idx) => (
+            <li key={idx} className={styles.drinkDetails}>
+              {ing.ingredientId?.name}
+            </li>
+          ))}
+        </ul>
+      )}
       <p className={styles.drinkDetailsPrice}>Total: ${totalPrice.toFixed(2)}</p>
 
       <div className={styles.horizContainer} style={{justifyContent: "space-around", maxWidth: "80%"}}>

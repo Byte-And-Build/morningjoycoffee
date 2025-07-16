@@ -7,34 +7,24 @@ import CurrencyInput from "../../app/components/CurrencyInput";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const availableSizes = ["Kids", "20oz", "24oz", "32oz"];
 
 export default function EditItemPopUp({ item, setEditPopUp, fetchDrinks }) {
+
+  console.log(item)
   
   const [availableIngredients, setAvailableIngredients] = useState([]);
   const [formData, setFormData] = useState({
-    _id: item._id,
-    name: item.name,
-    category: item.category,
-    ingredients: item.ingredients || [],
-    description: item.description,
-    image: item.image,
-    rating: item.rating || { thumbsUp: 0, thumbsDown: 0 },
+    _id: null,
+    name: "",
+    category: "",
+    description: "",
+    image: "",
+    extras: [],
+    sizes: [],
+    rating: { thumbsUp: 0, thumbsDown: 0 },
   });
   const [ingredientSearch, setIngredientSearch] = useState("");
   const [ingredientSuggestions, setIngredientSuggestions] = useState([]);
-  const [sizes, setSizes] = useState(() => {
-    const priceArray = item.price || [{}];
-    const priceObj = priceArray[0];
-    return availableSizes.reduce((acc, size) => {
-      const price = priceObj[size];
-      acc[size] = {
-        selected: price !== undefined,
-        price: price !== undefined ? price : 0,
-      };
-      return acc;
-    }, {});
-  });
 
   useEffect(() => {
   const fetchIngredients = async () => {
@@ -119,6 +109,20 @@ const handleAddNewIngredient = async (name) => {
   }
 };
 
+const calculateCostForSize = (size) => {
+  return size.ingredients.reduce((total, ing) => {
+    const match = availableIngredients.find(
+      (ai) =>
+        ai._id === ing.ingredientId?._id || // when full object
+        ai._id === ing.ingredientId         // when just the ID
+    );
+
+    const costPerUnit = match?.costPerUnit ?? 0;
+    return (costPerUnit * ing.quantity);
+  }, 0);
+};
+
+
   const pickImage = async () => {
     const input = document.createElement("input");
     input.type = "file";
@@ -170,11 +174,11 @@ const handleAddNewIngredient = async (name) => {
             className={styles.userInput}
             value={formData.name}
             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-            placeholder="Name"
+            placeholder={item.name}
           />
           <select
             className={styles.select}
-            value={formData.category}
+            value={item.category}
             onChange={(e) => setFormData({ ...formData, category: e.target.value })}
           >
             <option value={formData.category}>{formData.category}</option>
@@ -188,81 +192,67 @@ const handleAddNewIngredient = async (name) => {
         <textarea
           value={formData.description}
           onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-          placeholder="Description"
+          placeholder={item.description}
         />
         <div className={styles.horizWrapper} style={{ justifyContent: "flex-start", gap: "2rem", borderBottom: "1px dashed black"}}>
-        <h4>Sizes & Prices</h4>
-        {availableSizes.map((size) => (
-          <div key={size} className={styles.horizWrapper}>
-            <label>
-              <input
-                type="checkbox"
-                checked={sizes[size].selected}
-                onChange={() =>
-                  setSizes((prev) => ({
-                    ...prev,
-                    [size]: { ...prev[size], selected: !prev[size].selected },
-                  }))
-                }
-              />
-              {size}
-            </label>
-            <CurrencyInput
-              value={sizes[size].price}
-              onChange={(val) =>
-                setSizes((prev) => ({
-                  ...prev,
-                  [size]: { ...prev[size], price: val },
-                }))
-              }
-              placeholder={`$ Price for ${size}`}
-            />
-          </div>
-        ))}
+        <h4>Recipe</h4>
         </div>
         <div className={styles.vertContainer}>
-          <label>Ingredients</label>
-          <div className={styles.userInput}>
-            {formData.ingredients.map((ingredientObj, idx) => {
-            return (
-              ingredientObj && (
-                <div key={ingredientObj.ingredientId + idx} className={styles.horizWrapper} style={{ marginBottom: ".5rem" }}>
-                  <button
-                    className={styles.btnsSmall}
-                    onClick={() => {
-                      const updated = formData.ingredients.filter(i => i.ingredientId !== ingredientObj._id);
-                      setFormData({ ...formData, ingredients: updated });
-                    }}
-                  >
-                    {ingredientObj.name} ×
-                  </button>
-                  <input
-                    type="number"
-                    min={1}
-                    className={styles.userInput}
-                    value={ingredientObj.quantity}
-                    onChange={(e) => {
-                      const qty = parseInt(e.target.value);
-                      const updated = formData.ingredients.map((i) =>
-                        i.ingredientId === ingredientObj._id ? { ...i, quantity: qty } : i
-                      );
-                      setFormData({ ...formData, ingredients: updated });
-                    }}
-                  />
-                  <span style={{ whiteSpace: "nowrap" }}>/{ingredientObj.unit || "unit"}</span>
+          <div className={styles.horizWrapper} style={{justifyContent: "flex-start", overflowX: "auto"}}>
+            {item?.sizes?.map((size, idx) => {
+              const cost = calculateCostForSize(size);
+              const price = size.price;
+              const profit = price - cost;
+
+              return (
+                <div key={size + idx} className={styles.vertContainer} style={{paddingRight: ".75rem", paddingLeft: ".75rem", borderRight: "1px dashed black"}}>
+                  <button className={styles.btnsSmall}>{size.size} ×</button>
+                  {size.ingredients.map((ing, indx) => (
+                    <div key={ing.ingredientId?._id || ing.name || indx} className={styles.horizWrapper} style={{justifyContent: "space-between"}}>
+                      <span style={{flex: 1.5}}>{ing.name}</span>
+                      <input
+                        type="number"
+                        min="0"
+                        className={styles.userInput}
+                        value={ing.quantity}
+                        style={{maxWidth: "50px", minWidth: "50px"}}
+                        onChange={(e) => {
+                          const newQty = parseFloat(e.target.value);
+                          const updatedSizes = [...item.sizes];
+                          updatedSizes[idx].ingredients[indx].quantity = isNaN(newQty) ? 0 : newQty;
+                          setFormData((prev) => ({
+                            ...prev,
+                            sizes: updatedSizes,
+                          }));
+                        }}
+                      />
+                      <span style={{flex: .1}}>{ing.unit}</span>
+                    </div>
+                  ))}
+                  <span>Price: $
+                    <input className={styles.userInput} style={{flex: 1}} value={size.price.toFixed(2)}/>
+                  </span>
+                  <span style={{flex: 1}}>Cost: ${cost.toFixed(2)}</span>
+                  <span style={{flex: 1}}>Profit:
+                    <span style={{ color: profit >= 0 ? "green" : "red" }}>
+                      ${profit.toFixed(2)}
+                    </span>
+                  </span>
                 </div>
-              )
-            );
-          })}
+              );
+            })}
+          <div className={styles.vertContainer} style={{flex: 1}}>
             <input
               type="text"
               value={ingredientSearch}
               onChange={(e) => setIngredientSearch(e.target.value)}
               placeholder="Add ingredients..."
               className={styles.userInput}
+              
             />
+            </div>
           </div>
-            <div className={styles.horizWrapper} style={{flex: "1", fontSize: ".75rem"}}>
+            <div className={styles.horizWrapper} style={{flex: "1", fontSize: ".75rem", justifyContent: "flex-start", overflowX: "auto", padding: ".75rem", overflowY: "hidden"}}>
               {availableIngredients
                 .filter((ing) =>
                   ing.name.toLowerCase().includes(ingredientSearch.toLowerCase()) &&
@@ -271,35 +261,52 @@ const handleAddNewIngredient = async (name) => {
                 .map((ing) => (
                   <button
                     key={ing._id}
-                    className={styles.btnsSmall} style={{flex: "1"}}
+                    className={styles.btnsSmall}
                     onClick={() => {
-                      const updated = [
-                        ...formData.ingredients,
-                        { ingredientId: ing._id, name: ing.name, quantity: 1, unit: ing.unit }
-                      ];
-                      setFormData({ ...formData, ingredients: updated });
+                      // ✅ Add this ingredient to each size's ingredient list
+                      const updatedSizes = formData.sizes.map((size) => ({
+                        ...size,
+                        ingredients: [
+                          ...(size.ingredients || []),
+                          {
+                            ingredientId: ing._id,
+                            name: ing.name,
+                            quantity: 1,
+                            unit: ing.unit || "unit",
+                          },
+                        ],
+                      }));
+
+                      setFormData((prev) => ({
+                        ...prev,
+                        sizes: updatedSizes,
+                      }));
+
                       setIngredientSearch("");
                     }}
                   >
-                   {ing.name}
+                    {ing.name}
                   </button>
                 ))}
             </div>
         </div>
+        <div className={styles.vertContainer}>
         <button className={styles.btns} onClick={pickImage}>
           Upload Image
         </button>
 
-        {formData.image && (
-          <Image src={formData.image} alt="Preview" width={256} height={256} content="contain" className={styles.preview}/>
+        {item.image && (
+          <Image src={item?.image} alt="Preview" width={256} height={256} content="contain" className={styles.preview}/>
         )}
-
-        <button className={styles.btns} onClick={handleSave}>
-          Save
-        </button>
-        <button className={styles.btns} onClick={() => setEditPopUp(false)}>
-          Close
-        </button>
+        </div>
+          <div className={styles.horizWrapper}>
+            <button className={styles.btns} onClick={handleSave}>
+              Save
+            </button>
+            <button className={styles.btns} onClick={() => setEditPopUp(false)}>
+              Close
+            </button>
+          </div>
         </div>
       </div>
   );

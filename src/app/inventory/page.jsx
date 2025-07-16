@@ -83,20 +83,22 @@ export default function InventoryPage() {
           <div className={styles.vertContainer} onClick={() => router.push(`/drink/${item._id}`)}> 
             <p className={styles.ingrediants}>{item.name}</p>
             <Image src={item.image} width={80} height={80} alt={item.name} className="object-contain" style={{cursor: "pointer"}}/>
-            {/* <p className={styles.ingredients}>
-              Cost to Make: ${calculateCost(item.ingredients)}
-            </p> */}
           </div>
-          <div className={styles.vertContainer}>
+          <div className={styles.vertContainer} style={{flex: .3, overflowY: "auto", justifyContent: "flex-start", maxHeight: "inherit"}}>
             <p className={styles.ingrediantsInventory}>
-            {item.sizes
-              ?.flatMap(s => s.ingredients.map(i => ({
-                name: i.ingredientId?.name || '',
-                quantity: i.quantity,
-              })))
-              .filter(i => i.name)
-              .map((i, idx, arr) => `${i.name} (${i.quantity})${idx < arr.length - 1 ? ', ' : ''}`)}
-          </p>
+              {item.sizes
+                ?.flatMap(s => s.ingredients.map(i => ({
+                  name: i.ingredientId?.name || '',
+                  quantity: i.quantity,
+                  unit: i.unit,
+                })))
+                .filter(i => i.name)
+                .map((i, idx) => (
+                  <li key={idx}>
+                    {i.name} ({i.quantity} {i.unit})<br />
+                  </li>
+                ))}
+            </p>
           </div>
           <pre>{formatPriceBySize(item.price)}</pre>
           <p className={styles.ingrediants}>{item.category}</p>

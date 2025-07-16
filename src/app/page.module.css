@@ -257,6 +257,8 @@
     .inventoryWrapper {
       padding: 1.8rem 0;
       justify-content: center;
+      max-height: 180px;
+      overflow: hidden;
     }
     .userInput {
       border: none;
@@ -711,6 +713,7 @@ display: none;
   color: white;
   text-align: left;
   font-size: .625rem;
+  overflow-y: auto;
 }
 
 .ingrediants {

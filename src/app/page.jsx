@@ -73,8 +73,8 @@ export default function HomePage({ setLaoding }) {
             <img src={item.image} alt={item.name} className="drink-image" loading="lazy" />
             <div className={styles.drinkDetails}>
               <h3 className={styles.drinkName}>{item.name}</h3>
-              {item.extras?.map((extra, i) => (
-                <p key={i} className={styles.ingredients}>{extra.name}</p>
+              {item.sizes?.[0]?.ingredients?.map((ing, i) => (
+                <p key={i} className={styles.ingredients}>{ing.name}</p>
               ))}
             </div>
           </div>

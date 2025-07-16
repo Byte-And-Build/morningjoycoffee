@@ -80,20 +80,21 @@ const updateSizePrice = (idx, price) => {
 };
 
 const calculateProfit = (size, availableIngredients) => {
-  let totalCost = 0;
+  const cost = calculateCost(size, availableIngredients);
+  const sellPrice = parseFloat(size.price) || 0;
+  const profit = sellPrice - cost;
+  return profit.toFixed(2);
+};
 
+const calculateCost = (size, availableIngredients) => {
+  let totalCost = 0;
   for (const ing of size.ingredients) {
     const fullIngredient = availableIngredients.find(i => i._id === ing.ingredientId);
     if (!fullIngredient) continue;
-
     const unitCost = (parseFloat(fullIngredient.costPerUnit) / 100) * parseFloat(ing.quantity) || 0;
     totalCost += unitCost;
-    console.log(fullIngredient)
   }
-
-  const sellPrice = parseFloat(size.price) || 0;
-  const profit = sellPrice - totalCost;
-  return profit.toFixed(2);
+  return totalCost;
 };
 
 const multipliers = {
@@ -202,19 +203,24 @@ const handleSaveEditIngredient = async () => {
   };
 
   const resetForm = () => {
-    setFormData({
-      _id: null,
-      name: "",
-      category: "",
-      description: "",
-      image: "",
-      extras: [],
-      sizes: sizesConfig,
-      rating: { thumbsUp: 0, thumbsDown: 0 },
-    });
-    setSizes(Object.fromEntries(availableSizes.map(size => [size, { selected: false, price: 0 }])));
-    setExtras(Object.fromEntries(availableExtras.map(extra => [extra.name, { selected: false, price: extra.price }])));
-  };
+  setFormData({
+    _id: null,
+    name: "",
+    category: "",
+    description: "",
+    image: "",
+    extras: [],
+    sizes: [],
+    rating: { thumbsUp: 0, thumbsDown: 0 },
+  });
+
+  setSizesConfig(availableSizes.map(size => ({
+    size,
+    selected: false,
+    price: 0,
+    ingredients: []
+  })));
+};
 
   const selectedIngredients = formData.sizes?.flatMap(s => s.ingredients) || []
 
@@ -524,7 +530,7 @@ const handleSaveEditIngredient = async () => {
                       />
                     )}
                     <span className={styles.ingrediants} style={{flex:1, textAlign: "right"}}>Your Cost: </span> 
-                    <span className={styles.ingrediants}>${calculateProfit(s, availableIngredients)}</span>
+                    <span className={styles.ingrediants}>${calculateCost(s, availableIngredients).toFixed(2)}</span>
                     <span className={styles.ingrediants} style={{flex:1, textAlign: "right"}}>Profit: </span> 
                       <span className={styles.ingrediants} style={{ color: calculateProfit(s, availableIngredients) < 0 ? 'red' : 'green' }}>
                         ${calculateProfit(s, availableIngredients)}
