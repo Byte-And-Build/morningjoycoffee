@@ -18,7 +18,8 @@ const orderSchema = new mongoose.Schema(
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-    }
+    },
+    paymentIntentId: String,
   },
   { timestamps: true }
 );

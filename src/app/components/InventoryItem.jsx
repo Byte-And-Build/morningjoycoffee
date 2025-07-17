@@ -105,23 +105,6 @@ const multipliers = {
   "32oz": 2
 };
 
-const prefillSizes = (baseSize) => {
-  const base = sizesConfig.find(s => s.size === baseSize);
-  if (!base) return;
-  setSizesConfig(prev =>
-    prev.map(s => {
-      if (s.size === baseSize || !s.selected) return s;
-      return {
-        ...s,
-        ingredients: base.ingredients.map(i => ({
-          ...i,
-          quantity: Math.ceil(i.quantity * multipliers[s.size])
-        }))
-      };
-    })
-  );
-};
-
 const handleAddIngredient = async () => {
   try {
     const token = localStorage.getItem("token");
@@ -179,7 +162,7 @@ const handleSaveEditIngredient = async () => {
   const handleAddOrEdit = async () => {
     const payload = {
       ...formData,
-      sizes: sizesConfig.filter(s => s.selected).map(s => ({
+        sizes: sizesConfig.filter(s => s.selected).map(s => ({
         size: s.size,
         price: s.price,
         ingredients: s.ingredients
@@ -199,6 +182,23 @@ const handleSaveEditIngredient = async () => {
     } catch (err) {
       console.error("Save error:", err);
       toast.error("Failed :( ");
+    }
+  };
+
+  const handleDeleteIngredient = async (id) => {
+    if (!confirm("Really delete this ingredient?")) return;
+    try {
+      const token = localStorage.getItem("token");
+      await api.delete(
+        `/api/drinks/ingredients/${id}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      // drop it from local state so UI updates immediately
+      setAvailableIngredients((prev) => prev.filter((i) => i._id !== id));
+      toast.success("Ingredient deleted");
+    } catch (err) {
+      console.error("Delete ingredient error:", err);
+      toast.error("Failed to delete ingredient");
     }
   };
 
@@ -344,6 +344,7 @@ const handleSaveEditIngredient = async () => {
                         <span className={styles.ingrediants} style={{flex: 1}}>{ingredient.inStock} {ingredient.unit}{ingredient.inStock > 1 ? "(s)" : ""}</span>
                         <input type="checkbox" defaultChecked={ingredient?.isExtra ? "checked" : ""} style={{flex: .4}}/>
                         <button className={styles.btnsSmall} style={{flex: .5}} onClick={() => { setEditIngredient(ingredient); setIngrediantForm(true); }}>Edit</button>
+                        <button className={styles.btnsSmall} style={{flex: .5}} onClick={() => handleDeleteIngredient(ingredient._id)}>Delete</button>
                       </div>
                     ))}
                   </div>
@@ -475,6 +476,7 @@ const handleSaveEditIngredient = async () => {
                 <option value="Smoothie">Smoothie</option>
                 <option value="Red Bull Infusions">Red Bull Infusions</option>
                 <option value="Family Flaves">Family Flaves</option>
+                <option value="Food">Food</option>
                 <option value="Other">Other</option>
               </select>
             </div>
@@ -498,7 +500,7 @@ const handleSaveEditIngredient = async () => {
                     {s.size}
                   </label>
                   {s.ingredients.map((ing) => (
-                    <div key={ing.ingredientId} className={styles.horizWrapper} style={{flex:1, justifyContent: "flex-start", maxWidth: "150px"}}>
+                    <div key={ing.ingredientId} className={styles.horizWrapper} style={{width: "100%", justifyContent: "flex-start"}}>
                       <span className={styles.ingrediants} style={{flex:.3, textAlign: "right"}}>{ing.name}</span>
                       <input
                         className={styles.userInput}
@@ -531,7 +533,7 @@ const handleSaveEditIngredient = async () => {
                     )}
                     <span className={styles.ingrediants} style={{flex:1, textAlign: "right"}}>Your Cost: </span> 
                     <span className={styles.ingrediants}>${calculateCost(s, availableIngredients).toFixed(2)}</span>
-                    <span className={styles.ingrediants} style={{flex:1, textAlign: "right"}}>Profit: </span> 
+                    <span className={styles.ingrediants} style={{ textAlign: "right"}}>Profit: </span> 
                       <span className={styles.ingrediants} style={{ color: calculateProfit(s, availableIngredients) < 0 ? 'red' : 'green' }}>
                         ${calculateProfit(s, availableIngredients)}
                       </span>
@@ -629,6 +631,7 @@ const handleSaveEditIngredient = async () => {
                               ingredientId: ingredient._id,
                               name: ingredient.name,
                               unit: ingredient.unit,
+                              extraPrice: ingredient.extraPrice,
                               quantity: 1,
                             }]
                           : formData.extras?.filter((i) => i.ingredientId !== ingredient._id);

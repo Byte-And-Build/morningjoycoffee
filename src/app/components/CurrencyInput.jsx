@@ -42,6 +42,7 @@ const CurrencyInput = ({ value, onChange, placeholder }) => {
         placeholder={placeholder?.replace("$", "")}
         className={styles.userInput}
         inputMode="decimal"
+        style={{width: "75px", minWidth: "75px"}}
       />
       
     </div>

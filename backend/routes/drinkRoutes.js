@@ -9,7 +9,7 @@ const router = express.Router();
 // Get all drinks
 router.get("/", async (req, res) => {
   try {
-    const drinks = await Drink.find().populate("sizes.ingredients.ingredientId")
+    const drinks = await Drink.find().populate("sizes.ingredients.ingredientId").populate("extras.ingredientId");
     res.status(200).json(drinks);
   } catch (error) {
     console.error(error);
@@ -53,7 +53,7 @@ router.get("/supplies", protect, requireRole(["Admin", "Employee"]), async (req,
 router.get("/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const drink = await Drink.findById(id).populate("sizes.ingredients.ingredientId");
+    const drink = await Drink.findById(id).populate("sizes.ingredients.ingredientId").populate("extras.ingredientId");
     if (!drink) {
       return res.status(404).json({ message: "Drink not found" });
     }
@@ -104,6 +104,25 @@ router.post("/addIngredient", protect, requireRole(["Admin"]), async (req, res) 
     res.status(500).json({ message: "Failed to add ingredient" });
   }
 });
+
+router.delete(
+  "/ingredients/:id",
+  protect,
+  requireRole(["Admin"]),
+  async (req, res) => {
+    try {
+      const { id } = req.params;
+      const deleted = await Ingredient.findByIdAndDelete(id);
+      if (!deleted) {
+        return res.status(404).json({ message: "Ingredient not found" });
+      }
+      res.status(200).json({ message: "Ingredient deleted", _id: id });
+    } catch (error) {
+      console.error("Delete ingredient error:", error);
+      res.status(500).json({ message: "Failed to delete ingredient" });
+    }
+  }
+);
 
 
 router.post("/addInventory", protect, requireRole(["Admin"]), async (req, res) => {

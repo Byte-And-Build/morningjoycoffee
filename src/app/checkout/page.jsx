@@ -43,6 +43,7 @@ function CheckoutForm({ clientSecret, userRewards, setUserRewards, redeemReward,
         {
           user: user?._id || "Guest",
           customer: customerName || "Guest",
+          amount: paymentIntent.amount,
           items: cart.map((item) => {
             const opts = item.customOptions?.map((opt) => opt.name).join(", ");
             return `${item.quantity}x ${item.name}${opts ? ` (${opts})` : ""}`;

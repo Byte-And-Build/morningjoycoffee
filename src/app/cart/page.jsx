@@ -35,10 +35,10 @@ export default function CartPage() {
                 />
                 <div className={styles.cartDetails}>
                   <span className={styles.itemNameCart}>{item.name}</span>
-                  <div className={styles.vertContainer}>
+                  <div className={styles.vertContainer} style={{alignItems: "baseline"}}>
                   {item.customOptions?.length > 0 && (
                     <ul>
-                      <li className={styles.itemDetails}>Size: {item.selectedSize}</li>
+                      <li className={styles.itemDetails}>Size: {item.selectedSize}  (${item.selectedPrice.toFixed(2)})</li>
                       {item.customOptions.map((opt, i) => (
                         <li key={i} className={styles.itemDetails}>
                           - {opt.name} (+${opt.price?.toFixed(2) || "0.00"})

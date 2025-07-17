@@ -57,17 +57,17 @@ export default function InventoryPage() {
     }, 0).toFixed(2);
   };
 
-  const formatPriceBySize = (priceArray) => {
-    const sizes = ["Kids", "20oz", "24oz", "32oz"];
-    const priceObj = Array.isArray(priceArray) ? priceArray[0] : {};
+  const formatPriceBySize = (sizesArray = []) => {
+  if (!Array.isArray(sizesArray)) return "No sizes";
 
-    return sizes
-      .map((size) => {
-        const price = priceObj?.[size];
-        return `${size}: ${price ? `$${Number(price).toFixed(2)}` : "n/a"}`;
-      })
-      .join("\n");
-  };
+  return sizesArray
+    .map((s) => {
+      const price = s.price;
+      console.log(price)
+      return `${s.size}: ${price ? `$${Number(price).toFixed(2)}` : "n/a"}`;
+    })
+    .join("\n");
+};
 
   return (
     <div className={styles.page}>
@@ -75,7 +75,7 @@ export default function InventoryPage() {
       <div className={styles.horizContainer}>
         <Image src={Logo} width={80} height={80} alt="Logo" content="contain" />
         <h1 className={styles.heading}>Inventory</h1>
-        < InventoryItem />
+        <InventoryItem refreshDrinks={fetchDrinks} />
       </div>
       < div className={styles.vertContainer}>
       {drinks.map((item) => (
@@ -84,23 +84,23 @@ export default function InventoryPage() {
             <p className={styles.ingrediants}>{item.name}</p>
             <Image src={item.image} width={80} height={80} alt={item.name} className="object-contain" style={{cursor: "pointer"}}/>
           </div>
-          <div className={styles.vertContainer} style={{flex: .3, overflowY: "auto", justifyContent: "flex-start", maxHeight: "inherit"}}>
-            <p className={styles.ingrediantsInventory}>
-              {item.sizes
-                ?.flatMap(s => s.ingredients.map(i => ({
-                  name: i.ingredientId?.name || '',
-                  quantity: i.quantity,
-                  unit: i.unit,
-                })))
-                .filter(i => i.name)
-                .map((i, idx) => (
-                  <li key={idx}>
-                    {i.name} ({i.quantity} {i.unit})<br />
-                  </li>
-                ))}
-            </p>
-          </div>
-          <pre>{formatPriceBySize(item.price)}</pre>
+          <div className={styles.vertContainer} style={{ flex: .3, overflowY: "auto", justifyContent: "flex-start", maxHeight: "inherit" }}>
+              {item.sizes?.map((s) => (
+                <div key={s.size}>
+                  <p className={styles.ingrediantsInventory} style={{ fontWeight: 'bold' }}>
+                    {s.size}
+                  </p>
+                  <ul className={styles.ingrediantsInventory} style={{ paddingLeft: '1rem' }}>
+                    {s.ingredients.map((ing, idx) => (
+                      <li key={idx}>
+                        {ing.ingredientId?.name || ing.name} ({ing.quantity} {ing.unit})
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+          <pre>{formatPriceBySize(item.sizes)}</pre>
           <p className={styles.ingrediants}>{item.category}</p>
           <div className={styles.vertContainer}>
             <div className={styles.horizContainer}>

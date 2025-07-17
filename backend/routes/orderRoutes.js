@@ -37,29 +37,41 @@ router.post("/new", async (req, res) => {
 
     // Fetch all involved drinks
     const drinkIds = items.map(item => item._id);
-    const drinks = await Drink.find({ _id: { $in: drinkIds } }).populate("ingredients.ingredientId");
+    const drinks = await Drink.find({ _id: { $in: drinkIds } }).populate("sizes.ingredients.ingredientId");
 
     // Deduct ingredients
     for (let item of items) {
-      const drink = drinks.find(d => d._id.toString() === item._id);
-      if (drink) {
-        const sizeData = drink.sizes.find(s => s.size === item.size);
-        if (!sizeData) continue;
+  const drink = drinks.find(d => d._id.toString() === item._id);
+  if (!drink) continue;
 
-        for (let ing of sizeData.ingredients) {
-          const ingredient = await Ingredient.findById(ing.ingredientId);
-          if (ingredient) {
-            const totalUsed = ing.quantity * item.quantity;
-            ingredient.inStock = Math.max(0, ingredient.inStock - totalUsed);
-            await ingredient.save();
-          }
-        }
-      }
+  // 1) Deduct the base recipe:
+  const sizeData = drink.sizes.find(s => s.size === item.size);
+  if (sizeData) {
+    for (let ing of sizeData.ingredients) {
+      const ingredient = await Ingredient.findById(ing.ingredientId);
+      if (!ingredient) continue;
+      ingredient.inStock = Math.max(0, ingredient.inStock - ing.quantity * item.quantity);
+      await ingredient.save();
     }
+  }
+
+  // 2) Deduct any extras the customer chose:
+  if (Array.isArray(item.extras)) {
+    for (let extraName of item.extras) {
+      const ingredient = await Ingredient.findOne({ name: extraName });
+      if (!ingredient) continue;
+      // assume extras always 1 unit per drink:
+      ingredient.inStock = Math.max(0, ingredient.inStock - item.quantity);
+      await ingredient.save();
+    }
+  }
+}
+
 
     const newOrder = new Order({
       customer,
       items,
+      amount,
       status: "Queued",
       createdAt: new Date(),
       user: user || "Guest",

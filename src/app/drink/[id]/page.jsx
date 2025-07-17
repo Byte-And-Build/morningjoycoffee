@@ -57,7 +57,7 @@ export default function DrinkDetails() {
   if (!drink?.extras) return [];
   return drink.extras.map((ing) => ({
     name: ing.name,
-    price: ing.ingredientId?.costPerUnit || 0, // you may want to store costPerUnit at top-level
+    price: ing.ingredientId?.extraPrice || 0,
   }));
 }, [drink]);
 
@@ -103,42 +103,50 @@ export default function DrinkDetails() {
         handleRatingUpdate={handleRatingUpdate}
       />
       {drink.sizes?.[0] && (
-        <ul className={styles.horizWrapper}>
-          {drink.sizes[0].ingredients.map((ing, idx) => (
-            <li key={idx} className={styles.drinkDetails}>
-              {ing.ingredientId?.name}
-            </li>
-          ))}
-        </ul>
+        <div className={styles.horizWrapper} style={{ flexWrap: "wrap" }}>
+          <p className={styles.ingrediants}>
+            {drink.sizes[0].ingredients
+              .map((ing) => ing.ingredientId?.name)
+              .filter(Boolean)
+              .join("  •  ")}
+          </p>
+        </div>
       )}
       <p className={styles.drinkDetailsPrice}>Total: ${totalPrice.toFixed(2)}</p>
 
       <div className={styles.horizContainer} style={{justifyContent: "space-around", maxWidth: "80%"}}>
-        {drink.sizes.map(({ size, price }) => (
-          <button
-            key={size}
-            onClick={() => {
-              setSelectedSize(size);
-              setSelectedPrice(parseFloat(price));
-            }}
-            className={`${selectedSize === size ? styles.selectedSize : styles.sizeBtns}`}
-          >
-            {size}
-          </button>
-        ))}
+        {Array.isArray(drink.sizes) && drink.sizes.length > 1 && (
+          drink.sizes.map(({ size, price }) => (
+            <button
+              key={size}
+              onClick={() => {
+                setSelectedSize(size);
+                setSelectedPrice(parseFloat(price));
+              }}
+              className={`${selectedSize === size ? styles.selectedSize : styles.sizeBtns}`}
+            >
+              {size}
+            </button>
+          ))
+        )}
       </div>
-
+      {Array.isArray(customOptions) && customOptions.length > 0 && (
       <div className={styles.optionContainer}>
         {customOptions.map((option) => (
           <button
             key={option.name}
             onClick={() => toggleOption(option)}
-            className={`${selectedOptions.some(o => o.name === option.name) ? `${styles.optionBtnsSelected}` : `${styles.optionBtns}` }`}
+            className={
+              selectedOptions.some(o => o.name === option.name)
+                ? styles.optionBtnsSelected
+                : styles.optionBtns
+            }
           >
             {option.name} (+${option.price.toFixed(2)})
           </button>
         ))}
       </div>
+      )}
       <div className={styles.horizContainer}>
         <div className={styles.qtyContainer}>
           <div style={{display: "flex",}}>

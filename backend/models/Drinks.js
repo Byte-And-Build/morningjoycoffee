@@ -30,6 +30,7 @@ const drinkSchema = new mongoose.Schema({
 },
       name: { type: String },
       unit: { type: String },
+      extraPrice: { type: Number },
       quantity: { type: Number, default: 1, }
     }
   ],

@@ -63,6 +63,22 @@ export default function EditItemPopUp({ item, setEditPopUp, fetchDrinks }) {
   };
 }, []);
 
+useEffect(() => {
+  if (item) {
+    setFormData({
+      _id: item._id,
+      name: item.name,
+      category: item.category,
+      description: item.description,
+      image: item.image,
+      extras: item.extras || [],
+      sizes: item.sizes || [],
+      rating: item.rating || { thumbsUp: 0, thumbsDown: 0 },
+      ingredients: item.ingredients || []
+    });
+  }
+}, [item]);
+
   useEffect(() => {
   if (ingredientSearch.length >= 3) {
     const matches = availableIngredients.filter((ing) =>
@@ -138,33 +154,42 @@ const calculateCostForSize = (size) => {
     input.click();
   };
 
+  const deleteSize = (sizeToRemove) => {
+  setFormData((prev) => ({
+    ...prev,
+    sizes: prev.sizes.filter((s) => s.size !== sizeToRemove),
+  }));
+};
+
   const handleSave = async () => {
-    const token = localStorage.getItem("token");
+  const token = localStorage.getItem("token");
 
-    const selectedPrices = Object.entries(sizes)
-      .filter(([_, data]) => data.selected)
-      .reduce((acc, [key, data]) => {
-        acc[key] = data.price;
-        return acc;
-      }, {});
-
-    const payload = {
-      ...formData,
-      price: [selectedPrices],
-    };
-
-    try {
-      await api.post("api/drinks/editInventory", payload, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      toast.success("Drink updated!");
-      setEditPopUp(false);
-      fetchDrinks();
-    } catch (err) {
-      console.error("Update error", err);
-      alert("Failed to update drink.");
-    }
+  const payload = {
+    ...formData,
+    sizes: formData.sizes.map((s) => ({
+      size: s.size,
+      price: parseFloat(s.price),
+      ingredients: s.ingredients.map((i) => ({
+        ingredientId: typeof i.ingredientId === "object" ? i.ingredientId._id : i.ingredientId,
+        name: i.name,
+        unit: i.unit,
+        quantity: i.quantity
+      }))
+    })),
   };
+
+  try {
+    await api.post("api/drinks/editInventory", payload, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    toast.success("Drink updated!");
+    setEditPopUp(false);
+    fetchDrinks();
+  } catch (err) {
+    console.error("Update error", err);
+    alert("Failed to update drink.");
+  }
+};
 
   return (
     <div className={styles.overlay} onClick={() => setEditPopUp(false)}>
@@ -181,7 +206,7 @@ const calculateCostForSize = (size) => {
             value={item.category}
             onChange={(e) => setFormData({ ...formData, category: e.target.value })}
           >
-            <option value={formData.category}>{formData.category}</option>
+            <option value={formData.category}>{item.category}</option>
             <option value="Specialty Drink">Specialty Drink</option>
             <option value="Coffee">Coffee</option>
             <option value="Tea">Tea</option>
@@ -199,14 +224,14 @@ const calculateCostForSize = (size) => {
         </div>
         <div className={styles.vertContainer}>
           <div className={styles.horizWrapper} style={{justifyContent: "flex-start", overflowX: "auto"}}>
-            {item?.sizes?.map((size, idx) => {
+            {formData.sizes.map((size, idx) => {
               const cost = calculateCostForSize(size);
               const price = size.price;
               const profit = price - cost;
 
               return (
                 <div key={size + idx} className={styles.vertContainer} style={{paddingRight: ".75rem", paddingLeft: ".75rem", borderRight: "1px dashed black"}}>
-                  <button className={styles.btnsSmall}>{size.size} ×</button>
+                  <button className={styles.btnsSmall} onClick={() => deleteSize(size.size)}>{size.size} ×</button>
                   {size.ingredients.map((ing, indx) => (
                     <div key={ing.ingredientId?._id || ing.name || indx} className={styles.horizWrapper} style={{justifyContent: "space-between"}}>
                       <span style={{flex: 1.5}}>{ing.name}</span>
@@ -218,7 +243,7 @@ const calculateCostForSize = (size) => {
                         style={{maxWidth: "50px", minWidth: "50px"}}
                         onChange={(e) => {
                           const newQty = parseFloat(e.target.value);
-                          const updatedSizes = [...item.sizes];
+                          const updatedSizes = [...formData.sizes];
                           updatedSizes[idx].ingredients[indx].quantity = isNaN(newQty) ? 0 : newQty;
                           setFormData((prev) => ({
                             ...prev,
@@ -229,8 +254,21 @@ const calculateCostForSize = (size) => {
                       <span style={{flex: .1}}>{ing.unit}</span>
                     </div>
                   ))}
-                  <span>Price: $
-                    <input className={styles.userInput} style={{flex: 1}} value={size.price.toFixed(2)}/>
+                  <span style={{flex: 1}}>Price: $
+                    <input
+                    type="decimal"
+                      className={styles.userInput}
+                      style={{ flex: 1 }}
+                      value={size.price.toFixed(2)}
+                      onChange={(e) => {
+                        const updatedSizes = [...formData.sizes];
+                        updatedSizes[idx].price = parseFloat(e.target.value) || 0;
+                        setFormData((prev) => ({
+                          ...prev,
+                          sizes: updatedSizes,
+                        }));
+                      }}
+                    />
                   </span>
                   <span style={{flex: 1}}>Cost: ${cost.toFixed(2)}</span>
                   <span style={{flex: 1}}>Profit:

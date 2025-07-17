@@ -26,20 +26,22 @@ export default function OrderPage() {
   if (loading) return <p>Loading...</p>;
   if (!order) return <p>Order not found.</p>;
 
+  console.log(order)
+
   return (
     <div className={styles.page}>
       <h2 className={styles.heading}>Order Status</h2>
-      <div className={styles.horizWrapper}>
-        <div className={styles.horizWrapper} style={{flex: 1}}>
-            <ul className={styles.ingrediants}>
+      <div className={styles.vertContainerInset}>
+        <div className={styles.vertContainer} style={{flex: 1, paddingBottom: "3rem"}}>
+            <span className={styles.ingrediants}>
               {order.items.map((item, idx) => (
-                <li key={idx}>{item}</li>
+                <p key={idx}>{item}</p>
               ))}
-            </ul>
+            </span>
           </div>
           <div className={styles.vertContainer} style={{gap: ".5rem", alignItems: "center", flex: .75}}>
               <div className={styles.itemDetails} style={{textAlign: "center"}}>Created At: {new Date(order.createdAt).toLocaleString()}</div>
-              <div className={order.status === "Complete!" ? `${styles.userInput} ${styles.statusComplete}` : `${styles.userInput}`} style={{textAlign: "center"}}>{order.status}</div>
+              <div className={` ${styles.userInput} ${order.status === "Complete!" ? styles.statusComplete : ""} ${order.status === "Making" ? styles.statusMaking : ""} `} style={{textAlign: "center"}}>{order.status}</div>
               <div className={styles.itemDetails} style={{textAlign: "center"}}>Updated At: {new Date(order.updatedAt).toLocaleString()}</div>
           </div>
         
