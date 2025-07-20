@@ -9,7 +9,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "heroku-postbuild": "npm install && npm run build"
+    "postinstall": "next build"
   },
   "dependencies": {
     "@stripe/react-stripe-js": "^3.7.0",
