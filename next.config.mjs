@@ -8,6 +8,15 @@ const nextConfig = {
       },
     ];
   },
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'bytenbuild.s3.us-east-2.amazonaws.com',
+        pathname: '**',
+      },
+    ],
+  },
 };
 
 export default nextConfig;

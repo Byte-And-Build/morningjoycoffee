@@ -49,7 +49,8 @@ const [formData, setFormData] = useState({
       try {
         const response = await axios.get("/api/drinks/ingredients");
         const data = response.data || [];
-        setAvailableIngredients(data);
+        const sortedData = data.sort((a, b) => a.name.localeCompare(b.name));
+          setAvailableIngredients(sortedData);
       } catch (err) {
         console.error("Error fetching ingredients:", err);
       }
@@ -58,7 +59,7 @@ const [formData, setFormData] = useState({
   return () => (document.body.style.overflow = "");
 }, [showForm]);
 
-  const regularIngredients = availableIngredients.filter(i => !i.isExtra);
+  const regularIngredients = availableIngredients;
   const extraIngredients = availableIngredients.filter(i => i.isExtra);
 
 const toggleSize = (idx) => {
@@ -95,14 +96,6 @@ const calculateCost = (size, availableIngredients) => {
     totalCost += unitCost;
   }
   return totalCost;
-};
-
-const multipliers = {
-  "Kids": 0.5,
-  "16oz": 1,
-  "20oz": 1.25,
-  "24oz": 1.5,
-  "32oz": 2
 };
 
 const handleAddIngredient = async () => {
@@ -149,15 +142,70 @@ const handleSaveEditIngredient = async () => {
   }
 };
 
-  const pickImage = (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
+  const pickImage = async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  const token = localStorage.getItem("token");
+  if (!token) {
+    toast.error("You must be logged in to upload images.");
+    return;
+  }
+
+  const imageName = `${formData.name.replace(/\s+/g, "_")}_${Date.now()}.webp`;
+  const webpBlob = await convertToWebp(file);
+
+  const presigned = await api.post(
+    "/api/drinks/upload/presign", // or `/api/upload/presign` if you moved it out
+    {
+      fileName: imageName,
+      fileType: "image/webp",
+      clientFolder: "morningjoycoffee",
+    },
+    {
+      headers: { Authorization: `Bearer ${token}` },
+    }
+  );
+
+  await fetch(presigned.data.url, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "image/webp",
+    },
+    body: webpBlob,
+  });
+
+  const imageUrl = presigned.data.url.split("?")[0];
+  setFormData({ ...formData, image: imageUrl });
+};
+
+const convertToWebp = async (file) => {
+  return new Promise((resolve) => {
+    const img = new Image();
     const reader = new FileReader();
-    reader.onloadend = () => {
-      setFormData({ ...formData, image: reader.result });
+
+    reader.onload = (e) => {
+      img.src = e.target.result;
     };
+
+    img.onload = () => {
+      const canvas = document.createElement("canvas");
+      canvas.width = img.width;
+      canvas.height = img.height;
+
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(img, 0, 0);
+
+      canvas.toBlob(
+        (blob) => resolve(blob),
+        "image/webp",
+        0.8 // quality
+      );
+    };
+
     reader.readAsDataURL(file);
-  };
+  });
+};
 
   const handleAddOrEdit = async () => {
     const payload = {
@@ -221,8 +269,6 @@ const handleSaveEditIngredient = async () => {
     ingredients: []
   })));
 };
-
-  const selectedIngredients = formData.sizes?.flatMap(s => s.ingredients) || []
 
   return (
     <>
@@ -593,24 +639,6 @@ const handleSaveEditIngredient = async () => {
                     <label className={styles.btnsSmall} htmlFor={`ing-${ingredient._id}`}>
                       {ingredient.name}
                     </label>
-                    {/* {found && (
-                      <>
-                        <input
-                          type="number"
-                          className={styles.userInput}
-                          min="1"
-                          value={found.quantity}
-                          onChange={(e) => {
-                            const quantity = parseInt(e.target.value);
-                            const updated = formData.sizes.map((i) =>
-                              i.ingredientId === ingredient._id ? { ...i, quantity } : i
-                            );
-                            setFormData({ ...formData, ingredients: updated });
-                          }}
-                        />
-                        <label className={styles.ingrediants}>{ingredient.unit}</label>
-                      </>
-                    )} */}
                   </div>
                 );
               })}

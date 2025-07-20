@@ -139,20 +139,83 @@ const calculateCostForSize = (size) => {
 };
 
 
-  const pickImage = async () => {
-    const input = document.createElement("input");
-    input.type = "file";
-    input.accept = "image/*";
-    input.onchange = async (e) => {
-      const file = e.target.files[0];
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setFormData({ ...formData, image: reader.result });
-      };
-      reader.readAsDataURL(file);
-    };
-    input.click();
+ const pickImage = async () => {
+  const input = document.createElement("input");
+  input.type = "file";
+  input.accept = "image/*";
+  input.onchange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const token = localStorage.getItem("token");
+    if (!token) {
+      toast.error("You must be logged in to upload images.");
+      return;
+    }
+
+    const imageName = `${formData.name.replace(/\s+/g, "_")}_${Date.now()}.webp`;
+    const webpBlob = await convertToWebp(file);
+
+    try {
+      const presigned = await api.post(
+        "/api/drinks/upload/presign", // or /api/upload/presign if you split it out
+        {
+          fileName: imageName,
+          fileType: "image/webp",
+          clientFolder: "morningjoycoffee",
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      await fetch(presigned.data.url, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "image/webp",
+        },
+        body: webpBlob,
+      });
+
+      const imageUrl = presigned.data.url.split("?")[0];
+      setFormData((prev) => ({ ...prev, image: imageUrl }));
+      toast.success("Image uploaded!");
+    } catch (err) {
+      console.error("Upload failed:", err);
+      toast.error("Image upload failed.");
+    }
   };
+
+  input.click();
+};
+
+const convertToWebp = async (file) => {
+  return new Promise((resolve) => {
+    const img = new window.Image();
+    const reader = new FileReader();
+
+    reader.onload = (e) => {
+      img.src = e.target.result;
+    };
+
+    img.onload = () => {
+      const canvas = document.createElement("canvas");
+      canvas.width = img.width;
+      canvas.height = img.height;
+
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(img, 0, 0);
+
+      canvas.toBlob(
+        (blob) => resolve(blob),
+        "image/webp",
+        0.8
+      );
+    };
+
+    reader.readAsDataURL(file);
+  });
+};
 
   const deleteSize = (sizeToRemove) => {
   setFormData((prev) => ({
@@ -333,8 +396,8 @@ const calculateCostForSize = (size) => {
           Upload Image
         </button>
 
-        {item.image && (
-          <Image src={item?.image} alt="Preview" width={256} height={256} content="contain" className={styles.preview}/>
+        {formData.image && (
+          <Image src={formData.image} alt="Preview" width={256} height={256} style={{ objectFit: "contain" }} className={styles.preview} onError={(e) => e.currentTarget.style.display = 'none'}/>
         )}
         </div>
           <div className={styles.horizWrapper}>

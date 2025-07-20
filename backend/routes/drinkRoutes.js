@@ -3,8 +3,20 @@ const Drink = require("../models/Drinks");
 const Ingredient = require("../models/Ingredient");
 const { protect } = require("./userRoutes");
 const requireRole = require("../middleware/requireRole");
+const { S3Client, PutObjectCommand } = require("@aws-sdk/client-s3");
+const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
+const dotenv = require("dotenv");
+dotenv.config();
 
 const router = express.Router();
+
+const s3Client = new S3Client({
+  region: "us-east-2",
+  credentials: {
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  },
+});
 
 // Get all drinks
 router.get("/", async (req, res) => {
@@ -46,6 +58,28 @@ router.get("/supplies", protect, requireRole(["Admin", "Employee"]), async (req,
   } catch (err) {
     console.error("Failed to get supplies:", err);
     res.status(500).json({ message: "Failed to fetch supplies" });
+  }
+});
+
+router.post("/upload/presign", protect, async (req, res) => {
+  const { fileName, fileType, clientFolder } = req.body;
+
+  console.log(req.body)
+
+  const key = `clients/${clientFolder}/images/${fileName}`;
+
+  const command = new PutObjectCommand({
+    Bucket: "bytenbuild",
+    Key: key,
+    ContentType: fileType,
+  });
+
+  try {
+    const uploadUrl = await getSignedUrl(s3Client, command, { expiresIn: 60 });
+    res.send({ url: uploadUrl });
+  } catch (err) {
+    console.error("Presign URL error:", err);
+    res.status(500).json({ message: "Could not generate upload URL" });
   }
 });
 
