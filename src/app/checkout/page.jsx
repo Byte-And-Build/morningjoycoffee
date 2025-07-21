@@ -37,11 +37,11 @@ function CheckoutForm({ clientSecret, userRewards, setUserRewards, redeemReward,
   } else if (paymentIntent?.status === "succeeded") {
     try {
       const token = localStorage.getItem("token");
-
+        
       const { data: savedOrder } = await api.post(
         "/api/orders/new",
         {
-          user: user?._id || "Guest",
+          user: user?._id || undefined,
           customer: customerName || "Guest",
           amount: paymentIntent.amount,
           items: cart.map((item) => {
@@ -53,7 +53,7 @@ function CheckoutForm({ clientSecret, userRewards, setUserRewards, redeemReward,
           headers: token ? { Authorization: `Bearer ${token}` } : {},
         }
       );
-
+        console.log(savedOrder)
       toast.success("Payment successful!");
       clearCart();
 

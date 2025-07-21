@@ -33,7 +33,7 @@ router.get("/", async (req, res) => {
 
 router.post("/new", async (req, res) => {
   try {
-    const { customer, items, user } = req.body;
+    const { customer, items, user, amount } = req.body;
 
     // Fetch all involved drinks
     const drinkIds = items.map(item => item._id);
@@ -43,6 +43,7 @@ router.post("/new", async (req, res) => {
     for (let item of items) {
   const drink = drinks.find(d => d._id.toString() === item._id);
   if (!drink) continue;
+  conosle.log("Drink", drink)
 
   // 1) Deduct the base recipe:
   const sizeData = drink.sizes.find(s => s.size === item.size);
@@ -74,7 +75,7 @@ router.post("/new", async (req, res) => {
       amount,
       status: "Queued",
       createdAt: new Date(),
-      user: user || "Guest",
+      user: user || undefined,
     });
 
     const savedOrder = await newOrder.save();

@@ -540,7 +540,6 @@ const convertToWebp = async (file) => {
                   <label>
                     <input
                       type="checkbox"
-                      checked={s.selected}
                       onChange={() => toggleSize(idx)}
                     />{" "}
                     {s.size}

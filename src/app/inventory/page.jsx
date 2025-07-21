@@ -82,7 +82,9 @@ export default function InventoryPage() {
         <div key={item._id} className={styles.inventoryWrapper}>
           <div className={styles.vertContainer} onClick={() => router.push(`/drink/${item._id}`)}> 
             <p className={styles.ingrediants}>{item.name}</p>
+            {item.image && (
             <Image src={item.image} width={80} height={80} alt={item.name} className="object-contain" style={{cursor: "pointer"}}/>
+            )}
           </div>
           <div className={styles.vertContainer} style={{ flex: .3, overflowY: "auto", justifyContent: "flex-start", maxHeight: "inherit" }}>
               {item.sizes?.map((s) => (

@@ -70,7 +70,9 @@ export default function HomePage({ setLaoding }) {
               <span className={styles.ratingText}>{item.rating?.thumbsUp || 0}</span>
               <FaThumbsUp size={16} className={styles.ratingText} />
             </div>
-            <img src={item.image} alt={item.name} className="drink-image" loading="lazy" />
+            {item.image && (
+            <Image src={item.image} alt={item.name} className="drink-image" loading="lazy" />
+            )}
             <div className={styles.drinkDetails}>
               <h3 className={styles.drinkName}>{item.name}</h3>
               {item.sizes?.[0]?.ingredients?.map((ing, i) => (
