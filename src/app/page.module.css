@@ -570,7 +570,8 @@ display: none;
   border-radius: 10px;
   /* border: 2px dashed rgb(236, 195, 11); */
   padding: .8rem;
-  width: 48%;
+  flex: 1;
+  flex-grow: .13;
   max-width: 12rem;
   position: relative;
   cursor: pointer;
