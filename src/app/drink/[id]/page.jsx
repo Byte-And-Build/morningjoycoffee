@@ -20,6 +20,7 @@ export default function DrinkDetails() {
   const [selectedOptions, setSelectedOptions] = useState([]);
   const [thumbsUp, setThumbsUp] = useState(0);
   const [thumbsDown, setThumbsDown] = useState(0);
+  const BASE_INGREDIENTS = ["Water", "Ice"];
 
   useEffect(() => {
     if (!id) return;
@@ -107,7 +108,7 @@ export default function DrinkDetails() {
           <p className={styles.ingrediants}>
             {drink.sizes[0].ingredients
               .map((ing) => ing.ingredientId?.name)
-              .filter(Boolean)
+              .filter(name => name && !BASE_INGREDIENTS.includes(name))
               .join("  •  ")}
           </p>
         </div>

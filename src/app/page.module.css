@@ -187,7 +187,7 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: .625rem;
+  gap: .33rem;
   align-items: center;
   flex: 1;
   flex-grow: 0;
@@ -644,11 +644,11 @@ display: none;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  gap: .625rem;
+  gap: 1.5rem;
   border-bottom: 1px dashed black;
   padding-bottom: .625rem;
   align-items: center;
-  width: 95%;
+  width: 100%;
 }
 
 .horizWrapper {
@@ -848,7 +848,6 @@ display: none;
               3px 3px 15px var(--selectedInsetBottom);
   border-radius: 1rem;
   justify-content: center;
-  margin: 1.5rem;
 }
 
 .punchSlot {

@@ -5,14 +5,15 @@ import axios from "axios";
 import styles from "./page.module.css";
 import { FaThumbsUp } from "react-icons/fa";
 import Image from "next/image";
-import Logo from '../app/assets/Logo.png';
-import Ingredient from "../../backend/models/Ingredient";
+import Logo from '../app/assets/Logo.webp';
 
-export default function HomePage({ setLaoding }) {
+export default function HomePage( ) {
   const router = useRouter();
   const [drinks, setDrinks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState("All");
+
+  const BASE_INGREDIENTS = ["Water", "Ice"];
 
   useEffect(() => {
     const fetchDrinks = async () => {
@@ -42,7 +43,7 @@ export default function HomePage({ setLaoding }) {
   )
 
   return (
-    <div className={styles.page}>
+    <div className={styles.page} style={{justifyContent: "flex-start"}}>
       <div className={styles.vertContainer}>
         <div className={styles.horizWrapper}>
           <Image src={Logo} width={75} height={75} alt="Logo" content="contain" />
@@ -71,13 +72,15 @@ export default function HomePage({ setLaoding }) {
               <FaThumbsUp size={16} className={styles.ratingText} />
             </div>
             {item.image && (
-            <Image src={item.image} alt={item.name} className="drink-image" loading="lazy" />
+            <Image src={item.image} alt={item.name} width={150} height={150}  className="drink-image" loading="lazy" />
             )}
             <div className={styles.drinkDetails}>
               <h3 className={styles.drinkName}>{item.name}</h3>
-              {item.sizes?.[0]?.ingredients?.map((ing, i) => (
-                <p key={i} className={styles.ingredients}>{ing.name}</p>
-              ))}
+              {item.sizes?.[0]?.ingredients
+                ?.filter(ing => ing?.name && !["Water", "Ice"].includes(ing.name))
+                .map((ing, i) => (
+                  <p key={i} className={styles.ingredients}>{ing.name}</p>
+                ))}
             </div>
           </div>
         ))}

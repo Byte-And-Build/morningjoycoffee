@@ -32,12 +32,14 @@ export default function OrderPage() {
     <div className={styles.page}>
       <h2 className={styles.heading}>Order Status</h2>
       <div className={styles.vertContainerInset}>
-        <div className={styles.vertContainer} style={{flex: 1, paddingBottom: "3rem"}}>
+        <div className={styles.vertContainer} style={{flex: 1, paddingBottom: "1rem"}}>
+          <span>For: {order?.customer}</span>
             <span className={styles.ingrediants}>
               {order.items.map((item, idx) => (
                 <p key={idx}>{item}</p>
               ))}
             </span>
+          <span>${(Number(order?.amount || 0) / 100).toFixed(2)}</span>
           </div>
           <div className={styles.vertContainer} style={{gap: ".5rem", alignItems: "center", flex: .75}}>
               <div className={styles.itemDetails} style={{textAlign: "center"}}>Created At: {new Date(order.createdAt).toLocaleString()}</div>

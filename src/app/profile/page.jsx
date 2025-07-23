@@ -54,11 +54,7 @@ export default function ProfileScreen() {
         <h2 className={styles.heading}>
           Hello, <span>{profile?.name || "Guest"}!</span>
         </h2>
-        <div className={styles.vertContainer}>
-          <div className={styles.userInput}>
-            <span className="info-label">Email:</span>
-            <span className="info-value">{profile?.email || "Not Available"}</span>
-          </div>
+        <div className={styles.vertContainer} style={{paddingTop: ".5rem", paddingBottom: ".5rem"}}>
           <PunchCard rewards={profile?.rewards || 0} />
         </div>
 

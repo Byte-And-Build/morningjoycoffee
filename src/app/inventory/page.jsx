@@ -2,7 +2,7 @@
 import styles from "../../app/page.module.css";
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import Logo from '../../app/assets/Logo.png';
+import Logo from '../../app/assets/Logo.webp';
 import { useRouter } from "next/navigation";
 import { api } from "../../app/utils/api";
 import EditItemPopUp from "../../app/components/EditItemPopUp";

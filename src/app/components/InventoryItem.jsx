@@ -21,7 +21,7 @@ const InventoryItem = ({ refreshDrinks, item }) => {
   isExtra: false
 });
 
-const availableSizes = ["Kids", "16oz", "20oz", "24oz", "32oz"];
+const availableSizes = ["Single Item", "Kids", "16oz", "20oz", "24oz", "32oz"];
 
 const [sizesConfig, setSizesConfig] = useState(
   availableSizes.map(size => ({
@@ -304,6 +304,7 @@ const convertToWebp = async (file) => {
                   <option value="oz">oz</option>
                   <option value="g">g</option>
                   <option value="piece">piece</option>
+                  <option value="each">each</option>
                 </select>
               </div>
               <div className={styles.horizWrapper}>
@@ -373,24 +374,24 @@ const convertToWebp = async (file) => {
                 <p>No ingredients found.</p>
               ) : (
                 <div className={styles.vertContainer}>
-                  <div className={styles.horizWrapper}>
-                    <span className={styles.ingrediants} style={{flex: 1, textAlign: "left"}}>Name</span>
-                    <span className={styles.ingrediants} style={{flex: 1}}>Cost/Unit</span>
-                    <span className={styles.ingrediants} style={{flex: 1}}>Extra Price</span>
-                    <span className={styles.ingrediants} style={{flex: 1}}>In Stock</span>
-                    <span className={styles.ingrediants} style={{flex: .5}}>Is Extra</span>
-                    <span className={styles.ingrediants} style={{flex: .6}}>Edit/Save</span>
-                  </div>
-                  <div className={styles.vertWrapperInset}>
+                  <div className={styles.vertWrapperInset} style={{position: "relative", gap: "1rem"}}>
+                    <div className={styles.horizWrapper} style={{justifyContent: "flex-start", paddingBottom: "1rem"}}>
+                      <span className={styles.ingrediants} style={{flex: 1, textAlign: "left", color: "black", minWidth: "100px"}}>Name</span>
+                      <span className={styles.ingrediants} style={{flex: 1, color: "black", minWidth: "100px"}}>Cost/Unit</span>
+                      <span className={styles.ingrediants} style={{flex: 1, color: "black", minWidth: "100px"}}>Extra Price</span>
+                      <span className={styles.ingrediants} style={{flex: 1, color: "black", minWidth: "100px"}}>In Stock</span>
+                      <span className={styles.ingrediants} style={{flex: .5, color: "black", minWidth: "75px"}}>Is Extra</span>
+                      <span className={styles.ingrediants} style={{flex: 1, color: "black", minWidth: "150px"}}>Edit/Save</span>
+                    </div>
                     {availableIngredients.map((ingredient) => (
-                      <div className={styles.cartWrapper} key={ingredient._id} style={{borderBottom: "1px black dashed", width: "inherit"}}>
-                        <span className={styles.ingrediants} style={{flex: 1, textAlign: "left"}}>{ingredient.name}</span>
-                        <span className={styles.ingrediants} style={{flex: 1}}>${ingredient.costPerUnit.toFixed(2)}/{ingredient.unit}</span>
-                        <span className={styles.ingrediants} style={{flex: 1}}>${ingredient.extraPrice.toFixed(2)}/{ingredient.unit}</span>
-                        <span className={styles.ingrediants} style={{flex: 1}}>{ingredient.inStock} {ingredient.unit}{ingredient.inStock > 1 ? "(s)" : ""}</span>
-                        <input type="checkbox" defaultChecked={ingredient?.isExtra ? "checked" : ""} style={{flex: .4}}/>
-                        <button className={styles.btnsSmall} style={{flex: .5}} onClick={() => { setEditIngredient(ingredient); setIngrediantForm(true); }}>Edit</button>
-                        <button className={styles.btnsSmall} style={{flex: .5}} onClick={() => handleDeleteIngredient(ingredient._id)}>Delete</button>
+                      <div className={styles.cartWrapper} key={ingredient._id} style={{borderBottom: "1px black dashed", minWidth: "100%"}}>
+                        <span className={styles.ingrediants} style={{flex: 1, textAlign: "left", minWidth: "100px"}}>{ingredient.name}</span>
+                        <span className={styles.ingrediants} style={{flex: 1, minWidth: "100px"}}>${ingredient.costPerUnit.toFixed(2)}/{ingredient.unit}</span>
+                        <span className={styles.ingrediants} style={{flex: 1, minWidth: "100px"}}>${ingredient.extraPrice.toFixed(2)}/{ingredient.unit}</span>
+                        <span className={styles.ingrediants} style={{flex: 1, minWidth: "100px"}}>{ingredient.inStock} {ingredient.unit}{ingredient.inStock > 1 ? "(s)" : ""}</span>
+                        <input type="checkbox" defaultChecked={ingredient?.isExtra ? "checked" : ""} style={{flex: .33, minWidth: "75px"}}/>
+                        <button className={styles.btnsSmall} style={{flex: .33, minWidth: "75px"}} onClick={() => { setEditIngredient(ingredient); setIngrediantForm(true); }}>Edit</button>
+                        <button className={styles.btnsSmall} style={{flex: .33, minWidth: "75px"}} onClick={() => handleDeleteIngredient(ingredient._id)}>Delete</button>
                       </div>
                     ))}
                   </div>

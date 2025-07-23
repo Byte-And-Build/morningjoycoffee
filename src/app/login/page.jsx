@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect } from "react";
-import Logo from "../assets/Logo.png"
+import Logo from "../assets/Logo.webp"
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useAuth } from "../../app/context/AuthContext";
