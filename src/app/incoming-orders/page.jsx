@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import io from "socket.io-client";
 import styles from "../../app/page.module.css";
 import Image from "next/image";
-import Placeholder from "../../app/assets/Logo.png";
+import Placeholder from "../../app/assets/Logo.webp";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useAuth } from "../context/AuthContext";

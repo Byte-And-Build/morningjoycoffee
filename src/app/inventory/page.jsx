@@ -2,7 +2,7 @@
 import styles from "../../app/page.module.css";
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import Logo from '../../app/assets/Logo.png';
+import Logo from '../../app/assets/Logo.webp';
 import { useRouter } from "next/navigation";
 import { api } from "../../app/utils/api";
 import EditItemPopUp from "../../app/components/EditItemPopUp";
@@ -82,7 +82,9 @@ export default function InventoryPage() {
         <div key={item._id} className={styles.inventoryWrapper}>
           <div className={styles.vertContainer} onClick={() => router.push(`/drink/${item._id}`)}> 
             <p className={styles.ingrediants}>{item.name}</p>
+            {item.image && (
             <Image src={item.image} width={80} height={80} alt={item.name} className="object-contain" style={{cursor: "pointer"}}/>
+            )}
           </div>
           <div className={styles.vertContainer} style={{ flex: .3, overflowY: "auto", justifyContent: "flex-start", maxHeight: "inherit" }}>
               {item.sizes?.map((s) => (

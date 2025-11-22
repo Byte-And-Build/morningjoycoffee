@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const IngredientSchema = mongoose.Schema({
   name: { type: String, required: true, unique: true },
-  unit:        { type: String, enum: ["g","ml","oz","piece"], default: "oz" },
+  unit:        { type: String, enum: ["g","ml","oz","piece","each"], default: "oz" },
   inStock:     { type: Number, default: 0 },      // current quantity on-hand
   reorderAt:   { type: Number, default: 0 },      // threshold for “low” alerts
   costPerUnit: { type: Number, default: 0.0 },    // optional: COGS tracking

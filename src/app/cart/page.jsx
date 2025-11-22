@@ -20,12 +20,9 @@ export default function CartPage() {
         <p>Your cart is empty.</p>
       ) : (
         <>
-          <div className={styles.vertContainer}>
+          <div className={styles.vertContainer} style={{paddingLeft: "3rem", paddingRight: "3rem"}}>
             {cart.map((item) => (
-              <div
-                key={item.id}
-                className={styles.cartWrapper}
-              >
+              <div key={item.id} className={styles.cartWrapper}>
                 <Image
                   src={item.image}
                   alt={item.name}

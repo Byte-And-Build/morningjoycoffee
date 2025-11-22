@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import styles from "../../app/page.module.css";
 import Link from "next/link";
 import Image from "next/image";
-import Placeholder from "../../app/assets/Logo.png";
+import Placeholder from "../../app/assets/Logo.webp";
 import { useAuth } from "../context/AuthContext";
 
 const UserOrdersScreen = () => {

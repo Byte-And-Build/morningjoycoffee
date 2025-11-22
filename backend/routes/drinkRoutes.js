@@ -10,6 +10,10 @@ dotenv.config();
 
 const router = express.Router();
 
+if (!process.env.AWS_ACCESS_KEY_ID || !process.env.AWS_SECRET_ACCESS_KEY) {
+  console.error("Missing AWS credentials in environment");
+}
+
 const s3Client = new S3Client({
   region: "us-east-2",
   credentials: {
@@ -79,7 +83,7 @@ router.post("/upload/presign", protect, async (req, res) => {
     res.send({ url: uploadUrl });
   } catch (err) {
     console.error("Presign URL error:", err);
-    res.status(500).json({ message: "Could not generate upload URL" });
+    return res.status(500).json({ message: "Could not generate upload URL", error: err.message });
   }
 });
 
