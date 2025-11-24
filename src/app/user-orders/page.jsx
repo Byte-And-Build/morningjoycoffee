@@ -5,6 +5,9 @@ import Link from "next/link";
 import Image from "next/image";
 import Placeholder from "../../app/assets/Logo.webp";
 import { useAuth } from "../context/AuthContext";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import axios from "axios";
 
 const UserOrdersScreen = () => {
   const [orders, setOrders] = useState([]);
@@ -43,6 +46,31 @@ const UserOrdersScreen = () => {
   fetchOrders();
 }, [token]);
 
+async function deleteOrder(id) {
+  if (!window.confirm("Are you sure you want to delete this order?")) return;
+
+  try {
+    const res = await axios.delete("/api/orders/deleteOrder", {
+      data: { _id: id },          // 👈 body goes under `data`
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const deletedId = res.data._id;
+
+    // Remove it from local state
+    setOrders((prevOrders) =>
+      prevOrders.filter((order) => order._id !== deletedId)
+    );
+
+    toast.success("Order Deleted!");
+  } catch (err) {
+    console.error("❌ Failed to delete order:", err);
+    toast.error("Failed to delete order");
+  }
+}
+
   return (
     <div className={styles.page} style={{justifyContent: "flex-start"}}>
       <h2>Your Purchases</h2>
@@ -63,10 +91,11 @@ const UserOrdersScreen = () => {
                   : <li className={styles.itemDetails} style={{textAlign: "left"}}>{order.items}</li>}
               </ul>
             </div>
-            <div className={styles.vertContainer} style={{flex: 1, padding: "0 .25rem"}}>
-              <Link href={`/order/${order._id}`}>
-                <button className={styles.btnsSmall}>{order.status}</button>
-            </Link>
+            <div className={styles.vertContainer} style={{flex: 1, gap:'1rem', padding: "0 .25rem"}}>
+              <Link href={`/order/${order._id}`} className={styles.btns} style={order?.status === "Complete!" ? {color:'var(--colorComplete)'} : {color:'var(--fontColor)'}}>{order.status}</Link>
+              {order.status === "Complete!" ? (
+                <button className={styles.btns} onClick={()=>deleteOrder(order._id)} style={{maxWidth:'fit-content', fontSize:'12px', color: 'red'}}>Delete Order?</button>
+                ):null}
             </div>
           </div>
         ))

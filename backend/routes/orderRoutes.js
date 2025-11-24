@@ -127,4 +127,18 @@ router.patch("/:id/status", async (req, res) => {
   }
 });
 
+router.delete("/deleteOrder", protect, async (req, res) => {
+  try {
+    const { _id } = req.body;
+    const deleted = await Order.findByIdAndDelete(_id);
+    if (!deleted) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+    res.status(200).json({ message: "Order deleted", _id });
+  } catch (error) {
+    console.error("Delete error", error);
+    res.status(500).json({ message: "Failed to delete order" });
+  }
+});
+
 module.exports = router;

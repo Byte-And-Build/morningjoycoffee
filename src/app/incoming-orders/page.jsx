@@ -108,7 +108,7 @@ const IncomingOrders = () => {
               </ul>
             </div>
             <div style={{flex: 1, padding: "0 .25rem"}}>
-              <select className={styles.btnsSmall} value={order.status} onChange={(e) => handleStatusChange(order._id, e.target.value)}>
+              <select className={styles.btns} value={order.status} onChange={(e) => handleStatusChange(order._id, e.target.value)}>
                 <option className={styles.itemDetails} style={{textAlign: "center"}}>Queued</option>
                 <option className={styles.itemDetails} style={{textAlign: "center"}}>Making</option>
                 <option className={styles.itemDetails} style={{textAlign: "center"}}>Complete!</option>

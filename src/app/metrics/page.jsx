@@ -186,8 +186,8 @@ const deleteUser = async (id) => {
                   <p style={{flex: "1"}}>{user.email}</p>
                   <p style={{flex: "1"}}>Role: {user.role}</p>
                   <p style={{flex: "1"}}>Rewards: {user.rewards}</p>
-                  <button className={styles.btnsSmall} style={{maxWidth: "100px"}} onClick={() => setEditUser(user)}>Edit</button>
-                  <button className={styles.btnsSmall} style={{maxWidth: "100px"}} onClick={() => setDeleteUserModal(user)}>Delete</button>
+                  <button className={styles.btns} style={{maxWidth: "100px"}} onClick={() => setEditUser(user)}>Edit</button>
+                  <button className={styles.btns} style={{maxWidth: "100px"}} onClick={() => setDeleteUserModal(user)}>Delete</button>
                   </div>
                 </div>
               ))}

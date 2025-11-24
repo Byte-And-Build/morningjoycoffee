@@ -70,14 +70,17 @@ export default function InventoryPage() {
 };
 
   return (
-    <div className={styles.page}>
-      <div className={styles.vertContainer}>
-      <div className={styles.horizContainer}>
-        <Image src={Logo} width={80} height={80} alt="Logo" content="contain" />
-        <h1 className={styles.heading}>Inventory</h1>
+    <div className={styles.page} style={{alignContent:'flex-start', padding:'0px 40px 80px 40px'}}>
+      <div className={styles.stickyContainer}>
+        <div className={styles.vertContainer}>
+        <div className={styles.horizContainer} style={{alignItems:'center', boxShadow:'none', justifyContent:'space-around'}}>
+          <Image src={Logo} width={80} height={80} alt="Logo" content="contain" />
+          <h1 className={styles.heading}>Inventory</h1>
+        </div>
         <InventoryItem refreshDrinks={fetchDrinks} />
       </div>
-      < div className={styles.vertContainer}>
+      </div>
+      <div className={styles.vertContainer}>
       {drinks.map((item) => (
         <div key={item._id} className={styles.inventoryWrapper}>
           <div className={styles.vertContainer} onClick={() => router.push(`/drink/${item._id}`)}> 
@@ -103,38 +106,28 @@ export default function InventoryPage() {
               ))}
             </div>
           <pre>{formatPriceBySize(item.sizes)}</pre>
-          <p className={styles.ingrediants}>{item.category}</p>
           <div className={styles.vertContainer}>
-            <div className={styles.horizContainer}>
+            <p className={styles.ingrediants}>{item.category}</p>
+          </div>
+          <div className={styles.vertContainer}>
+            <div className={styles.horizContainer} style={{ padding: '.5em' }}>
               <span>👍</span>
               <span>{item.rating.thumbsUp}</span>
             </div>
-            <div className={styles.horizContainer}>
+            <div className={styles.horizContainer} style={{ padding: '.5em' }}>
               <span>👎</span>
               <span>{item.rating.thumbsDown}</span>
             </div>
           </div>
-          <div className={styles.vertContainer}>
-            <button
-              className={styles.btnsSmall}
-              onClick={() => {
-                setSelectedItem(item);
-                setEditPopUp(true);
-              }}
-            >
+          <div className={styles.vertContainer} style={{flexGrow:'0'}}>
+            <button className={styles.btns} onClick={() => { setSelectedItem(item); setEditPopUp(true);}}>
               Edit
             </button>
-            <button
-              className={styles.btnsSmall}
-              onClick={() => {
-                setSelectedItem(item);
-                setDeletePopUp(true);
-              }}
-            >
+            <button className={styles.btns} onClick={() => { setSelectedItem(item); setDeletePopUp(true);}}>
               Delete
             </button>
           </div>
-          </div>
+        </div>
       ))}
       </div>
       {editPopUp && (
@@ -170,7 +163,6 @@ export default function InventoryPage() {
           </div>
         </div>
       )}
-      </div>
     </div>
   );
 }

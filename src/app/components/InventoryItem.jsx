@@ -273,8 +273,8 @@ const convertToWebp = async (file) => {
   return (
     <>
     <div className={styles.horizWrapper} style={{paddingTop: ".3rem", gap: ".5rem"}}>
-        <button onClick={() => setShowForm(true)} className={styles.btnsSmall}>➕ Product</button>
-        <button onClick={() => setShowIngForm(true)} className={styles.btnsSmall}>➕ Ingredient</button>
+        <button onClick={() => setShowForm(true)} className={styles.btns}>➕ Product</button>
+        <button onClick={() => setShowIngForm(true)} className={styles.btns}>➕ Ingredient</button>
       </div>
       {showIngForm && (
         <div className={styles.overlay} onClick={() => setShowIngForm(false)}>
@@ -390,8 +390,8 @@ const convertToWebp = async (file) => {
                         <span className={styles.ingrediants} style={{flex: 1, minWidth: "100px"}}>${ingredient.extraPrice.toFixed(2)}/{ingredient.unit}</span>
                         <span className={styles.ingrediants} style={{flex: 1, minWidth: "100px"}}>{ingredient.inStock} {ingredient.unit}{ingredient.inStock > 1 ? "(s)" : ""}</span>
                         <input type="checkbox" defaultChecked={ingredient?.isExtra ? "checked" : ""} style={{flex: .33, minWidth: "75px"}}/>
-                        <button className={styles.btnsSmall} style={{flex: .33, minWidth: "75px"}} onClick={() => { setEditIngredient(ingredient); setIngrediantForm(true); }}>Edit</button>
-                        <button className={styles.btnsSmall} style={{flex: .33, minWidth: "75px"}} onClick={() => handleDeleteIngredient(ingredient._id)}>Delete</button>
+                        <button className={styles.btns} style={{flex: .33, minWidth: "75px"}} onClick={() => { setEditIngredient(ingredient); setIngrediantForm(true); }}>Edit</button>
+                        <button className={styles.btns} style={{flex: .33, minWidth: "75px"}} onClick={() => handleDeleteIngredient(ingredient._id)}>Delete</button>
                       </div>
                     ))}
                   </div>
@@ -529,7 +529,7 @@ const convertToWebp = async (file) => {
             </div>
             <textarea
               name="description"
-              className={styles.textarea}
+              className={styles.textArea}
               placeholder="description"
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
@@ -537,13 +537,9 @@ const convertToWebp = async (file) => {
             <div className={styles.vertContainer}>
               <h4>Sizes & Prices</h4>
               {sizesConfig.map((s, idx) => (
-                <div key={s.size} className={styles.horizWrapper}>
+                <div key={s.size} className={styles.horizWrapper} style={{justifyContent:'flex-start', gap:'2rem'}}>
                   <label>
-                    <input
-                      type="checkbox"
-                      onChange={() => toggleSize(idx)}
-                    />{" "}
-                    {s.size}
+                    <input type="checkbox" onChange={() => toggleSize(idx)}/>{" "} {s.size}
                   </label>
                   {s.ingredients.map((ing) => (
                     <div key={ing.ingredientId} className={styles.horizWrapper} style={{width: "100%", justifyContent: "flex-start"}}>
@@ -587,19 +583,14 @@ const convertToWebp = async (file) => {
                 </div>
               ))}
             </div>
-            <div className={styles.vertContainer}>
             <h4>Ingredients</h4>
-            <div className={styles.ingredientList}>
+            <div className={styles.horizWrapper}  style={{display:'flex', flexWrap:'wrap', overflowX:'hidden', overflowY:'auto', maxHeight:'300px', justifyContent:'space-evenly', padding:'20px', boxShadow:'var(--insetShadow)', borderRadius:'var(--borderRadiusLarge)'}}>
               {regularIngredients.map((ingredient) => {
                 const selectedIngredients = formData.sizes?.flatMap(s => s.ingredients) || [];
                 const found = selectedIngredients.find(i => i.ingredientId === ingredient._id);
                 return (
-                  <div key={ingredient._id} className={styles.ingredientItem}>
-                    <input
-                      id={`ing-${ingredient._id}`}
-                      type="checkbox"
-                      checked={!!found}
-                      onChange={(e) => {
+                  <div key={ingredient._id} className={styles.horizWrapper} style={{ maxWidth:'40%' }}>
+                    <input id={`ing-${ingredient._id}`} type="checkbox" checked={!!found} onChange={(e) => {
                         const checked = e.target.checked;
                         const updatedSizes = formData.sizes.map((size) => {
                           if (!size.selected) return size;
@@ -636,15 +627,14 @@ const convertToWebp = async (file) => {
                         });
                       }}
                     />
-                    <label className={styles.btnsSmall} htmlFor={`ing-${ingredient._id}`}>
+                    <label className={styles.btns} htmlFor={`ing-${ingredient._id}`} style={{fontSize:'1rem'}}>
                       {ingredient.name}
                     </label>
                   </div>
                 );
               })}
-            </div>
             <h4 style={{ marginTop: "1rem" }}>Extras</h4>
-            <div className={styles.ingredientList}>
+            <div className={styles.horizWrapper}>
               {extraIngredients.map((ingredient) => {
                 const found = formData.extras?.find((i) => i.ingredientId === ingredient._id);
                 return (
@@ -666,12 +656,13 @@ const convertToWebp = async (file) => {
                         setFormData({ ...formData, extras: updated });
                       }}
                     />
-                    <label className={styles.btnsSmall} htmlFor={`extra-${ingredient._id}`}>
+                    <label className={styles.btns} htmlFor={`extra-${ingredient._id}`}>
                       {ingredient.name}
                     </label>
                   </div>
                 );
               })}
+            </div>
             </div>
             </div>
             <div className={styles.vertContainer}>
@@ -685,7 +676,6 @@ const convertToWebp = async (file) => {
             <button className={styles.btns} onClick={handleAddOrEdit}>Save</button>
             <button className={styles.btns} onClick={() => setShowForm(false)}>Close</button>
           </div>
-        </div>
         </div>
       )}
     </>

@@ -57,23 +57,22 @@ export default function ProfileScreen() {
         <div className={styles.vertContainer} style={{paddingTop: ".5rem", paddingBottom: ".5rem"}}>
           <PunchCard rewards={profile?.rewards || 0} />
         </div>
-
         <div className={styles.vertContainer} style={{ paddingLeft: "1rem", paddingRight: "1rem" }}>
-          {(profile?.role === "Admin" || profile?.role === "Employee") && (
-            <>
-              <button onClick={() => router.push("/scanner")} className={styles.btnsSmall}>Scan QR</button>
-              <div className={styles.horizWrapper}>
-                <button onClick={() => router.push("/inventory")} className={styles.btnsSmall}>Inventory</button>
-                <button onClick={() => router.push("/incoming-orders")} className={styles.btnsSmall}>View Orders</button>
-              </div>
-            </>
-          )}
-          {profile?.role === "Admin" && (
-            <button onClick={() => router.push("/metrics")} className={styles.btnsSmall}>Metrics</button>
-          )}
           <button onClick={() => router.push("/user-orders")} className={styles.btns}>Your Orders</button>
           <button onClick={() => router.push("/user-settings")} className={styles.btns}>Settings</button>
           <button onClick={() => { logout(); router.replace("/") }} className={styles.btns}>Logout</button>
+        </div>
+        <div className={styles.vertContainer} style={{ paddingLeft: "1rem", paddingRight: "1rem" }}>
+          {(profile?.role === "Admin" || profile?.role === "Employee") && (
+            <div className={styles.horizContainer} style={{ padding: "1rem" }}>
+              <button onClick={() => router.push("/scanner")} className={styles.btns}>Scan QR</button>
+              <button onClick={() => router.push("/inventory")} className={styles.btns}>Inventory</button>
+              <button onClick={() => router.push("/incoming-orders")} className={styles.btns}>View Orders</button>
+              {profile?.role === "Admin" && (
+                <button onClick={() => router.push("/metrics")} className={styles.btns}>Metrics</button>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>

@@ -281,6 +281,7 @@ const convertToWebp = async (file) => {
           value={formData.description}
           onChange={(e) => setFormData({ ...formData, description: e.target.value })}
           placeholder={item.description}
+          className={styles.textArea}
         />
         <div className={styles.horizWrapper} style={{ justifyContent: "flex-start", gap: "2rem", borderBottom: "1px dashed black"}}>
         <h4>Recipe</h4>
@@ -294,7 +295,7 @@ const convertToWebp = async (file) => {
 
               return (
                 <div key={size + idx} className={styles.vertContainer} style={{paddingRight: ".75rem", paddingLeft: ".75rem", borderRight: "1px dashed black"}}>
-                  <button className={styles.btnsSmall} onClick={() => deleteSize(size.size)}>{size.size} ×</button>
+                  <button className={styles.btns} onClick={() => deleteSize(size.size)}>{size.size} ×</button>
                   {size.ingredients.map((ing, indx) => (
                     <div key={ing.ingredientId?._id || ing.name || indx} className={styles.horizWrapper} style={{justifyContent: "space-between"}}>
                       <span style={{flex: 1.5}}>{ing.name}</span>
@@ -362,7 +363,7 @@ const convertToWebp = async (file) => {
                 .map((ing) => (
                   <button
                     key={ing._id}
-                    className={styles.btnsSmall}
+                    className={styles.btns}
                     onClick={() => {
                       // ✅ Add this ingredient to each size's ingredient list
                       const updatedSizes = formData.sizes.map((size) => ({

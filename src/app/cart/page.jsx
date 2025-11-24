@@ -65,7 +65,7 @@ export default function CartPage() {
                   <span className="font-semibold">${item.totalPrice.toFixed(2)}</span>
                   <button
                     onClick={() => removeFromCart(item.id)}
-                    className={styles.btnsSmall}
+                    className={styles.btns}
                   >
                     Remove
                   </button>
