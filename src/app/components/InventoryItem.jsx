@@ -537,14 +537,15 @@ const convertToWebp = async (file) => {
             <div className={styles.vertContainer}>
               <h4>Sizes & Prices</h4>
               {sizesConfig.map((s, idx) => (
-                <div key={s.size} className={styles.horizWrapper} style={{justifyContent:'flex-start', gap:'2rem'}}>
+                <div key={s.size} className={styles.horizWrapper} style={{justifyContent:'flex-start', gap:'2rem', overflowX:'auto'}}>
                   <label>
-                    <input type="checkbox" onChange={() => toggleSize(idx)}/>{" "} {s.size}
+                    <input type="checkbox"  onChange={() => toggleSize(idx)}/>{" "} {s.size}
                   </label>
                   {s.ingredients.map((ing) => (
-                    <div key={ing.ingredientId} className={styles.horizWrapper} style={{width: "100%", justifyContent: "flex-start"}}>
-                      <span className={styles.ingrediants} style={{flex:.3, textAlign: "right"}}>{ing.name}</span>
+                    <div key={ing.ingredientId} className={styles.horizWrapper} style={{flex:1, minWidth:'fit-content', justifyContent: "flex-start", gap:'2rem'}}>
+                      <span style={{textAlign: "right"}}>{ing.name}</span>
                       <input
+                        style={{width:'unset', textAlign: "right", maxWidth:'100px'}}
                         className={styles.userInput}
                         type="number"
                         value={ing.quantity}
@@ -589,7 +590,7 @@ const convertToWebp = async (file) => {
                 const selectedIngredients = formData.sizes?.flatMap(s => s.ingredients) || [];
                 const found = selectedIngredients.find(i => i.ingredientId === ingredient._id);
                 return (
-                  <div key={ingredient._id} className={styles.horizWrapper} style={{ maxWidth:'40%' }}>
+                  <div key={ingredient._id} className={styles.horizWrapper} style={{ flex: 1, minWidth:'20%' }}>
                     <input id={`ing-${ingredient._id}`} type="checkbox" checked={!!found} onChange={(e) => {
                         const checked = e.target.checked;
                         const updatedSizes = formData.sizes.map((size) => {
@@ -633,37 +634,37 @@ const convertToWebp = async (file) => {
                   </div>
                 );
               })}
-            <h4 style={{ marginTop: "1rem" }}>Extras</h4>
-            <div className={styles.horizWrapper}>
-              {extraIngredients.map((ingredient) => {
-                const found = formData.extras?.find((i) => i.ingredientId === ingredient._id);
-                return (
-                  <div key={ingredient._id} className={styles.ingredientItem}>
-                    <input
-                      id={`extra-${ingredient._id}`}
-                      type="checkbox"
-                      checked={!!found}
-                      onChange={(e) => {
-                        let updated = e.target.checked
-                          ? [...(formData.extras || []), {
-                              ingredientId: ingredient._id,
-                              name: ingredient.name,
-                              unit: ingredient.unit,
-                              extraPrice: ingredient.extraPrice,
-                              quantity: 1,
-                            }]
-                          : formData.extras?.filter((i) => i.ingredientId !== ingredient._id);
-                        setFormData({ ...formData, extras: updated });
-                      }}
-                    />
-                    <label className={styles.btns} htmlFor={`extra-${ingredient._id}`}>
-                      {ingredient.name}
-                    </label>
-                  </div>
-                );
-              })}
-            </div>
-            </div>
+              </div>
+              <h4>Extras</h4>
+              <div className={styles.horizWrapper} style={{display:'flex', flexWrap:'wrap', overflowX:'hidden', overflowY:'auto', maxHeight:'300px', justifyContent:'space-evenly', padding:'20px', boxShadow:'var(--insetShadow)', borderRadius:'var(--borderRadiusLarge)'}}>
+                {extraIngredients.map((ingredient) => {
+                  const found = formData.extras?.find((i) => i.ingredientId === ingredient._id);
+                  return (
+                      <div key={ingredient._id} className={styles.horizWrapper} style={{ flex:1, minWidth:'fit-content', minWidth:'20%' }}>
+                        <input
+                          id={`extra-${ingredient._id}`}
+                          type="checkbox"
+                          checked={!!found}
+                          onChange={(e) => {
+                            let updated = e.target.checked
+                              ? [...(formData.extras || []), {
+                                  ingredientId: ingredient._id,
+                                  name: ingredient.name,
+                                  unit: ingredient.unit,
+                                  extraPrice: ingredient.extraPrice,
+                                  quantity: 1,
+                                }]
+                              : formData.extras?.filter((i) => i.ingredientId !== ingredient._id);
+                            setFormData({ ...formData, extras: updated });
+                          }}
+                        />
+                        <label className={styles.btns} htmlFor={`extra-${ingredient._id}`}>
+                          {ingredient.name}
+                        </label>
+                      </div>
+                  );
+                })}
+              </div>
             </div>
             <div className={styles.vertContainer}>
               <label className={styles.uploadLabel}>Upload Image</label>

@@ -104,7 +104,6 @@ const handleAddNewIngredient = async (name) => {
       }
     );
     setAvailableIngredients((prev) => [...prev, res.data]);
-    const updated = [...formData.ingredients.split(", "), name].filter(Boolean).join(", ");
     setFormData({
       ...formData,
       ingredients: [
@@ -224,6 +223,37 @@ const convertToWebp = async (file) => {
   }));
 };
 
+const removeIngredient = (ingredientToRemove) => {
+  setFormData((prev) => {
+    const getId = (ing) =>
+      typeof ing.ingredientId === "object"
+        ? ing.ingredientId._id
+        : ing.ingredientId;
+
+    // Remove from every size's ingredient list
+    const updatedSizes = prev.sizes.map((size) => ({
+      ...size,
+      ingredients: (size.ingredients || []).filter((ing) => {
+        const id = getId(ing);
+        // fall back to name in case there's no id yet
+        return id !== ingredientToRemove.id && ing.name !== ingredientToRemove.name;
+      }),
+    }));
+
+    // Also remove from the top-level formData.ingredients array
+    const updatedIngredients = (prev.ingredients || []).filter((ing) => {
+      const id = getId(ing);
+      return id !== ingredientToRemove.id && ing.name !== ingredientToRemove.name;
+    });
+
+    return {
+      ...prev,
+      sizes: updatedSizes,
+      ingredients: updatedIngredients,
+    };
+  });
+};
+
   const handleSave = async () => {
   const token = localStorage.getItem("token");
 
@@ -316,6 +346,10 @@ const convertToWebp = async (file) => {
                         }}
                       />
                       <span style={{flex: .1}}>{ing.unit}</span>
+                      <button className={styles.btns} style={{maxWidth:'15px', maxHeight:'10px'}} type="button" onClick={() => {
+                        const id = typeof ing.ingredientId === "object" ? ing.ingredientId._id : ing.ingredientId; removeIngredient({ id, name: ing.name });}}>
+                        X
+                    </button>
                     </div>
                   ))}
                   <span style={{flex: 1}}>Price: $
@@ -343,6 +377,8 @@ const convertToWebp = async (file) => {
                 </div>
               );
             })}
+          
+          </div>
           <div className={styles.vertContainer} style={{flex: 1}}>
             <input
               type="text"
@@ -352,9 +388,8 @@ const convertToWebp = async (file) => {
               className={styles.userInput}
               
             />
-            </div>
-          </div>
-            <div className={styles.horizWrapper} style={{flex: "1", fontSize: ".75rem", justifyContent: "flex-start", overflowX: "auto", padding: ".75rem", overflowY: "hidden"}}>
+            
+            <div className={styles.horizWrapper} style={{flex: "1", maxWidth:'100%', justifyContent: "flex-start", overflowX: "auto", padding: ".75rem", overflowY: "hidden"}}>
               {availableIngredients
                 .filter((ing) =>
                   ing.name.toLowerCase().includes(ingredientSearch.toLowerCase()) &&
@@ -364,6 +399,7 @@ const convertToWebp = async (file) => {
                   <button
                     key={ing._id}
                     className={styles.btns}
+                    style={{minWidth:'fit-content'}}
                     onClick={() => {
                       // ✅ Add this ingredient to each size's ingredient list
                       const updatedSizes = formData.sizes.map((size) => ({
@@ -390,6 +426,7 @@ const convertToWebp = async (file) => {
                     {ing.name}
                   </button>
                 ))}
+            </div>
             </div>
         </div>
         <div className={styles.vertContainer}>

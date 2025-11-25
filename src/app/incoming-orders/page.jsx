@@ -7,6 +7,7 @@ import Placeholder from "../../app/assets/Logo.webp";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useAuth } from "../context/AuthContext";
+import axios from "axios";
 
 const socket = io(
   typeof window !== "undefined" && process.env.NEXT_PUBLIC_SOCKET_URL
@@ -21,8 +22,10 @@ const socket = io(
 const IncomingOrders = () => {
   const [orders, setOrders] = useState([]);
   const { user } = useAuth();
-
+  const {token} = useAuth();
+    
   useEffect(() => {
+    if (!token) return;
     // 🔄 Initial fetch
     const fetchOrders = async () => {
       try {
@@ -59,7 +62,32 @@ const IncomingOrders = () => {
       socket.off("new-order");
       socket.disconnect();
     };
-  }, []);
+  }, [token]);
+
+  async function deleteOrder(id) {
+  if (!window.confirm("Are you sure you want to delete this order?")) return;
+
+  try {
+    const res = await axios.delete("/api/orders/deleteOrder", {
+      data: { _id: id },          // 👈 body goes under `data`
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const deletedId = res.data._id;
+
+    // Remove it from local state
+    setOrders((prevOrders) =>
+      prevOrders.filter((order) => order._id !== deletedId)
+    );
+
+    toast.success("Order Deleted!");
+  } catch (err) {
+    console.error("❌ Failed to delete order:", err);
+    toast.error("Failed to delete order");
+  }
+}
 
   const handleStatusChange = async (orderId, newStatus) => {
   try {
@@ -97,7 +125,7 @@ const IncomingOrders = () => {
           <div key={index} className={styles.orderWrapper}>
             <div className={styles.vertContainer} style={{flex: .5, textAlign: "center"}}>
               <Image src={Placeholder} alt="Drink" width={60} height={60} />
-              <span className={styles.ingrediants}> {order.customer}</span>
+              <span className={styles.ingredients}> {order.customer}</span>
             </div>
             <div className={styles.vertContainer} style={{flex: 1, textAlign: "left", justifyContent: "flex-start"}}>
               <strong className={styles.strong}>Items:</strong>{" "}
@@ -107,12 +135,16 @@ const IncomingOrders = () => {
                   : <li className={styles.itemDetails} style={{textAlign: "left"}}>{order.items}</li>}
               </ul>
             </div>
-            <div style={{flex: 1, padding: "0 .25rem"}}>
+            <div className={styles.vertContainer} style={{flex: 1, padding: "0 .25rem"}}>
               <select className={styles.btns} value={order.status} onChange={(e) => handleStatusChange(order._id, e.target.value)}>
                 <option className={styles.itemDetails} style={{textAlign: "center"}}>Queued</option>
                 <option className={styles.itemDetails} style={{textAlign: "center"}}>Making</option>
                 <option className={styles.itemDetails} style={{textAlign: "center"}}>Complete!</option>
               </select>
+            
+            {order.status === "Complete!" ? (
+                <button className={styles.btns} onClick={()=>deleteOrder(order._id)} style={{maxWidth:'fit-content', fontSize:'12px', color: 'red'}}>Delete Order?</button>
+                ):null}
             </div>
           </div>
         ))

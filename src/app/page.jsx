@@ -43,7 +43,7 @@ export default function HomePage( ) {
   )
 
   return (
-    <div className={styles.page} style={{justifyContent: "flex-start"}}>
+    <div className={styles.page} style={{justifyContent: "flex-start", padding:'0px 40px 80px 40px'}}>
       <div className={styles.vertContainer}>
         <div className={styles.horizWrapper}>
           <Image src={Logo} width={75} height={75} alt="Logo" content="contain" />

@@ -115,7 +115,7 @@ export default function DrinkDetails() {
       )}
       <p className={styles.drinkDetailsPrice}>Total: ${totalPrice.toFixed(2)}</p>
 
-      <div className={styles.horizContainer} style={{justifyContent: "space-around", maxWidth: "80%"}}>
+      <div className={styles.horizContainer} style={{justifyContent: "space-around", maxWidth: "80%", padding:'10px'}}>
         {Array.isArray(drink.sizes) && drink.sizes.length > 1 && (
           drink.sizes.map(({ size, price }) => (
             <button
@@ -132,15 +132,16 @@ export default function DrinkDetails() {
         )}
       </div>
       {Array.isArray(customOptions) && customOptions.length > 0 && (
-      <div className={styles.optionContainer}>
+      <div className={styles.horizContainer} style={{justifyContent: "center", padding:'15px 0px', overflowY:'auto', maxHeight:'225px'}}>
         {customOptions.map((option) => (
           <button
             key={option.name}
             onClick={() => toggleOption(option)}
+            style={{fontSize:'14px', minWidth:'fit-content', maxWidth:'45%'}}
             className={
               selectedOptions.some(o => o.name === option.name)
-                ? styles.optionBtnsSelected
-                : styles.optionBtns
+                ? styles.btnsSelected
+                : styles.btns
             }
           >
             {option.name} (+${option.price.toFixed(2)})
@@ -148,13 +149,13 @@ export default function DrinkDetails() {
         ))}
       </div>
       )}
-      <div className={styles.horizContainer}>
-        <div className={styles.qtyContainer}>
-          <div style={{display: "flex",}}>
+      <div className={styles.horizContainer} style={{justifyContent: "space-around", padding:'10px', boxShadow:'none'}}>
+          <div className={styles.horizContainer} style={{alignItems: 'center', boxShadow:'none', maxWidth:'fit-content'}}>
             <button onClick={() => setCount((c) => Math.max(c - 1, 1))} className={styles.qtyBtns}>-</button>
             <input value={count} readOnly className={styles.qtyInput} />
             <button onClick={() => setCount((c) => c + 1)} className={styles.qtyBtns}>+</button>
           </div>
+          <div className={styles.horizContainer}>
           <button
             onClick={() => addToCart({
               ...drink,
@@ -168,7 +169,7 @@ export default function DrinkDetails() {
           >
             Add to Cart
           </button>
-        </div>
+          </div>
       </div>
       </div>
     </div>

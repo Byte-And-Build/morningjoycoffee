@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 import styles from "../../app/page.module.css";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import Logo from "../../app/assets/Logo.webp";
 import { useAuth } from "../context/AuthContext";
 import { toast } from "react-toastify";
@@ -27,6 +28,7 @@ export default function MetricsPage() {
   const [users, setUsers] = useState([]);
   const [editUser, setEditUser] = useState(null);
   const [deleteUserModal, setDeleteUserModal] = useState(null);
+  const router = useRouter();
 
   useEffect(() => {
     socket.on("online-count", setLiveVisitors);
@@ -144,7 +146,13 @@ const deleteUser = async (id) => {
   );
 
   return (
-    <div className={styles.page} style={{ justifyContent: "flex-start" }}>
+    <div className={styles.page} style={{ justifyContent: "flex-start", padding:'0px 40px 80px 40px' }}>
+      <button
+        onClick={() => router.push("/profile")}
+        className={styles.backBtn}
+      >
+        ← Back
+      </button>
       <div className={styles.vertContainer} style={{paddingLeft: ".5rem", paddingRight: ".5rem"}}>
         <div className={styles.horizWrapper}>
           <Image src={Logo} width={80} height={80} alt="Logo" content="contain" />
@@ -155,12 +163,12 @@ const deleteUser = async (id) => {
           </div>
         </div>
           <h2>Top Selling Items</h2>
-        <div className={styles.horizWrapperInset} style={{alignItems: "flex-start"}}>
+        <div className={styles.horizWrapper} style={{alignItems: "flex-start"}}>
           {renderTop("Today", topSelling.day)}
           {renderTop("This Week", topSelling.week)}
           {renderTop("This Month", topSelling.month)}
         </div>
-        <div className={styles.horizWrapperInset}>
+        <div className={styles.horizWrapper} style={{boxShadow:'var(--insetShadow)', borderRadius:'var(--borderRadiusLarge)'}}>
           <div className={styles.vertContainer} style={{flex: 1}}>
             <h2 className={styles.drinkName}>Orders Today</h2>
             <p>{todaySummary.totalOrders}</p>
@@ -171,24 +179,22 @@ const deleteUser = async (id) => {
             </div>
           </div>
           <h2>Supplies Levels</h2>
-            <div className={styles.vertContainerInset}>
+            <div className={styles.horizContainer} style={{padding:'15px', maxHeight:'250px', overflowY:'auto'}}>
               {supplies.map(supply => (
-                <p key={supply._id}>
+                <p className={styles.horizContainer} key={supply._id} style={{flex:"1", minWidth:'33%', padding:'5px 0px', borderRadius:'var(--borderRadiusSmall)'}}>
                   {supply.name}: {supply.inStock} {supply.unit}
                 </p>
               ))}
             </div>
           <h2>Users</h2>
-            <div className={styles.vertContainerInset} style={{maxHeight: "175px", overflowY: "auto", alignItems: "center", padding: ".5rem", justifyContent: "flex-start"}}>
+            <div className={styles.vertContainer} style={{maxHeight: "175px", overflowY: "auto",justifyContent: "flex-start", boxShadow:'var(--insetShadow)', padding:'15px', borderRadius:'var(--borderRadiusLarge)'}}>
               {users.map(user => (
-                <div key={user._id} className={styles.vertContainerInset} style={{minHeight: "50px", padding: ".25rem", marginBottom: "1rem", overflowX: "auto", overflowY: "hidden", justifyContent: "flex-start"}}>
-                  <div key={user._id} className={styles.horizWrapper} style={{gap: "1rem", textAlign: "left", justifyContent: "flex-start", paddingLeft: ".5rem"}}>
-                  <p style={{flex: "1"}}>{user.email}</p>
-                  <p style={{flex: "1"}}>Role: {user.role}</p>
-                  <p style={{flex: "1"}}>Rewards: {user.rewards}</p>
-                  <button className={styles.btns} style={{maxWidth: "100px"}} onClick={() => setEditUser(user)}>Edit</button>
-                  <button className={styles.btns} style={{maxWidth: "100px"}} onClick={() => setDeleteUserModal(user)}>Delete</button>
-                  </div>
+                <div key={user._id} className={styles.horizWrapper} style={{padding:'10px', justifyContent: "flex-start", boxShadow:'var(--insetShadow)', borderRadius:'var(--borderRadiusSmall)'}}>
+                  <p style={{width: "100%"}}>{user.email}</p>
+                  <p style={{width:'100%', minWidth:'fit-content' ,textAlign:'center'}}>Role: {user.role}</p>
+                  <p style={{width:'100%', minWidth:'fit-content', textAlign:'center'}}>Rewards: {user.rewards}</p>
+                  <button className={styles.btns} style={{maxWidth:'30%', minWidth:'fit-content', fontSize:'12px', padding: '5px'}} onClick={() => setEditUser(user)}>Edit</button>
+                  <button className={styles.btns} style={{maxWidth:'30%', minWidth:'fit-content', fontSize:'12px', padding: '5px'}} onClick={() => setDeleteUserModal(user)}>Delete</button>
                 </div>
               ))}
               
