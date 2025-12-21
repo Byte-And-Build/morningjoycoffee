@@ -69,20 +69,22 @@ function CheckoutForm({ clientSecret, userRewards, setUserRewards, redeemReward,
 };
 
   return (
-    <div className={styles.vertContainer} style={{maxWidth: "90%", alignItems: "stretch"}}>
-      <div className={styles.horizWrapper}>
-        <h2 className={styles.drinkName}>Name for order</h2>
+    <div className={styles.vertContainer}>
+      <div className={styles.horizWrapper} style={{justifyContent:'flex-start'}}>
+        <h2 className={styles.drinkName}>Name for order:</h2>
         <input
         type="name"
         placeholder="Name for Order"
         value={customerName}
         onChange={(e) => setCustomerName(e.target.value)}
-        className={styles.userInput}
+        className={styles.userInput} style={{minWidth:'60%'}}
       />
       </div>
-      <PaymentElement />
+      <div className={styles.vertContainer} style={{alignItems:'stretch'}}>
+        <PaymentElement />
+      </div>
       <button
-        className={styles.btns}
+        className={styles.btns} style={{minWidth:'30%'}}
         onClick={handlePayment}
         disabled={loading || !stripe || !elements}
       >
@@ -157,7 +159,7 @@ export default function CheckoutPage() {
 }, [amountInCents, description, redeemReward]);
 
   return (
-    <div className={styles.page}>
+    <div className={styles.page} style={{padding:'40px 40px 80px 40px'}}>
       <h1 className={styles.heading}>Checkout - ${subtotal.toFixed(2)}</h1>
       {/* <p className={styles.rewardsText}>Your Reward Points: {userRewards}</p> */}
 

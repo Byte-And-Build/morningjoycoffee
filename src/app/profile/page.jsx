@@ -49,32 +49,30 @@ export default function ProfileScreen() {
   if (loading || !profile) return null;
 
   return (
-    <div className={styles.page}>
-      <div className={styles.vertContainer} style={{ paddingLeft: "1rem", paddingRight: "1rem" }}>
+    <div className={styles.page} style={{display:'flex', justifyContent:'center', gap:'1rem'}}>
         <h2 className={styles.heading}>
           Hello, <span>{profile?.name || "Guest"}!</span>
         </h2>
-        <div className={styles.vertContainer} style={{paddingTop: ".5rem", paddingBottom: ".5rem"}}>
+        <div className={styles.vertContainer} style={{paddingTop: ".5rem", paddingBottom: ".5rem", maxHeight:'fit-content'}}>
           <PunchCard rewards={profile?.rewards || 0} />
         </div>
-        <div className={styles.vertContainer} style={{ paddingLeft: "1rem", paddingRight: "1rem" }}>
+        <div className={styles.horizContainer} style={{ flexGrow:'0', boxShadow:'none', gap:'.75rem' }}>
           <button onClick={() => router.push("/user-orders")} className={styles.btns}>Your Orders</button>
           <button onClick={() => router.push("/user-settings")} className={styles.btns}>Settings</button>
-          <button onClick={() => { logout(); router.replace("/") }} className={styles.btns}>Logout</button>
         </div>
-        <div className={styles.vertContainer} style={{ paddingLeft: "1rem", paddingRight: "1rem" }}>
+        <button onClick={() => { logout(); router.replace("/") }} className={styles.btns} style={{maxHeight:'fit-content'}}>Logout</button>
+        <div className={styles.vertContainer} style={{padding:'1rem'}}>
           {(profile?.role === "Admin" || profile?.role === "Employee") && (
-            <div className={styles.horizContainer} style={{ padding: "1rem" }}>
-              <button onClick={() => router.push("/scanner")} className={styles.btns}>Scan QR</button>
-              <button onClick={() => router.push("/inventory")} className={styles.btns}>Inventory</button>
-              <button onClick={() => router.push("/incoming-orders")} className={styles.btns}>View Orders</button>
+            <div className={styles.horizContainer} style={{maxHeight:'fit-content', padding:'.75rem', width:'100%', justifyContent:'center' }}>
+              <button onClick={() => router.push("/scanner")} style={{ minWidth:'calc(50% - .5rem)'}} className={styles.btns}>Scan QR</button>
+              <button onClick={() => router.push("/inventory")} style={{ minWidth:'calc(50% - .5rem)'}} className={styles.btns}>Inventory</button>
+              <button onClick={() => router.push("/incoming-orders")} style={{minWidth:'calc(50% - .5rem)',}} className={styles.btns}>View Orders</button>
               {profile?.role === "Admin" && (
-                <button onClick={() => router.push("/metrics")} className={styles.btns}>Metrics</button>
+                <button onClick={() => router.push("/metrics")} className={styles.btns} style={{minWidth:'calc(50% - .5rem)',}}>Metrics</button>
               )}
             </div>
           )}
         </div>
-      </div>
     </div>
   );
 }

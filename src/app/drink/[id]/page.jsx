@@ -20,7 +20,10 @@ export default function DrinkDetails() {
   const [selectedOptions, setSelectedOptions] = useState([]);
   const [thumbsUp, setThumbsUp] = useState(0);
   const [thumbsDown, setThumbsDown] = useState(0);
-  const BASE_INGREDIENTS = ["Water", "Ice"];
+  const BASE_INGREDIENTS = [
+    "16oz Disposable Coffee Cup With Lid and Sleeves", 
+    "20oz Disposable Coffee Cup With Lid and Sleeves",
+    "32oz Clear Plastic Cup With Lid and Straw"];
 
   useEffect(() => {
     if (!id) return;
@@ -93,19 +96,13 @@ export default function DrinkDetails() {
       >
         ← Back
       </button>
-      <div style={{width: "100%", display: "flex", justifyContent: "center"}}>
-      <Image src={drink.image} alt={drink.name} className={styles.drinkImage} width={256} height={256}/>
+      <div className={styles.vertContainer}>
+        <Image src={drink.image} alt={drink.name} width={256} height={256}/>
+        <h1 className={styles.itemName}>{drink.name}</h1>
       </div>
-      <h1 className={styles.itemName}>{drink.name}</h1>
-      <Rating
-        item={drink}
-        thumbsUp={thumbsUp}
-        thumbsDown={thumbsDown}
-        handleRatingUpdate={handleRatingUpdate}
-      />
       {drink.sizes?.[0] && (
         <div className={styles.horizWrapper} style={{ flexWrap: "wrap" }}>
-          <p className={styles.ingrediants}>
+          <p className={styles.ingredients}>
             {drink.sizes[0].ingredients
               .map((ing) => ing.ingredientId?.name)
               .filter(name => name && !BASE_INGREDIENTS.includes(name))
@@ -113,9 +110,16 @@ export default function DrinkDetails() {
           </p>
         </div>
       )}
+      <Rating
+        item={drink}
+        thumbsUp={thumbsUp}
+        thumbsDown={thumbsDown}
+        handleRatingUpdate={handleRatingUpdate}
+      />
       <p className={styles.drinkDetailsPrice}>Total: ${totalPrice.toFixed(2)}</p>
-
-      <div className={styles.horizContainer} style={{justifyContent: "space-around", maxWidth: "80%", padding:'10px'}}>
+      <h3 style={{maxHeight:'fit-content', width:'100%', textAlign:'center'}}>Choose a size:</h3>
+      <div className={styles.horizContainer} style={{padding:'1rem', boxShadow:'none'}}>
+        
         {Array.isArray(drink.sizes) && drink.sizes.length > 1 && (
           drink.sizes.map(({ size, price }) => (
             <button
@@ -131,13 +135,14 @@ export default function DrinkDetails() {
           ))
         )}
       </div>
+      <span className={styles.itemName} style={{fontSize:'1.25rem'}}>Extras</span>
       {Array.isArray(customOptions) && customOptions.length > 0 && (
-      <div className={styles.horizContainer} style={{justifyContent: "center", padding:'15px 0px', overflowY:'auto', maxHeight:'225px'}}>
+      <div className={styles.extrasContainer}>
         {customOptions.map((option) => (
           <button
             key={option.name}
             onClick={() => toggleOption(option)}
-            style={{fontSize:'14px', minWidth:'fit-content', maxWidth:'45%'}}
+            style={{fontSize:'14px', minWidth:'48%', flex: '0 0 calc(50% - 1rem)'}}
             className={
               selectedOptions.some(o => o.name === option.name)
                 ? styles.btnsSelected
@@ -149,13 +154,12 @@ export default function DrinkDetails() {
         ))}
       </div>
       )}
-      <div className={styles.horizContainer} style={{justifyContent: "space-around", padding:'10px', boxShadow:'none'}}>
-          <div className={styles.horizContainer} style={{alignItems: 'center', boxShadow:'none', maxWidth:'fit-content'}}>
-            <button onClick={() => setCount((c) => Math.max(c - 1, 1))} className={styles.qtyBtns}>-</button>
+      <div className={styles.horizContainer} style={{justifyContent: "center", padding:'10px', gap:'2rem', boxShadow:'none'}}>
+          <div className={styles.horizContainer} style={{alignItems: 'center', boxShadow:'none', minWidth:'fit-content'}}>
+            <button onClick={() => setCount((c) => Math.max(c - 1, 1))} className={styles.qtyBtns}>&#x2212;</button>
             <input value={count} readOnly className={styles.qtyInput} />
-            <button onClick={() => setCount((c) => c + 1)} className={styles.qtyBtns}>+</button>
+            <button onClick={() => setCount((c) => c + 1)} className={styles.qtyBtns}>&#43;</button>
           </div>
-          <div className={styles.horizContainer}>
           <button
             onClick={() => addToCart({
               ...drink,
@@ -169,7 +173,6 @@ export default function DrinkDetails() {
           >
             Add to Cart
           </button>
-          </div>
       </div>
       </div>
     </div>

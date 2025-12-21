@@ -50,7 +50,7 @@ export default function DealsPage() {
         )}
 
         {user?.role === 'Admin' && (
-          <div>
+          <>
             <label className={styles.btns} htmlFor="menu">
               Upload New Menu
               <input
@@ -61,7 +61,7 @@ export default function DealsPage() {
                 onChange={handleUpload}
               />
             </label>
-          </div>
+          </>
         )}
       </div>
     </div>

@@ -33,7 +33,7 @@ const CurrencyInput = ({ value, onChange, placeholder }) => {
   };
 
   return (
-    <div className={styles.userWrapper} style={{flexDirection: "row", display: "flex"}}>
+    <div className={styles.horizContainer} style={{boxShadow:'none'}}>
       <input
         type="text"
         value={`${text}`}
@@ -42,9 +42,8 @@ const CurrencyInput = ({ value, onChange, placeholder }) => {
         placeholder={placeholder?.replace("$", "")}
         className={styles.userInput}
         inputMode="decimal"
-        style={{width: "75px", minWidth: "75px"}}
+        style={{ minWidth: "100px"}}
       />
-      
     </div>
   );
 };

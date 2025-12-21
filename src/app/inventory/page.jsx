@@ -72,30 +72,26 @@ export default function InventoryPage() {
   return (
     <div className={styles.page} style={{alignContent:'flex-start', padding:'0px 40px 80px 40px'}}>
       <div className={styles.stickyContainer}>
-        <div className={styles.vertContainer}>
-        <div className={styles.horizContainer} style={{alignItems:'center', boxShadow:'none', justifyContent:'space-around'}}>
-          <Image src={Logo} width={80} height={80} alt="Logo" content="contain" />
-          <h1 className={styles.heading}>Inventory</h1>
-        </div>
-        <InventoryItem refreshDrinks={fetchDrinks} />
-      </div>
+          <Image src={Logo} width={80} height={80} alt="Logo" content="contain" style={{maxWidth:'80px'}}/>
+          <h1 className={styles.heading}>Products</h1>
+          <InventoryItem refreshDrinks={fetchDrinks} />
       </div>
       <div className={styles.vertContainer}>
       {drinks.map((item) => (
         <div key={item._id} className={styles.inventoryWrapper}>
-          <div className={styles.vertContainer} onClick={() => router.push(`/drink/${item._id}`)}> 
-            <p className={styles.ingrediants}>{item.name}</p>
+          <div className={styles.vertContainer} onClick={() => router.push(`/drink/${item._id}`)} style={{flex:'.3'}}> 
+            <p className={styles.ingredients}>{item.name}</p>
             {item.image && (
-            <Image src={item.image} width={80} height={80} alt={item.name} className="object-contain" style={{cursor: "pointer"}}/>
+            <Image src={item.image} width={80} height={80} alt={item.name} className="object-contain" style={{cursor: "pointer", minWidth:'fit-content'}}/>
             )}
           </div>
-          <div className={styles.vertContainer} style={{ flex: .3, overflowY: "auto", justifyContent: "flex-start", maxHeight: "inherit" }}>
+          <div className={styles.horizWrapper} style={{ maxWidth:'50%', justifyContent: "flex-start", maxHeight: "inherit", overflowX:'auto' }}>
               {item.sizes?.map((s) => (
                 <div key={s.size}>
-                  <p className={styles.ingrediantsInventory} style={{ fontWeight: 'bold' }}>
+                  <p className={styles.ingredientsInventory} style={{ fontWeight: 'bold' }}>
                     {s.size}
                   </p>
-                  <ul className={styles.ingrediantsInventory} style={{ paddingLeft: '1rem' }}>
+                  <ul className={styles.ingredientsInventory} style={{ paddingLeft: '1rem' }}>
                     {s.ingredients.map((ing, idx) => (
                       <li key={idx}>
                         {ing.ingredientId?.name || ing.name} ({ing.quantity} {ing.unit})
@@ -106,15 +102,15 @@ export default function InventoryPage() {
               ))}
             </div>
           <pre>{formatPriceBySize(item.sizes)}</pre>
-          <div className={styles.vertContainer}>
-            <p className={styles.ingrediants}>{item.category}</p>
+          <div className={styles.vertContainer} style={{flex:'.3'}}>
+            <p className={styles.ingrediants}>Category: <br></br>{item.category}</p>
           </div>
-          <div className={styles.vertContainer}>
-            <div className={styles.horizContainer} style={{ padding: '.5em' }}>
+          <div className={styles.vertContainer} style={{flex:'.25'}}>
+            <div className={styles.horizContainer} style={{ padding: '.5em', width:'100%' }}>
               <span>👍</span>
               <span>{item.rating.thumbsUp}</span>
             </div>
-            <div className={styles.horizContainer} style={{ padding: '.5em' }}>
+            <div className={styles.horizContainer} style={{ padding: '.5em', width:'100%' }}>
               <span>👎</span>
               <span>{item.rating.thumbsDown}</span>
             </div>

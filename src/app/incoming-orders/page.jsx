@@ -23,6 +23,8 @@ const IncomingOrders = () => {
   const [orders, setOrders] = useState([]);
   const { user } = useAuth();
   const {token} = useAuth();
+
+  console.log(orders)
     
   useEffect(() => {
     if (!token) return;
@@ -116,34 +118,34 @@ const IncomingOrders = () => {
 };
 
   return (
-    <div className={styles.page}>
+    <div className={styles.page} style={{padding:'40px 40px 80px 40px', display:'flex', justifyContent:'flex-start', gap:'1rem'}}>
       <ToastContainer position="top-right" autoClose={2000}/>
       {orders.length === 0 ? (
         <p>No incoming orders yet.</p>
       ) : (
         orders.map((order, index) => (
           <div key={index} className={styles.orderWrapper}>
+            <p style={{maxWidth:'15%', padding:'10px'}}>Order# {index}</p>
             <div className={styles.vertContainer} style={{flex: .5, textAlign: "center"}}>
               <Image src={Placeholder} alt="Drink" width={60} height={60} />
               <span className={styles.ingredients}> {order.customer}</span>
             </div>
             <div className={styles.vertContainer} style={{flex: 1, textAlign: "left", justifyContent: "flex-start"}}>
               <strong className={styles.strong}>Items:</strong>{" "}
-              <ul>
+              <ul className={styles.vertContainer} style={{justifyContent:'flex-start', alignItems: 'flex-start'}}>
                 {Array.isArray(order.items)
                   ? order.items.map((item, index) => <li key={index} className={styles.itemDetails}>{item}</li>)
                   : <li className={styles.itemDetails} style={{textAlign: "left"}}>{order.items}</li>}
               </ul>
             </div>
-            <div className={styles.vertContainer} style={{flex: 1, padding: "0 .25rem"}}>
-              <select className={styles.btns} value={order.status} onChange={(e) => handleStatusChange(order._id, e.target.value)}>
-                <option className={styles.itemDetails} style={{textAlign: "center"}}>Queued</option>
-                <option className={styles.itemDetails} style={{textAlign: "center"}}>Making</option>
-                <option className={styles.itemDetails} style={{textAlign: "center"}}>Complete!</option>
+            <div className={styles.vertContainer} style={{maxHeight:'fit-content', padding:'1rem'}}>
+              <select className={styles.btns} style={{minWidth:'100%'}} value={order.status} onChange={(e) => handleStatusChange(order._id, e.target.value)}>
+                <option className={styles.itemDetails} style={{textAlign: "center", fontSize:'1rem', backgroundColor:'rgba(109, 109, 109, 1)'}}>Queued</option>
+                <option className={styles.itemDetails} style={{textAlign: "center", fontSize:'1rem', backgroundColor:'rgba(235, 177, 18, 1)'}}>Making</option>
+                <option className={styles.itemDetails} style={{textAlign: "center", fontSize:'1rem', backgroundColor:'rgba(41, 126, 34, 1)'}}>Complete!</option>
               </select>
-            
             {order.status === "Complete!" ? (
-                <button className={styles.btns} onClick={()=>deleteOrder(order._id)} style={{maxWidth:'fit-content', fontSize:'12px', color: 'red'}}>Delete Order?</button>
+                <button className={styles.btns} onClick={()=>deleteOrder(order._id)} style={{color: 'red', display:'flex'}}>Delete Order?</button>
                 ):null}
             </div>
           </div>

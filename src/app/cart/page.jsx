@@ -14,30 +14,30 @@ export default function CartPage() {
   const subtotal = cart.reduce((acc, item) => acc + item.totalPrice, 0);
 
   return (
-    <div className={styles.page}>
+    <div className={styles.page} style={{padding:'0px 40px 80px 40px'}}>
       <h1 className={styles.heading}>Your Cart</h1>
       {cart.length === 0 ? (
         <p>Your cart is empty.</p>
       ) : (
         <>
-          <div className={styles.vertContainer} style={{paddingLeft: "3rem", paddingRight: "3rem"}}>
+          <div className={styles.vertContainer} >
             {cart.map((item) => (
               <div key={item.id} className={styles.cartWrapper}>
                 <Image
                   src={item.image}
                   alt={item.name}
-                  width={60}
-                  height={60}
+                  width={128}
+                  height={128}
                   className="rounded-lg"
                 />
-                <div className={styles.cartDetails}>
+                <div className={styles.vertContainer} style={{textAlign:'left', alignItems:'flex-start'}}>
                   <span className={styles.itemNameCart}>{item.name}</span>
                   <div className={styles.vertContainer} style={{alignItems: "baseline"}}>
                   {item.customOptions?.length > 0 && (
                     <ul>
                       <li className={styles.itemDetails}>Size: {item.selectedSize}  (${item.selectedPrice.toFixed(2)})</li>
                       {item.customOptions.map((opt, i) => (
-                        <li key={i} className={styles.itemDetails}>
+                        <li key={i} className={styles.itemDetails} style={{listStyle:'none'}}>
                           - {opt.name} (+${opt.price?.toFixed(2) || "0.00"})
                         </li>
                       ))}
@@ -45,14 +45,14 @@ export default function CartPage() {
                   )}        
                   </div>    
                 </div>
-                <div className={styles.vertContainer}>
+                <div className={styles.vertContainer} style={{flexGrow:'0', alignContent:'center'}}>
                   <button
                     onClick={() => updateQuantity(item.id, Math.max(item.quantity - 1, 1))}
                     className={styles.qtyBtns}
                   >
                     <MdRemove size={20} />
                   </button>
-                  <span className={styles.qtyInput}>{item.quantity}</span>
+                  <span style={{fontSize:'1.5em'}}>{item.quantity}</span>
                   <button
                     onClick={() => updateQuantity(item.id, item.quantity + 1)}
                     className={styles.qtyBtns}
@@ -61,7 +61,7 @@ export default function CartPage() {
                   </button>
                 </div>
 
-                <div className={styles.vertContainer}>
+                <div className={styles.vertContainer} style={{flex:'.5'}}>
                   <span className="font-semibold">${item.totalPrice.toFixed(2)}</span>
                   <button
                     onClick={() => removeFromCart(item.id)}
@@ -75,18 +75,18 @@ export default function CartPage() {
           </div>
 
           
-            <div className={styles.vertContainer} style={{width: "60%", maxHeight: "fit-content"}}>
+            <div className={styles.vertContainer} style={{maxHeight: "fit-content"}}>
               <h2 className={styles.heading}>
                 Subtotal: ${subtotal.toFixed(2)}
               </h2>
               <button
-                className={styles.btns}
+                className={styles.btns} style={{minWidth:'30%'}}
                 onClick={() => router.push("/checkout")}
               >
                 Checkout
               </button>
               <button
-                className={styles.btns}
+                className={styles.btns} style={{minWidth:'30%'}}
                 onClick={clearCart}
               >
                 Clear Cart

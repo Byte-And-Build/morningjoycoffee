@@ -18,28 +18,24 @@ export default function ScanScreen() {
   if (!user) return null;
 
   return (
-    <div className={styles.page}>
-      <div className={styles.vertContainer} style={{maxWidth: "80%"}}>
-        <div className={styles.vertContainer}>
-          <h1 className={styles.heading}>Scan Me For Rewards!</h1>
-          <p className={styles.itemDetails}>(10 points = 1 Free Drink!)</p>
-        </div>
-        <div className={styles.vertContainer}>
-          <QRCodeCanvas value={user._id} size={256} />
-        </div>
-        <div className={styles.userContainer} style={{justifyContent: "center"}}>
+    <div className={styles.page} style={{padding: "40px 40px 80px 40px", alignContent:'center', flexDirection:'column', justifyContent:'space-around'}}>
+        <div className={styles.horizContainer} style={{padding: "15px", flexGrow:'0'}}>
+          <div className={styles.vertContainer} style={{alignItems: "center"}}>
+              <h1 className={styles.heading}>Scan Me For Rewards!</h1>
+              <p className={styles.itemDetails}>(10 points = 1 Free Drink!)</p>
+          </div>
           <div className={styles.vertContainer}>
-            <p>{user.name}</p>
-            <p>{user._id}</p>
+            <h3>{user.name}</h3>
+            <div className={styles.horizWrapper}>
+              <span className="label">Current Rewards:</span>
+              <span className="rewards">{user.rewards} Points</span>
+            </div>
           </div>
         </div>
-      <div className={styles.userContainer} style={{justifyContent: "center"}}>
-        <div className={styles.horizContainer}>
-            <span className="label">Current Rewards:</span>
-            <span className="rewards">{user.rewards} Points</span>
+        <div className={styles.vertContainer}>
+          <QRCodeCanvas value={user._id} size={256} style={{flex:'.5', minWidth:'fit-content'}}/>
+          <p>{user._id}</p>
         </div>
-        </div>
-      </div>
     </div>
   );
 }

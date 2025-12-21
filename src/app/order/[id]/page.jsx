@@ -29,7 +29,7 @@ export default function OrderPage() {
   console.log(order)
 
   return (
-    <div className={styles.page}>
+    <div className={styles.page} style={{padding:'40px 40px 80px 40px', display:'flex', justifyContent:'flex-start', gap:'1rem'}}>
       <h2 className={styles.heading}>Order Status</h2>
       <div className={styles.vertContainerInset}>
         <div className={styles.vertContainer} style={{flex: 1, paddingBottom: "1rem"}}>
@@ -43,11 +43,14 @@ export default function OrderPage() {
           </div>
           <div className={styles.vertContainer} style={{gap: ".5rem", alignItems: "center", flex: .75}}>
               <div className={styles.itemDetails} style={{textAlign: "center"}}>Created At: {new Date(order.createdAt).toLocaleString()}</div>
-              <div className={` ${styles.userInput} ${order.status === "Complete!" ? styles.statusComplete : ""} ${order.status === "Making" ? styles.statusMaking : ""} `} style={{textAlign: "center"}}>{order.status}</div>
+              <div className={` ${styles.userInput} ${order.status === "Complete!" ? styles.statusComplete : ""} ${order.status === "Making" ? styles.statusMaking : ""} `} style={{textAlign: "center", minWidth:'30%'}}>{order.status}</div>
               <div className={styles.itemDetails} style={{textAlign: "center"}}>Updated At: {new Date(order.updatedAt).toLocaleString()}</div>
           </div>
-        
+          
       </div>
+      <div className={styles.vertContainerInset} style={{flex:'1'}}>
+            About to wake your taste buds up!
+          </div>
     </div>
   );
 }

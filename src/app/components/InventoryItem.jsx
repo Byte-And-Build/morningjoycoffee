@@ -4,6 +4,8 @@ import styles from "../../app/page.module.css";
 import { api } from "../utils/api";
 import CurrencyInput from "./CurrencyInput";
 import { toast, ToastContainer } from "react-toastify";
+import EditSymbol from "../assets/editSymbol.svg";
+import DeleteSymbol from "../assets/deleteSymbol.svg";
 
 const InventoryItem = ({ refreshDrinks, item }) => {
   const [showForm, setShowForm] = useState(false);
@@ -64,18 +66,30 @@ const [formData, setFormData] = useState({
 
 const toggleSize = (idx) => {
   setSizesConfig(prev => {
-    const next = [...prev];
-    next[idx].selected = !next[idx].selected;
-    formData.sizes = next.filter(s => s.selected);
+    const next = prev.map((s, i) =>
+      i === idx ? { ...s, selected: !s.selected } : s
+    );
+
+    setFormData(prevForm => ({
+      ...prevForm,
+      sizes: next.filter(s => s.selected),
+    }));
+
     return next;
   });
 };
 
 const updateSizePrice = (idx, price) => {
   setSizesConfig(prev => {
-    const next = [...prev];
-    next[idx].price = price;
-    formData.sizes = next.filter(s => s.selected);
+    const next = prev.map((s, i) =>
+      i === idx ? { ...s, price } : s
+    );
+
+    setFormData(prevForm => ({
+      ...prevForm,
+      sizes: next.filter(s => s.selected),
+    }));
+
     return next;
   });
 };
@@ -270,11 +284,46 @@ const convertToWebp = async (file) => {
   })));
 };
 
+function removeSize(sizeToRemove) {
+  setSizesConfig(prev => {
+    const next = prev.filter(s => s.size !== sizeToRemove);
+
+    setFormData(prevForm => ({
+      ...prevForm,
+      sizes: next.filter(s => s.selected),
+    }));
+
+    return next;
+  });
+}
+
+function removeIngredient(sizeName, ingredientIdToRemove) {
+  setSizesConfig(prev => {
+    const next = prev.map(size => {
+      if (size.size !== sizeName) return size;
+
+      return {
+        ...size,
+        ingredients: size.ingredients.filter(
+          ing => ing.ingredientId !== ingredientIdToRemove
+        ),
+      };
+    });
+
+    setFormData(prevForm => ({
+      ...prevForm,
+      sizes: next.filter(s => s.selected),
+    }));
+
+    return next;
+  });
+}
+
   return (
     <>
-    <div className={styles.horizWrapper} style={{paddingTop: ".3rem", gap: ".5rem"}}>
-        <button onClick={() => setShowForm(true)} className={styles.btns}>➕ Product</button>
-        <button onClick={() => setShowIngForm(true)} className={styles.btns}>➕ Ingredient</button>
+    <div className={styles.horizWrapper} style={{width:'unset'}}>
+        <button onClick={() => setShowForm(true)} style={{maxWidth:"fit-content"}} className={styles.btns}><EditSymbol alt='edit product' style={{ width: "24px", height: "24px", stroke: "var(--fontColor)", padding:'2px' }} /> Product</button>
+        <button onClick={() => setShowIngForm(true)} style={{maxWidth:"fit-content"}} className={styles.btns}><EditSymbol alt='edit ingredient' style={{ width: "24px", height: "24px", stroke: "var(--fontColor)", padding:'2px' }} /> Ingredient</button>
       </div>
       {showIngForm && (
         <div className={styles.overlay} onClick={() => setShowIngForm(false)}>
@@ -309,7 +358,7 @@ const convertToWebp = async (file) => {
               </div>
               <div className={styles.horizWrapper}>
                   <div className={styles.vertContainer} style={{flex: 1}}>
-                    <label htmlFor="stock" className={styles.ingrediants}>Current Stock:</label>
+                    <label htmlFor="stock" className={styles.ingredients}>Current Stock:</label>
                     <input id="stock"
                       type="number"
                       className={styles.userInput}
@@ -321,7 +370,7 @@ const convertToWebp = async (file) => {
                     />
                   </div>
                   <div className={styles.vertContainer} style={{flex: 1}}>
-                    <label className={styles.ingrediants}>Re-Order At:</label>
+                    <label className={styles.ingredients}>Re-Order At:</label>
                     <input
                       type="number"
                       className={styles.userInput}
@@ -333,7 +382,7 @@ const convertToWebp = async (file) => {
                     />
                   </div>
                 <div className={styles.vertContainer} style={{flex: 1}}>
-                  <label className={styles.ingrediants}>Cost Per Unit:</label>
+                  <label className={styles.ingredients}>Cost Per Unit:</label>
                   <CurrencyInput
                     value={newIngredient.costPerUnit}
                     onChange={(val) =>
@@ -354,7 +403,7 @@ const convertToWebp = async (file) => {
                 />
                 {newIngredient.isExtra ? (
                   <>
-                  <label className={styles.ingrediants}>Extra Cost:</label>
+                  <label className={styles.ingredients}>Extra Cost:</label>
                       <CurrencyInput
                         value={newIngredient.extraCost}
                         onChange={(val) =>
@@ -376,19 +425,19 @@ const convertToWebp = async (file) => {
                 <div className={styles.vertContainer}>
                   <div className={styles.vertWrapperInset} style={{position: "relative", gap: "1rem"}}>
                     <div className={styles.horizWrapper} style={{justifyContent: "flex-start", paddingBottom: "1rem"}}>
-                      <span className={styles.ingrediants} style={{flex: 1, textAlign: "left", color: "black", minWidth: "100px"}}>Name</span>
-                      <span className={styles.ingrediants} style={{flex: 1, color: "black", minWidth: "100px"}}>Cost/Unit</span>
-                      <span className={styles.ingrediants} style={{flex: 1, color: "black", minWidth: "100px"}}>Extra Price</span>
-                      <span className={styles.ingrediants} style={{flex: 1, color: "black", minWidth: "100px"}}>In Stock</span>
-                      <span className={styles.ingrediants} style={{flex: .5, color: "black", minWidth: "75px"}}>Is Extra</span>
-                      <span className={styles.ingrediants} style={{flex: 1, color: "black", minWidth: "150px"}}>Edit/Save</span>
+                      <span className={styles.ingredients} style={{flex: 1, textAlign: "left", color: "black", minWidth: "100px"}}>Name</span>
+                      <span className={styles.ingredients} style={{flex: 1, color: "black", minWidth: "100px"}}>Cost/Unit</span>
+                      <span className={styles.ingredients} style={{flex: 1, color: "black", minWidth: "100px"}}>Extra Price</span>
+                      <span className={styles.ingredients} style={{flex: 1, color: "black", minWidth: "100px"}}>In Stock</span>
+                      <span className={styles.ingredients} style={{flex: .5, color: "black", minWidth: "75px"}}>Is Extra</span>
+                      <span className={styles.ingredients} style={{flex: 1, color: "black", minWidth: "150px"}}>Edit/Save</span>
                     </div>
                     {availableIngredients.map((ingredient) => (
                       <div className={styles.cartWrapper} key={ingredient._id} style={{borderBottom: "1px black dashed", minWidth: "100%"}}>
-                        <span className={styles.ingrediants} style={{flex: 1, textAlign: "left", minWidth: "100px"}}>{ingredient.name}</span>
-                        <span className={styles.ingrediants} style={{flex: 1, minWidth: "100px"}}>${ingredient.costPerUnit.toFixed(2)}/{ingredient.unit}</span>
-                        <span className={styles.ingrediants} style={{flex: 1, minWidth: "100px"}}>${ingredient.extraPrice.toFixed(2)}/{ingredient.unit}</span>
-                        <span className={styles.ingrediants} style={{flex: 1, minWidth: "100px"}}>{ingredient.inStock} {ingredient.unit}{ingredient.inStock > 1 ? "(s)" : ""}</span>
+                        <span className={styles.ingredients} style={{flex: 1, textAlign: "left", minWidth: "100px"}}>{ingredient.name}</span>
+                        <span className={styles.ingredients} style={{flex: 1, minWidth: "100px"}}>${ingredient.costPerUnit.toFixed(2)}/{ingredient.unit}</span>
+                        <span className={styles.ingredients} style={{flex: 1, minWidth: "100px"}}>${ingredient.extraPrice.toFixed(2)}/{ingredient.unit}</span>
+                        <span className={styles.ingredients} style={{flex: 1, minWidth: "100px"}}>{ingredient.inStock} {ingredient.unit}{ingredient.inStock > 1 ? "(s)" : ""}</span>
                         <input type="checkbox" defaultChecked={ingredient?.isExtra ? "checked" : ""} style={{flex: .33, minWidth: "75px"}}/>
                         <button className={styles.btns} style={{flex: .33, minWidth: "75px"}} onClick={() => { setEditIngredient(ingredient); setIngrediantForm(true); }}>Edit</button>
                         <button className={styles.btns} style={{flex: .33, minWidth: "75px"}} onClick={() => handleDeleteIngredient(ingredient._id)}>Delete</button>
@@ -411,9 +460,9 @@ const convertToWebp = async (file) => {
             <div className={styles.vertContainer}>
               <h3>Edit Ingredient</h3>
               <div className={styles.horizWrapper}>
-                <label htmlFor={editIngredient.name} className={styles.ingrediants} style={{flex: 1, textAlign: "left"}}>Name:</label>
+                <label htmlFor={editIngredient.name} className={styles.ingredients} style={{flex: 1, textAlign: "left"}}>Name:</label>
                 <input className={styles.userInput} id={editIngredient.name} placeholder="Name" value={editIngredient.name} onChange={(e) => setEditIngredient({ ...editIngredient, name: e.target.value })} />
-                <label htmlFor={editIngredient.name} className={styles.ingrediants} style={{flex: 1, textAlign: "left"}}>Unit:</label>
+                <label htmlFor={editIngredient.name} className={styles.ingredients} style={{flex: 1, textAlign: "left"}}>Unit:</label>
                 <select
                   className={styles.select}
                   value={editIngredient.unit}
@@ -428,7 +477,7 @@ const convertToWebp = async (file) => {
                 </select>
               </div>
               <div className={styles.horizWrapper}>
-                <label htmlFor={editIngredient.name} className={styles.ingrediants} style={{flex: 1, textAlign: "left"}}>Current Stock:</label>
+                <label htmlFor={editIngredient.name} className={styles.ingredients} style={{flex: 1, textAlign: "left"}}>Current Stock:</label>
                 <input
                   className={styles.userInput}
                   placeholder="In Stock"
@@ -440,7 +489,7 @@ const convertToWebp = async (file) => {
                 />
               </div>
               <div className={styles.horizWrapper}>
-                <label htmlFor={editIngredient.name} className={styles.ingrediants} style={{flex: 1, textAlign: "left"}}>Reorder At:</label>
+                <label htmlFor={editIngredient.name} className={styles.ingredients} style={{flex: 1, textAlign: "left"}}>Reorder At:</label>
                 <input
                   className={styles.userInput}
                   placeholder="Reorder At"
@@ -452,7 +501,7 @@ const convertToWebp = async (file) => {
                 />
               </div>
               <div className={styles.horizWrapper}>
-                <label htmlFor={editIngredient.name} className={styles.ingrediants} style={{flex: 1, textAlign: "left"}}>Cost Per Unit</label>
+                <label htmlFor={editIngredient.name} className={styles.ingredients} style={{flex: 1, textAlign: "left"}}>Cost Per Unit</label>
                 <CurrencyInput
                   value={editIngredient.costPerUnit}
                   onChange={(val) =>
@@ -462,7 +511,7 @@ const convertToWebp = async (file) => {
                 />
                 </div>
                 <div className={styles.horizWrapper}>
-                  <label htmlFor={editIngredient.name} className={styles.ingrediants} style={{flex: 1, textAlign: "left"}}>Is Extra?</label>
+                  <label htmlFor={editIngredient.name} className={styles.ingredients} style={{flex: 1, textAlign: "left"}}>Is Extra?</label>
                   <input type="checkbox" checked={editIngredient.isExtra} onChange={(e) => setEditIngredient({ ...editIngredient, isExtra: e.target.checked })}/>
                     {editIngredient.isExtra && (
                       <CurrencyInput
@@ -500,64 +549,78 @@ const convertToWebp = async (file) => {
           <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
             <ToastContainer theme="dark"/>
             <div className={styles.vertContainer}>
-            <div className={styles.horizWrapper}>
-              <input
-                className={styles.userInput}
-                name="Item Name"
-                placeholder="Name"
-                value={formData.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+            <div className={styles.horizWrapper} style={{width:'100%', flexWrap:'nowrap'}}>
+              <div className={styles.vertContainer} style={{gap:'0px'}}>
+                <input
+                  className={styles.userInput}
+                  name="Item Name"
+                  placeholder="Name"
+                  value={formData.name}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  style={{marginBottom:'0px'}}
+                />
+                <select id="category" className={styles.select} value={formData.category} onChange={(e) => setFormData({ ...formData, category: e.target.value })}>
+                  <option value="">Category</option>
+                  <option value="Specialty Drink">Specialty Drink</option>
+                  <option value="Morning Joy Faves">Morning Joy Faves</option>
+                  <option value="Coffee">Coffee</option>
+                  <option value="Tea">Tea</option>
+                  <option value="Lotus Energy">Lotus Energy</option>
+                  <option value="Smoothie">Smoothie</option>
+                  <option value="Red Bull Infusions">Red Bull Infusions</option>
+                  <option value="Family Flaves">Family Flaves</option>
+                  <option value="Food">Food</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+              <textarea
+                name="description"
+                className={styles.textArea}
+                placeholder="description"
+                value={formData.description}
+                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
               />
-              <select
-                id="category"
-                className={styles.select}
-                value={formData.category}
-                onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-              >
-                <option value="">Category</option>
-                <option value="Specialty Drink">Specialty Drink</option>
-                <option value="Morning Joy Faves">Morning Joy Faves</option>
-                <option value="Coffee">Coffee</option>
-                <option value="Tea">Tea</option>
-                <option value="Lotus Energy">Lotus Energy</option>
-                <option value="Smoothie">Smoothie</option>
-                <option value="Red Bull Infusions">Red Bull Infusions</option>
-                <option value="Family Flaves">Family Flaves</option>
-                <option value="Food">Food</option>
-                <option value="Other">Other</option>
-              </select>
             </div>
-            <textarea
-              name="description"
-              className={styles.textArea}
-              placeholder="description"
-              value={formData.description}
-              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-            />
-            <div className={styles.vertContainer}>
-              <h4>Sizes & Prices</h4>
+            <h4>Sizes & Prices</h4>
+            <div className={styles.horizContainer} style={{gap:'2rem', overflowY:'auto', boxShadow:'var(--insetShadow)', borderRadius:'var(--borderRadiusSmall)', padding:'1rem'}}>
               {sizesConfig.map((s, idx) => (
-                <div key={s.size} className={styles.horizWrapper} style={{justifyContent:'flex-start', gap:'2rem', overflowX:'auto'}}>
-                  <label>
-                    <input type="checkbox"  onChange={() => toggleSize(idx)}/>{" "} {s.size}
-                  </label>
+                <div key={s.size} className={styles.vertContainer} style={{gap:'1rem', alignItems:'flex-start', justifyContent:'stretch', border:'1px dashed var(--fontColor)', borderRadius:'var(--borderRadiusSmall)', padding:'10px'}}>
+                    <input type="checkbox" id={s.size} className={styles.hidden}  onChange={() => toggleSize(idx)}/>
+                    <label className={styles.horizContainer} style={{fontSize:'1rem', justifyContent:'space-between', padding:'.5rem', alignItems:'center' ,width:'100%', boxShadow: 'var(--shadow)', borderRadius:'var(--borderRadiusSmall)'}} htmlFor={s.size}>{" "} {s.size}
+                      <button type="button" style={{color:'red', backgroundColor:'var(--btnColor2)', display:'flex', alignItems:'center', fill:'red', cursor:'pointer', padding:'2px', borderRadius:'50%'}} onClick={() => removeSize(s.size)}><DeleteSymbol style={{width:'24px', height:'24px'}}/></button>
+                    </label>
                   {s.ingredients.map((ing) => (
-                    <div key={ing.ingredientId} className={styles.horizWrapper} style={{flex:1, minWidth:'fit-content', justifyContent: "flex-start", gap:'2rem'}}>
-                      <span style={{textAlign: "right"}}>{ing.name}</span>
+                    <div key={ing.ingredientId} className={styles.horizContainer} style={{boxShadow:'none', flexWrap:'nowrap', justifyContent:'space-between', width:'100%'}}>
+                      <button type="button" style={{color:'red', backgroundColor:'var(--btnColor2)', display:'flex', alignItems:'center', fill:'red', cursor:'pointer', padding:'2px', borderRadius:'50%'}} onClick={() => removeIngredient(s.size, ing.ingredientId)}>
+                        <DeleteSymbol style={{width:'16px', height:'16px'}}/>
+                      </button>
+                      <span style={{textAlign: "right", fontSize:'.8rem'}}>{ing.name}</span>
                       <input
-                        style={{width:'unset', textAlign: "right", maxWidth:'100px'}}
+                        style={{textAlign: "right"}}
                         className={styles.userInput}
                         type="number"
                         value={ing.quantity}
                         onChange={(e) => {
                           const newQty = parseInt(e.target.value, 10);
                           setSizesConfig(prev => {
-                            const copy = [...prev];
-                            const sizeObj = copy.find(x => x.size === s.size);
-                            sizeObj.ingredients = sizeObj.ingredients.map(x =>
-                              x.ingredientId === ing.ingredientId ? { ...x, quantity: newQty } : x
+                            const copy = prev.map(size =>
+                              size.size === s.size
+                                ? {
+                                    ...size,
+                                    ingredients: size.ingredients.map(x =>
+                                      x.ingredientId === ing.ingredientId
+                                        ? { ...x, quantity: newQty }
+                                        : x
+                                    ),
+                                  }
+                                : size
                             );
-                            formData.sizes = copy.filter(s => s.selected);
+
+                            setFormData(prevForm => ({
+                              ...prevForm,
+                              sizes: copy.filter(sz => sz.selected),
+                            }));
+
                             return copy;
                           });
                         }}
@@ -565,33 +628,38 @@ const convertToWebp = async (file) => {
                       <span>{ing.unit}</span>
                     </div>
                   ))}
-                  <div className={styles.horizWrapper} style={{flex:.4, textAlign: "right"}}>
-                    <span className={styles.ingrediants} style={{flex:1, textAlign: "right"}}>Sell Price: </span> 
-                    {s.selected && (
-                      <CurrencyInput
-                        value={s.price}
-                        onChange={(val) => updateSizePrice(idx, val)}
-                        placeholder={`$ Price for ${s.size}`}
-                      />
-                    )}
-                    <span className={styles.ingrediants} style={{flex:1, textAlign: "right"}}>Your Cost: </span> 
-                    <span className={styles.ingrediants}>${calculateCost(s, availableIngredients).toFixed(2)}</span>
-                    <span className={styles.ingrediants} style={{ textAlign: "right"}}>Profit: </span> 
-                      <span className={styles.ingrediants} style={{ color: calculateProfit(s, availableIngredients) < 0 ? 'red' : 'green' }}>
+                  <div className={styles.vertContainer} style={{overflowX:'auto'}}>
+                    <div className={styles.horizContainer} style={{boxShadow:'none', justifyContent:'flex-start'}}>
+                      <span>Sell Price:</span> 
+                      {s.selected && (
+                        <CurrencyInput
+                          value={s.price}
+                          onChange={(val) => updateSizePrice(idx, val)}
+                          placeholder={`$ Price for ${s.size}`}
+                        />
+                      )}
+                    </div>
+                    <div className={styles.horizContainer} style={{boxShadow:'none'}}>
+                      <span className={styles.ingredients} style={{textAlign: "right"}}>Your Cost: ${calculateCost(s, availableIngredients).toFixed(2)}</span> 
+                    </div>
+                    <div className={styles.horizContainer} style={{boxShadow:'none'}}>
+                      <span className={styles.ingredients} style={{textAlign: "right"}}>Gross Profit: </span> 
+                      <span className={styles.ingredients} style={{ textAlign:'left', color: calculateProfit(s, availableIngredients) < 0 ? 'red' : 'green' }}>
                         ${calculateProfit(s, availableIngredients)}
                       </span>
                     </div>
+                  </div>
                 </div>
               ))}
             </div>
-            <h4>Ingredients</h4>
-            <div className={styles.horizWrapper}  style={{display:'flex', flexWrap:'wrap', overflowX:'hidden', overflowY:'auto', maxHeight:'300px', justifyContent:'space-evenly', padding:'20px', boxShadow:'var(--insetShadow)', borderRadius:'var(--borderRadiusLarge)'}}>
+            <h4>Items/Ingredients</h4>
+            <div className={styles.horizWrapper} style={{display:'flex', flexWrap:'wrap', overflowX:'hidden', overflowY:'auto', maxHeight:'300px', justifyContent:'flex-start', padding:'1rem', boxShadow:'var(--insetShadow)', borderRadius:'var(--borderRadiusLarge)'}}>
               {regularIngredients.map((ingredient) => {
                 const selectedIngredients = formData.sizes?.flatMap(s => s.ingredients) || [];
                 const found = selectedIngredients.find(i => i.ingredientId === ingredient._id);
                 return (
-                  <div key={ingredient._id} className={styles.horizWrapper} style={{ flex: 1, minWidth:'20%' }}>
-                    <input id={`ing-${ingredient._id}`} type="checkbox" checked={!!found} onChange={(e) => {
+                  <>
+                    <input id={`ing-${ingredient._id}`} type="checkbox" className={styles.hidden} checked={!!found} onChange={(e) => {
                         const checked = e.target.checked;
                         const updatedSizes = formData.sizes.map((size) => {
                           if (!size.selected) return size;
@@ -628,23 +696,24 @@ const convertToWebp = async (file) => {
                         });
                       }}
                     />
-                    <label className={styles.btns} htmlFor={`ing-${ingredient._id}`} style={{fontSize:'1rem'}}>
+                    <label className={found ? styles.btnsSelected : styles.btns}  htmlFor={`ing-${ingredient._id}`} style={{fontSize:'.8rem'}}>
                       {ingredient.name}
                     </label>
-                  </div>
+                  </>
                 );
               })}
               </div>
               <h4>Extras</h4>
-              <div className={styles.horizWrapper} style={{display:'flex', flexWrap:'wrap', overflowX:'hidden', overflowY:'auto', maxHeight:'300px', justifyContent:'space-evenly', padding:'20px', boxShadow:'var(--insetShadow)', borderRadius:'var(--borderRadiusLarge)'}}>
+              <div className={styles.horizWrapper} style={{display:'flex', flexWrap:'wrap', overflowX:'hidden', overflowY:'auto', maxHeight:'300px', justifyContent:'flex-start', padding:'20px', boxShadow:'var(--insetShadow)', borderRadius:'var(--borderRadiusLarge)'}}>
                 {extraIngredients.map((ingredient) => {
                   const found = formData.extras?.find((i) => i.ingredientId === ingredient._id);
                   return (
-                      <div key={ingredient._id} className={styles.horizWrapper} style={{ flex:1, minWidth:'fit-content', minWidth:'20%' }}>
+                    <>
                         <input
                           id={`extra-${ingredient._id}`}
                           type="checkbox"
                           checked={!!found}
+                          className={styles.hidden}
                           onChange={(e) => {
                             let updated = e.target.checked
                               ? [...(formData.extras || []), {
@@ -658,24 +727,25 @@ const convertToWebp = async (file) => {
                             setFormData({ ...formData, extras: updated });
                           }}
                         />
-                        <label className={styles.btns} htmlFor={`extra-${ingredient._id}`}>
+                        <label className={found ? styles.btnsSelected : styles.btns} style={{fontSize:'.8rem'}} htmlFor={`extra-${ingredient._id}`}>
                           {ingredient.name}
                         </label>
-                      </div>
+                      </>
                   );
                 })}
               </div>
             </div>
             <div className={styles.vertContainer}>
-              <label className={styles.uploadLabel}>Upload Image</label>
-              <input type="file" accept="image/*" onChange={pickImage} />
+              <label className={styles.btns} htmlFor='previewImage'>Upload Image</label>
+              <input type="file" id='previewImage' accept="image/*" onChange={pickImage} className={styles.hidden}/>
               {formData.image && (
-                <img src={formData.image} alt="preview" className={styles.preview} />
+                <img src={formData.image} alt="preview" className={styles.preview} style={{height:'256px', width:'256px'}}/>
               )}
             </div>
-
-            <button className={styles.btns} onClick={handleAddOrEdit}>Save</button>
-            <button className={styles.btns} onClick={() => setShowForm(false)}>Close</button>
+            <div className={styles.horizContainer} style={{boxShadow:'none'}}>
+              <button className={styles.btns} onClick={handleAddOrEdit}>Save</button>
+              <button className={styles.btns} onClick={() => setShowForm(false)}>Close</button>
+            </div>
           </div>
         </div>
       )}

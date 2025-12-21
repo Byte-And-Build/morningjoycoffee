@@ -5,6 +5,9 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useAuth } from "../../app/context/AuthContext";
 import styles from "../../app/page.module.css";
+import Link from "next/link";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function LoginPage() {
   const { user, register } = useAuth();
@@ -25,19 +28,21 @@ export default function LoginPage() {
     try {
       await register(name, email, password);
     } catch (error) {
-      console.error("Register failed:", error);
+      console.error("Registration Failed:", error);
+      toast.error("Registration Failed:", error)
     }
     setLoading(false);
   };
 
   return (
-    <div className={styles.page} style={{overflow: "hidden"}}>
+    <div className={styles.page} style={{padding:'0px 40px 80px 40px', justifyContent:'center', display:'flex', gap:'1rem'}}>
+      <ToastContainer position="top-right" autoClose={2000}/>
       <Image src={Logo} alt="Logo" width={200} height={200} content="contain"/>
-      <div className={styles.vertContainer} style={{overflow: "hidden"}}>
-      <div className={styles.vertContainer}>
+      <div className={styles.vertContainer} style={{overflow: "hidden", flexGrow:'0', padding:'1rem'}}>
+      <form className={styles.vertContainer} style={{maxWidth:'50%'}}>
     <input
         type="name"
-        placeholder="Name"
+        placeholder="Name/Nickname"
         value={name}
         onChange={(e) => setName(e.target.value)}
         className={styles.userInput}
@@ -56,19 +61,20 @@ export default function LoginPage() {
         onChange={(e) => setPassword(e.target.value)}
         className={styles.userInput}
       />
-      </div>
+      </form>
       {loading ? (
         <div className={styles.vertContainer}>
           <Image src={Logo} alt="Logo" width={150} height={150} content="contain"/>
           <div>Loading...</div>
         </div>
       ) : (
-          <div className={styles.vertContainer} style={{paddingLeft: "1rem", paddingRight: "1rem"}}>
+          <div className={styles.horizContainer} style={{maxHeight:'fit-content', maxWidth:'50%', boxShadow:'none'}}>
             <button className={styles.btns} onClick={handleRegister}>REGISTER</button>
-            <button className={styles.btns} onClick={() => router.push("/login")}>LOGIN</button>
           </div>
       )}
       </div>
+       <strong><Link className={styles.itemDetails} href="/login"> Already a member? Login here!</Link></strong>
+       <p style={{fontSize:'10px', textAlign:'center'}}>We do not collect, share, or sell your information. We are not interested in it.<br></br>This is strictly for logging into this app only.</p>
     </div>
   );
 }

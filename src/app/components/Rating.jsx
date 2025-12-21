@@ -7,22 +7,24 @@ export default function Rating({ item, thumbsUp, thumbsDown, handleRatingUpdate 
   const { user } = useAuth();
 
   return (
-    <div className={styles.ratingWrapper}>
+    <div className={styles.horizWrapper} style={{gap:'1rem'}}>
       <button
         disabled={!user}
         onClick={() => user && handleRatingUpdate("thumbsUp")}
-        className={styles.ratingContainer}
+        className={styles.btns}
+        style={{flexGrow:'0', padding:'.5rem'}}
       >
         <span className={styles.ratingText}>{thumbsUp}</span>
-        <FaThumbsUp size={20} className="text-teal-600" />
+        <FaThumbsUp size={15} className="text-teal-600" />
       </button>
       <button
         disabled={!user}
         onClick={() => user && handleRatingUpdate("thumbsDown")}
-        className={styles.ratingContainer}
+        className={styles.btns}
+         style={{flexGrow:'0', padding:'.5rem'}}
       >
         <span className={styles.ratingText}>{thumbsDown}</span>
-        <FaThumbsDown size={20} className="text-teal-600" />
+        <FaThumbsDown size={15} className="text-teal-600" />
       </button>
     </div>
   );

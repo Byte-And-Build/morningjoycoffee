@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "../../app/context/AuthContext";
 import styles from "../../app/page.module.css";
 import { toast } from "react-toastify";
+import Link from "next/link";
 
 export default function LoginPage() {
   const { user, login } = useAuth();
@@ -32,10 +33,10 @@ export default function LoginPage() {
   };
 
   return (
-    <div className={styles.page} style={{overflow: "hidden"}}>
+    <div className={styles.page} style={{padding:'0px 40px 80px 40px', justifyContent:'center', display:'flex', gap:'1rem'}}>
       <Image src={Logo} alt="Logo" width={200} height={200} content="contain"/>
-      <div className={styles.vertContainer} style={{overflow: "hidden"}}>
-      <div className={styles.vertContainer}> 
+      <div className={styles.vertContainer} style={{overflow: "hidden", flexGrow:'0', padding:'1rem'}}>
+      <form className={styles.vertContainer} style={{maxWidth:'50%'}}> 
       <input
         type="email"
         placeholder="Email"
@@ -46,26 +47,29 @@ export default function LoginPage() {
       <input
         type="password"
         placeholder="Password"
+        autoComplete="current-password"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
         className={styles.userInput}
       />
-      </div>
+      </form>
       {loading ? (
         <div className={styles.vertContainer}>
           <Image src={Logo} alt="Logo" width={150} height={150} content="contain"/>
           <div>Loading...</div>
         </div>
       ) : (
-          <div className={styles.vertContainer} style={{paddingLeft: "1rem", paddingRight: "1rem"}}>
+        <div className={styles.vertContainer} style={{maxWidth:'50%'}}>
+          <div className={styles.horizContainer} style={{boxShadow:'none'}}>
             <button className={styles.btns} onClick={handleLogin}>LOGIN</button>
-            <button className={styles.btns} onClick={() => router.push("/register")}>REGISTER</button>
-            <button className={styles.btns} onClick={() => router.push("/forgotpassword")}>
-              Forgot Password?
-            </button>
           </div>
+          <button className={styles.btns} onClick={() => router.push("/forgotpassword")}>
+              Forgot Password?
+          </button>
+        </div>
       )}
       </div>
+      <strong><Link className={styles.itemDetails} href="/register"> Not a member? Register here!</Link></strong>
     </div>
   );
 }

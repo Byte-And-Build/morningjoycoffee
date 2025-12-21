@@ -72,19 +72,27 @@ async function deleteOrder(id) {
 }
 
   return (
-    <div className={styles.page} style={{justifyContent: "flex-start"}}>
+    <div className={styles.page} style={{display:'flex', gap:'2rem' , justifyContent: "flex-start", padding:'20px 40px 80px 40px'}}>
       <h2>Your Purchases</h2>
+      <button
+        onClick={() => router.push("/profile")}
+        className={styles.backBtn}
+      >
+        ← Back
+      </button>
       {loading ? (
         <p>Loading orders...</p>
         ) : Array.isArray(orders) && orders.length > 0 ? (
         orders.map((order, index) => (
-          <div key={index} className={styles.orderWrapper}>
+          <div key={index} className={styles.horizContainer} style={{padding:'1rem', width:'100%', flex:'none', height:'150px'}}>
+            <p style={{maxWidth:'15%', padding:'10px'}}>Order# {index}</p>
+            <p style={{maxWidth:'15%', padding:'10px'}}>${parseFloat(order.amount)}</p>
             <div className={styles.vertContainer} style={{flex: .5, textAlign: "center"}}>
-              <Image src={Placeholder} alt="Drink" width={60} height={60} />
-              <span className={styles.ingrediants}> {order.customer}</span>
+              <Image src={order.image || Placeholder} alt="Drink" width={60} height={60} />
+              <span className={styles.ingredients}> {order.customer}</span>
             </div>
-            <div className={styles.vertContainer} style={{flex: 1, textAlign: "left", justifyContent: "flex-start"}}>
-              <ul>
+            <div className={styles.vertContainer} style={{flex: 1, textAlign: "left", justifyContent: "flex-start", overflowY:'auto', overflowX:'hidden'}}>
+              <ul style={{width:'100%'}}>
               <strong className={styles.strong}>Items:</strong>{" "}
                 {Array.isArray(order.items)
                   ? order.items.map((item, index) => <li key={index} className={styles.itemDetails}>{item}</li>)
@@ -92,9 +100,9 @@ async function deleteOrder(id) {
               </ul>
             </div>
             <div className={styles.vertContainer} style={{flex: 1, gap:'1rem', padding: "0 .25rem"}}>
-              <Link href={`/order/${order._id}`} className={styles.btns} style={order?.status === "Complete!" ? {color:'var(--colorComplete)'} : {color:'var(--fontColor)'}}>{order.status}</Link>
+              <Link href={`/order/${order._id}`} className={styles.btns} style={order?.status === "Complete!" ? {minWidth:'100%', color:'var(--colorComplete)', boxShadow:'var(--insetShadow)'} : order?.status === "Making" ? {minWidth:'100%', color:'var(--colorInProcess)', boxShadow:'var(--insetShadow)'} : {minWidth:'100%', color:'var(--fontColor)', boxShadow:'var(--insetShadow)'}}>{order.status}</Link>
               {order.status === "Complete!" ? (
-                <button className={styles.btns} onClick={()=>deleteOrder(order._id)} style={{maxWidth:'fit-content', fontSize:'12px', color: 'red'}}>Delete Order?</button>
+                <button className={styles.btns} onClick={()=>deleteOrder(order._id)} style={{minWidth:'30%', maxWidth:'fit-content', fontSize:'12px', color: 'red'}}>Delete Order?</button>
                 ):null}
             </div>
           </div>

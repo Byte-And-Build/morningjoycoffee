@@ -8,7 +8,6 @@ export default function PunchCard({ rewards = 0 }) {
   return (
     <div className={styles.vertContainer}>
         <h2 className={styles.description}>Your Rewards</h2>
-        {/* <strong className={styles.itemDetails}>Your 10th drink is on us!</strong> */}
         <div className={styles.punchCard}>
         {Array.from({ length: MAX_PUNCHES }).map((_, i) => {
             const isPunched = i < rewards;
@@ -20,6 +19,7 @@ export default function PunchCard({ rewards = 0 }) {
             );
         })}
         </div>
+        <strong className={styles.itemDetails}>Your 10th drink is on us!</strong>
     </div>
   );
 }

@@ -22,9 +22,12 @@ export default function EditItemPopUp({ item, setEditPopUp, fetchDrinks }) {
     extras: [],
     sizes: [],
     rating: { thumbsUp: 0, thumbsDown: 0 },
+    ingredients: [],            // <- add this
   });
   const [ingredientSearch, setIngredientSearch] = useState("");
   const [ingredientSuggestions, setIngredientSuggestions] = useState([]);
+
+  console.log(availableIngredients)
 
   useEffect(() => {
   const fetchIngredients = async () => {
@@ -65,6 +68,26 @@ export default function EditItemPopUp({ item, setEditPopUp, fetchDrinks }) {
 
 useEffect(() => {
   if (item) {
+    // Build a unique list of ingredients used in any size
+    const uniqMap = new Map();
+
+    (item.sizes || []).forEach((size) => {
+      (size.ingredients || []).forEach((ing) => {
+        const id =
+          typeof ing.ingredientId === "object"
+            ? ing.ingredientId._id
+            : ing.ingredientId;
+
+        if (!uniqMap.has(id)) {
+          uniqMap.set(id, {
+            ingredientId: id,
+            name: ing.name,
+            unit: ing.unit,
+          });
+        }
+      });
+    });
+
     setFormData({
       _id: item._id,
       name: item.name,
@@ -74,7 +97,7 @@ useEffect(() => {
       extras: item.extras || [],
       sizes: item.sizes || [],
       rating: item.rating || { thumbsUp: 0, thumbsDown: 0 },
-      ingredients: item.ingredients || []
+      ingredients: Array.from(uniqMap.values()),   // <- now you have it
     });
   }
 }, [item]);
@@ -317,18 +340,19 @@ const removeIngredient = (ingredientToRemove) => {
         <h4>Recipe</h4>
         </div>
         <div className={styles.vertContainer}>
-          <div className={styles.horizWrapper} style={{justifyContent: "flex-start", overflowX: "auto"}}>
+          <div className={styles.horizWrapper} style={{justifyContent: "flex-start"}}>
             {formData.sizes.map((size, idx) => {
               const cost = calculateCostForSize(size);
               const price = size.price;
               const profit = price - cost;
 
               return (
-                <div key={size + idx} className={styles.vertContainer} style={{paddingRight: ".75rem", paddingLeft: ".75rem", borderRight: "1px dashed black"}}>
+                <div key={size + idx} className={styles.vertContainer} style={{paddingRight: ".75rem", paddingLeft: ".75rem", borderRight: "1px dashed black", justifyContent:'stretch', width: 'unset'}}>
                   <button className={styles.btns} onClick={() => deleteSize(size.size)}>{size.size} ×</button>
                   {size.ingredients.map((ing, indx) => (
-                    <div key={ing.ingredientId?._id || ing.name || indx} className={styles.horizWrapper} style={{justifyContent: "space-between"}}>
-                      <span style={{flex: 1.5}}>{ing.name}</span>
+                    <div key={ing.ingredientId?._id || ing.name || indx} className={styles.vertContainer} style={{borderBottom: "1px dashed black",}}>
+                      <span>{ing.name}</span>
+                      <div className={styles.horizWrapper} style={{width:'100%', alignItems:'center', justifyContent:'space-evenly'}}>
                       <input
                         type="number"
                         min="0"
@@ -345,11 +369,13 @@ const removeIngredient = (ingredientToRemove) => {
                           }));
                         }}
                       />
-                      <span style={{flex: .1}}>{ing.unit}</span>
-                      <button className={styles.btns} style={{maxWidth:'15px', maxHeight:'10px'}} type="button" onClick={() => {
-                        const id = typeof ing.ingredientId === "object" ? ing.ingredientId._id : ing.ingredientId; removeIngredient({ id, name: ing.name });}}>
-                        X
-                    </button>
+                      
+                        <span style={{flex: .1}}>{ing.unit}</span>
+                        <button className={styles.btns} style={{maxWidth:'15px', maxHeight:'10px'}} type="button" onClick={() => {
+                          const id = typeof ing.ingredientId === "object" ? ing.ingredientId._id : ing.ingredientId; removeIngredient({ id, name: ing.name });}}>
+                          X
+                        </button>
+                      </div>
                     </div>
                   ))}
                   <span style={{flex: 1}}>Price: $
@@ -371,25 +397,24 @@ const removeIngredient = (ingredientToRemove) => {
                   <span style={{flex: 1}}>Cost: ${cost.toFixed(2)}</span>
                   <span style={{flex: 1}}>Profit:
                     <span style={{ color: profit >= 0 ? "green" : "red" }}>
-                      ${profit.toFixed(2)}
+                      ${profit}
                     </span>
                   </span>
                 </div>
               );
             })}
-          
           </div>
           <div className={styles.vertContainer} style={{flex: 1}}>
             <input
               type="text"
               value={ingredientSearch}
               onChange={(e) => setIngredientSearch(e.target.value)}
-              placeholder="Add ingredients..."
+              placeholder="Add/Search ingredients..."
               className={styles.userInput}
+              style={{width:'100%'}}
               
             />
-            
-            <div className={styles.horizWrapper} style={{flex: "1", maxWidth:'100%', justifyContent: "flex-start", overflowX: "auto", padding: ".75rem", overflowY: "hidden"}}>
+            <div className={styles.horizWrapper} style={{flex: "1", maxHeight:'300px', justifyContent: "center", flexWrap:'wrap', padding: ".75rem", overflowY: "auto"}}>
               {availableIngredients
                 .filter((ing) =>
                   ing.name.toLowerCase().includes(ingredientSearch.toLowerCase()) &&
@@ -399,9 +424,8 @@ const removeIngredient = (ingredientToRemove) => {
                   <button
                     key={ing._id}
                     className={styles.btns}
-                    style={{minWidth:'fit-content'}}
+                    style={{minWidth:'fit-content', maxWidth:'30%', fontSize:'12px'}}
                     onClick={() => {
-                      // ✅ Add this ingredient to each size's ingredient list
                       const updatedSizes = formData.sizes.map((size) => ({
                         ...size,
                         ingredients: [
@@ -429,13 +453,12 @@ const removeIngredient = (ingredientToRemove) => {
             </div>
             </div>
         </div>
-        <div className={styles.vertContainer}>
-        <button className={styles.btns} onClick={pickImage}>
-          Upload Image
-        </button>
-
+        <div className={styles.horizWrapper}>
         {formData.image && (
+          <>
           <Image src={formData.image} alt="Preview" width={256} height={256} style={{ objectFit: "contain" }} className={styles.preview} onError={(e) => e.currentTarget.style.display = 'none'}/>
+          <button className={styles.btns} onClick={pickImage} style={{flex:'.5'}} >Replace Image</button>
+          </>
         )}
         </div>
           <div className={styles.horizWrapper}>
