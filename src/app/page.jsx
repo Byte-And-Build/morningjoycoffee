@@ -38,9 +38,32 @@ export default function HomePage( ) {
   }, []);
 
   const categories = drinks.length > 0 ? ["All", ...new Set(drinks.map(d => d.category))] : [];
-  const filteredDrinks = selectedCategory === "All"
-    ? drinks
-    : drinks.filter(drink => drink.category === selectedCategory);
+  const normalizedSearch = searchItem.trim().toLowerCase();
+  const filteredDrinks = drinks.filter((drink) => {
+  // Category filter
+  const matchesCategory =
+    selectedCategory === "All" || drink.category === selectedCategory;
+
+  // Search filter (name + category + optional ingredient match)
+  if (!normalizedSearch) return matchesCategory;
+
+  const nameMatch = (drink.name || "").toLowerCase().includes(normalizedSearch);
+  const categoryMatch = (drink.category || "")
+    .toLowerCase()
+    .includes(normalizedSearch);
+
+  // Optional: search across ingredients (across all sizes)
+  const ingredientMatch =
+    drink.sizes?.some((size) =>
+      size.ingredients?.some((ing) =>
+        (ing?.name || "").toLowerCase().includes(normalizedSearch)
+      )
+    ) ?? false;
+
+  const matchesSearch = nameMatch || categoryMatch || ingredientMatch;
+
+  return matchesCategory && matchesSearch;
+});
 
   if (loading) return (
   <div className={styles.page}>
@@ -51,16 +74,17 @@ export default function HomePage( ) {
 
   return (
     <div className={styles.page}>
-      <div className={styles.vertContainer} style={{height:'300px', backgroundColor:'white', marginBottom:'1.5rem', borderRadius:'0 0 .5rem .5rem'}}>
-        <Image src={mainImage} style={{height: '100%', width:'auto', objectFit:'contain'}} alt="Logo" />
+      <div className={styles.heroContainer}>
+        <Image src={mainImage} alt="Logo" />
       </div>
       <div className={styles.vertContainer}>
-        <div className={styles.vertContainer} style={{width:'100%', alignItems:'flex-start', padding:'0px 20px'}}>
+        <div className={styles.vertContainer} style={{width:'calc(100%-40px)', alignItems:'flex-start'}}>
           <div className={styles.searchWrapper}>
-            <SearchSymbol style={{width:'20px', height:'20px', fill: 'transparent'}}/>
-            <input type="text" id='searchInput' placeholder="Search..." onChange={(e) => setSearchItem(e.target.value)} className={styles.userInput} style={{boxShadow:'none', padding:'0px', marginBottom:'0px', height:'35px', maxWidth:'unset', backgroundColor:'transparent', fontSize:'1.2rem'}}/>
+            <SearchSymbol style={{ width:'20px', height:'20px', fill: 'transparent'}}/>
+            <label htmlFor="searchInput" style={{boxShadow:'none', padding:'0px', marginBottom:'0px', maxWidth:'unset', backgroundColor:'transparent', fontSize:'1.2rem'}}>{searchItem ? searchItem : 'Search...'}</label>
+            <input type="text" id='searchInput' placeholder="Search..." onChange={(e) => setSearchItem(e.target.value)} className={styles.hidden} />
           </div>
-          <div className={styles.horizWrapperInset} style={{justifyContent:'flex-start', overflowX:'auto', overflowY:'hidden'}}>
+          <div className={styles.horizWrapperInset} style={{width:'100%', justifyContent:'flex-start', overflowX:'auto', overflowY:'hidden', borderRadius:'var(--borderRadiusSmall)'}}>
             {categories.map(cat => (
               <button
                 key={cat}

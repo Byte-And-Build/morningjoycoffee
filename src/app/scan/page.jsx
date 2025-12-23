@@ -18,7 +18,7 @@ export default function ScanScreen() {
   if (!user) return null;
 
   return (
-    <div className={styles.page} style={{padding: "40px 40px 80px 40px", alignContent:'center', flexDirection:'column', justifyContent:'space-around'}}>
+    <div className={styles.page} style={{alignContent:'center', flexDirection:'column', justifyContent:'space-around'}}>
         <div className={styles.horizContainer} style={{padding: "15px", flexGrow:'0'}}>
           <div className={styles.vertContainer} style={{alignItems: "center"}}>
               <h1 className={styles.heading}>Scan Me For Rewards!</h1>
@@ -26,7 +26,7 @@ export default function ScanScreen() {
           </div>
           <div className={styles.vertContainer}>
             <h3>{user.name}</h3>
-            <div className={styles.horizWrapper}>
+            <div className={styles.horizWrapperInset}>
               <span className="label">Current Rewards:</span>
               <span className="rewards">{user.rewards} Points</span>
             </div>
