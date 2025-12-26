@@ -4,6 +4,7 @@ import { useEffect, useState, useMemo } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { useCart } from "../../context/CartContext";
 import { api } from "../../utils/api";
+import { FaPlus, FaMinus } from "react-icons/fa";
 import Rating from "../../components/Rating";
 import Image from "next/image";
 
@@ -117,9 +118,8 @@ export default function DrinkDetails() {
         handleRatingUpdate={handleRatingUpdate}
       />
       <p className={styles.drinkDetailsPrice}>Total: ${totalPrice.toFixed(2)}</p>
-      <h3 style={{maxHeight:'fit-content', width:'100%', textAlign:'center'}}>Choose a size:</h3>
+      <h3 className={styles.itemName} style={{fontSize:'1.5rem'}}>Choose a size:</h3>
       <div className={styles.horizContainer} style={{padding:'1rem', boxShadow:'none'}}>
-        
         {Array.isArray(drink.sizes) && drink.sizes.length > 1 && (
           drink.sizes.map(({ size, price }) => (
             <button
@@ -128,37 +128,41 @@ export default function DrinkDetails() {
                 setSelectedSize(size);
                 setSelectedPrice(parseFloat(price));
               }}
-              className={`${selectedSize === size ? styles.selectedSize : styles.sizeBtns}`}
+              className={`${selectedSize === size ? styles.btnsSelected : styles.btns}`}
+              style={{borderRadius:'100%', width:'60px', height:'60px', minWidth:'60px'}}
             >
               {size}
             </button>
           ))
         )}
       </div>
-      <span className={styles.itemName} style={{fontSize:'1.25rem'}}>Extras</span>
+      
       {Array.isArray(customOptions) && customOptions.length > 0 && (
-      <div className={styles.extrasContainer}>
-        {customOptions.map((option) => (
-          <button
-            key={option.name}
-            onClick={() => toggleOption(option)}
-            style={{fontSize:'14px', minWidth:'48%', flex: '0 0 calc(50% - 1rem)'}}
-            className={
-              selectedOptions.some(o => o.name === option.name)
-                ? styles.btnsSelected
-                : styles.btns
-            }
-          >
-            {option.name} (+${option.price.toFixed(2)})
-          </button>
-        ))}
-      </div>
+        <>
+        <span className={styles.itemName} style={{fontSize:'1.25rem'}}>Extras</span>
+        <div className={styles.extrasContainer}>
+          {customOptions.map((option) => (
+            <button
+              key={option.name}
+              onClick={() => toggleOption(option)}
+              style={{fontSize:'14px', minWidth:'48%', flex: '0 0 calc(50% - 1rem)'}}
+              className={
+                selectedOptions.some(o => o.name === option.name)
+                  ? styles.btnsSelected
+                  : styles.btns
+              }
+            >
+              {option.name} (+${option.price.toFixed(2)})
+            </button>
+          ))}
+        </div>
+      </>
       )}
       <div className={styles.horizContainer} style={{justifyContent: "center", padding:'10px', gap:'2rem', boxShadow:'none'}}>
           <div className={styles.horizContainer} style={{alignItems: 'center', boxShadow:'none', minWidth:'fit-content'}}>
-            <button onClick={() => setCount((c) => Math.max(c - 1, 1))} className={styles.qtyBtns}>&#x2212;</button>
+            <button onClick={() => setCount((c) => Math.max(c - 1, 1))} className={styles.qtyBtns}><FaMinus /></button>
             <input value={count} readOnly className={styles.qtyInput} />
-            <button onClick={() => setCount((c) => c + 1)} className={styles.qtyBtns}>&#43;</button>
+            <button onClick={() => setCount((c) => c + 1)} className={styles.qtyBtns}><FaPlus /></button>
           </div>
           <button
             onClick={() => addToCart({

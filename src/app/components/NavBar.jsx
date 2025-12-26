@@ -1,10 +1,9 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { MaterialIcons } from "react-icons/md";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
-import styles from "../../app/page.module.css"; // you'll create this CSS module
+import styles from "../../app/page.module.css";
 
 const tabs = [
   { name: "Profile", icon: "MdPerson", route: "/profile" },

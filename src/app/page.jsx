@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import styles from "./page.module.css";
-import { FaThumbsUp } from "react-icons/fa";
+import { FaThumbsUp, FaSearch } from "react-icons/fa";
 import Image from "next/image";
 import mainImage from '../app/assets/mainImage.jpg';
 import Logo from '../app/assets/Logo.webp';
@@ -75,13 +75,13 @@ export default function HomePage( ) {
   return (
     <div className={styles.page}>
       <div className={styles.heroContainer}>
-        <Image src={mainImage} alt="Logo" />
+        <Image src={mainImage} alt="Logo" style={{backgroundColor:'transparent'}}/>
       </div>
       <div className={styles.vertContainer}>
         <div className={styles.vertContainer} style={{width:'calc(100%-40px)', alignItems:'flex-start'}}>
           <div className={styles.searchWrapper}>
-            <SearchSymbol style={{ width:'20px', height:'20px', fill: 'transparent'}}/>
-            <label htmlFor="searchInput" style={{boxShadow:'none', padding:'0px', marginBottom:'0px', maxWidth:'unset', backgroundColor:'transparent', fontSize:'1.2rem'}}>{searchItem ? searchItem : 'Search...'}</label>
+            <FaSearch style={{ width:'20px', height:'20px', fill:'var(--fontColor)'}}/>
+            <label htmlFor="searchInput" style={{boxShadow:'none', padding:'0px', marginBottom:'0px', maxWidth:'unset', backgroundColor:'transparent', fontSize:'1.2rem'}} className={styles.ratingText}>{searchItem ? searchItem : 'Search...'}</label>
             <input type="text" id='searchInput' placeholder="Search..." onChange={(e) => setSearchItem(e.target.value)} className={styles.hidden} />
           </div>
           <div className={styles.horizWrapperInset} style={{width:'100%', justifyContent:'flex-start', overflowX:'auto', overflowY:'hidden', borderRadius:'var(--borderRadiusSmall)'}}>

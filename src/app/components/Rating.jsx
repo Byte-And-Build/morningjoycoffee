@@ -12,19 +12,19 @@ export default function Rating({ item, thumbsUp, thumbsDown, handleRatingUpdate 
         disabled={!user}
         onClick={() => user && handleRatingUpdate("thumbsUp")}
         className={styles.btns}
-        style={{flexGrow:'0', padding:'.5rem'}}
+        style={{display:'flex', justifyContent:'center', alignItems:'center', padding:'.5rem', gap:'.5rem'}}
       >
         <span className={styles.ratingText}>{thumbsUp}</span>
-        <FaThumbsUp size={15} className="text-teal-600" />
+        <FaThumbsUp size={15} className={styles.ratingText} />
       </button>
       <button
         disabled={!user}
         onClick={() => user && handleRatingUpdate("thumbsDown")}
         className={styles.btns}
-         style={{flexGrow:'0', padding:'.5rem'}}
+        style={{display:'flex', justifyContent:'center', alignItems:'center', padding:'.5rem', gap:'.5rem'}}
       >
         <span className={styles.ratingText}>{thumbsDown}</span>
-        <FaThumbsDown size={15} className="text-teal-600" />
+        <FaThumbsDown size={15} className={styles.ratingText} />
       </button>
     </div>
   );

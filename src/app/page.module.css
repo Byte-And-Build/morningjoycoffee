@@ -2,26 +2,28 @@
   --gray-rgb: 0, 0, 0;
   --gray-alpha-200: rgba(var(--gray-rgb), 0.08);
   --gray-alpha-100: rgba(var(--gray-rgb), 0.05);
-  --colorTop: #f0b4ca;
-  --colorBottom: #ff80ae;
+  --colorTop: #f7d2e3;
+  --colorBottom: #ec84ab;
+  /* --colorTop: #f0b4ca;
+  --colorBottom: #ff80ae; */
   --colorTop1: #ffffff;
   --colorBottom1: #ffffff;
-  --btnColor1: rgb(241, 162, 194);
-  --btnColor2: rgb(238, 132, 175);
-  --fontColor: #35281f;
+  --btnColor1: #f5b8ce;
+  --btnColor2: #fa9fc2;
+  --fontColor: #da60b5;
   --selectedSizeTop: #3f1f47;
   --selectedSizeBottom: #5b2d66;
-  --selectedInsetTop: #eb6d9b;
-  --selectedInsetBottom: #cf6ea0;
+  --selectedInsetTop: #af588f;
+  --selectedInsetBottom: #f3a5c2;
   --colorComplete: #229713;
   --colorInProcess: #e0850e;
   --fontColorContrast: #ffffff;
   --button-primary-hover: #383838;
   --button-secondary-hover: #f2f2f2;
-  --shadow: 3px 3px 15px var(--selectedInsetTop),
-            3px 3px 15px var(--selectedInsetBottom);
-  --insetShadow: inset 3px 3px 10px var(--selectedInsetBottom),
-                 inset 3px 3px 10px var(--selectedInsetTop);
+  --shadow: 3px 3px 8px var(--selectedInsetTop),
+            0px 0px 8px var(--selectedInsetBottom);
+  --insetShadow: inset 3px 3px 5px var(--selectedInsetTop),
+                 inset 0px 0px 5px var(--selectedInsetBottom);
   --borderRadiusLarge: 1rem;
   --borderRadiusSmall: .5rem;
   display: block;
@@ -33,31 +35,38 @@
   justify-content: center;
   min-height: 100svh;
   padding: 0px 40px 80px 40px;
-  gap: 64px;
+  gap: 1rem;
   font-family: var(--font-geist-sans);
   background: linear-gradient(to top, var(--colorBottom) 0%, var(--colorTop) 100%);
   --backgroundCard: linear-gradient(to top, var(--colorBottom1) 0%, var(--colorTop1) 100%);
 
    /* width */
   ::-webkit-scrollbar{
-    width: 4px;
-    height: 4px;
+    width: 2px;
+    height: 2px;
   }
   /* Handle */
   ::-webkit-scrollbar-thumb {
     background: var(--fontColor); 
-    border-radius: 4px;
+    border-radius: 2px;
   }
 }
 
-@media (prefers-color-scheme: dark) {
+@media (prefers-color-scheme: light) {
   .page {
     --gray-rgb: 255, 255, 255;
     --gray-alpha-200: rgba(var(--gray-rgb), 0.145);
     --gray-alpha-100: rgba(var(--gray-rgb), 0.06);
-
     --button-primary-hover: #ccc;
     --button-secondary-hover: #1a1a1a;
+
+    --colorTop: #353535;
+    --colorBottom: #1b1b1b;
+    --btnColor1: #2e2e2e;
+    --btnColor2: #64275e;
+    --selectedInsetTop: #2a082e;
+    --selectedInsetBottom: #92428b;
+    --fontColor: #bc64c4;
   }
 }
 
@@ -139,7 +148,7 @@
 .heroContainer>img{
   object-fit: contain;
   height: 100%; 
-  width: 100vw; 
+  /* width: 100vw;  */
   object-fit: none;
   object-position: 50% 25%;
 }
@@ -285,16 +294,15 @@
   cursor: pointer;
   text-align: center;
   min-width: 175px;
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-family: var(--font-sourGummy);
   box-shadow: var(--insetShadow);
 }
 
-.btns:hover{
+.qtyBtns:hover, .btns:hover{
   box-shadow: var(--insetShadow);
   background-color: var(--btnColor2);
-  transition: all .2s linear;
-  font-size: 1rem;
+  transition: all .2s ease-in-out;
 }
 
 .popUpScroll{
@@ -383,7 +391,7 @@ display: none;
   display: flex;
   justify-content: space-around;
   align-items: center;
-  background-color: rgb(255, 86, 151);
+  background-color: var(--colorTop);
   z-index: 999;
   border-top-left-radius: 1rem;
   border-top-right-radius: 1rem;
@@ -502,16 +510,16 @@ display: none;
   }
 
   .qtyBtns {
+    display: flex;
+    justify-content: center;
     background-color: var(--btnColor1);
     box-shadow: var(--shadow);
     border: none;
     align-items: center;
-    border-radius: 1.75rem;
+    border-radius: 50%;
     flex: 1;
-    max-width: 1.75rem;
-    max-height: 1.75rem;
-    min-width: 1.75rem;
-    min-height: 1.75rem;
+    min-width: 2rem;
+    min-height: 2rem;
   }
 
   .qtyInput {
@@ -526,7 +534,7 @@ display: none;
   }
 
 .backBtn {
-  background-color: rgb(245, 152, 189);
+  background-color: var(--btnColor2);
   padding: .625rem;
   position: absolute; 
   top: 1.75rem; 
@@ -535,6 +543,7 @@ display: none;
   z-index: 20;
   border: none;
   color: white;
+  cursor: pointer;
 }
 
 .ratingWrapper {
@@ -635,8 +644,7 @@ display: none;
       border-radius: 5px;
       margin-bottom: .625rem;
       background-color: var(--colorTop);
-      width: 100%;
-      max-width: fit-content;
+      min-width: 100%;
       box-shadow: var(--insetShadow);
       color: var(--fontColor);
     }
@@ -773,7 +781,7 @@ display: none;
 
 .drinkWrapper {
   height: 325px;
-  background-color: var(--colorTop);
+  background-color: var(--btnColor1);
   box-shadow: var(--shadow);
   border-radius: var(--borderRadiusSmall);
   padding: 1rem;
