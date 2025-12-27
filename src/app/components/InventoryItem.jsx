@@ -15,7 +15,7 @@ const InventoryItem = ({ refreshDrinks, item }) => {
   const [editIngredient, setEditIngredient] = useState(null);
   const [newIngredient, setNewIngredient] = useState({
   name: "",
-  unit: "piece",
+  unit: "",
   inStock: 0,
   reorderAt: 0,
   costPerUnit: 0,
@@ -122,7 +122,7 @@ const handleAddIngredient = async () => {
     toast.success("Ingredient added!");
     setNewIngredient({
       name: "",
-      unit: "piece",
+      unit: "",
       inStock: 0.00,
       reorderAt: 0.00,
       costPerUnit: 0.00,
@@ -422,18 +422,18 @@ function removeIngredient(sizeName, ingredientIdToRemove) {
               {availableIngredients.length === 0 ? (
                 <p>No ingredients found.</p>
               ) : (
-                <div className={styles.vertContainer}>
-                  <div className={styles.vertWrapperInset} style={{position: "relative", gap: "1rem"}}>
-                    <div className={styles.horizWrapper} style={{justifyContent: "flex-start", paddingBottom: "1rem"}}>
-                      <span className={styles.ingredients} style={{flex: 1, textAlign: "left", color: "black", minWidth: "100px"}}>Name</span>
-                      <span className={styles.ingredients} style={{flex: 1, color: "black", minWidth: "100px"}}>Cost/Unit</span>
-                      <span className={styles.ingredients} style={{flex: 1, color: "black", minWidth: "100px"}}>Extra Price</span>
-                      <span className={styles.ingredients} style={{flex: 1, color: "black", minWidth: "100px"}}>In Stock</span>
-                      <span className={styles.ingredients} style={{flex: .5, color: "black", minWidth: "75px"}}>Is Extra</span>
-                      <span className={styles.ingredients} style={{flex: 1, color: "black", minWidth: "150px"}}>Edit/Save</span>
+                <div className={styles.vertContainer} style={{width:'100%'}}>
+                  <div className={styles.vertWrapperInset} style={{position: "relative", gap: "1rem", padding:'0px', width:'100%'}}>
+                    <div className={styles.horizWrapper} style={{width:'100%', justifyContent: "flex-start", paddingBottom: "1rem", position:'sticky', backgroundColor:'var(--btnColor2)', top:'0px', left:'0px', padding:'20px', boxShadow:'var(--shadow)'}}>
+                      <span className={styles.ingredients} style={{flex: 1, minWidth: "100px", textAlign: "left", color: "black"}}>Name</span>
+                      <span className={styles.ingredients} style={{flex: 1, minWidth: "100px", color: "black"}}>Cost/Unit</span>
+                      <span className={styles.ingredients} style={{flex: 1, minWidth: "100px", color: "black"}}>Extra Price</span>
+                      <span className={styles.ingredients} style={{flex: 1, minWidth: "100px", color: "black"}}>In Stock</span>
+                      <span className={styles.ingredients} style={{flex: 1, minWidth: "100px", color: "black"}}>Is Extra</span>
+                      <span className={styles.ingredients} style={{flex: 1, minWidth: "100px", color: "black"}}>Edit/Save</span>
                     </div>
                     {availableIngredients.map((ingredient) => (
-                      <div className={styles.cartWrapper} key={ingredient._id} style={{borderBottom: "1px black dashed", minWidth: "100%"}}>
+                      <div className={styles.cartWrapper} key={ingredient._id} style={{borderBottom: "1px black dashed", minWidth: "100%", padding:'0px .75rem'}}>
                         <span className={styles.ingredients} style={{flex: 1, textAlign: "left", minWidth: "100px"}}>{ingredient.name}</span>
                         <span className={styles.ingredients} style={{flex: 1, minWidth: "100px"}}>${ingredient.costPerUnit.toFixed(2)}/{ingredient.unit}</span>
                         <span className={styles.ingredients} style={{flex: 1, minWidth: "100px"}}>${ingredient.extraPrice.toFixed(2)}/{ingredient.unit}</span>

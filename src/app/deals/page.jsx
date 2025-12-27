@@ -40,7 +40,7 @@ export default function DealsPage() {
   };
 
   return (
-    <div className={styles.page}>
+    <div className={styles.page} style={{display:'flex', justifyContent:'flex-start'}}>
       <div className={styles.vertContainer}>
         <h1 className={styles.heading}>Seasonal Menu</h1>
         {menuImageUrl ? (
@@ -50,7 +50,7 @@ export default function DealsPage() {
         )}
 
         {user?.role === 'Admin' && (
-          <>
+          <div className={styles.vertContainer}  style={{flexGrow:'0'}}>
             <label className={styles.btns} htmlFor="menu">
               Upload New Menu
               <input
@@ -61,7 +61,7 @@ export default function DealsPage() {
                 onChange={handleUpload}
               />
             </label>
-          </>
+          </div>
         )}
       </div>
     </div>

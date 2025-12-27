@@ -580,6 +580,7 @@ display: none;
   color: var(--fontColor);
   font-size: 1rem;
   font-weight: bold;
+  padding: 4px;
 }
   
 .hintText {
@@ -700,9 +701,11 @@ display: none;
 
 .dealsImage {
   height: auto;
-  width: 45%;
+  width: 40%;
   background-repeat: no-repeat;
   background-size: contain;
+  aspect-ratio: calc(8.5/11);
+  flex-grow: 0;
 }
 
 .navItem {
@@ -772,7 +775,7 @@ display: none;
 }
 
 .drinkWrapper {
-  height: 325px;
+  height: 285px;
   background-color: var(--colorTop);
   box-shadow: var(--shadow);
   border-radius: var(--borderRadiusSmall);
@@ -1052,6 +1055,10 @@ display: none;
     min-width: 0;                 /* IMPORTANT: dont force wrapping */
     padding: .75rem;
   }
+
+  .dealsImage {
+  width: 100%;
+}
 
   .searchWrapper{
     min-width: 150px;

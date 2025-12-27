@@ -18,22 +18,22 @@ export default function ScanScreen() {
   if (!user) return null;
 
   return (
-    <div className={styles.page} style={{alignContent:'center', flexDirection:'column', justifyContent:'space-around'}}>
-        <div className={styles.horizContainer} style={{padding: "15px", flexGrow:'0'}}>
+    <div className={styles.page} style={{display:'flex', alignContent:'center', flexDirection:'column', justifyContent:'center', paddingTop:'1rem', gap:'1rem'}}>
+        <div className={styles.horizContainer} style={{padding: "15px", flexGrow:'0', width:'100%'}}>
           <div className={styles.vertContainer} style={{alignItems: "center"}}>
               <h1 className={styles.heading}>Scan Me For Rewards!</h1>
               <p className={styles.itemDetails}>(10 points = 1 Free Drink!)</p>
           </div>
           <div className={styles.vertContainer}>
             <h3>{user.name}</h3>
-            <div className={styles.horizWrapperInset}>
               <span className="label">Current Rewards:</span>
+            <div className={styles.vertWrapperInset}>
               <span className="rewards">{user.rewards} Points</span>
             </div>
           </div>
         </div>
-        <div className={styles.vertContainer}>
-          <QRCodeCanvas value={user._id} size={256} style={{flex:'.5', minWidth:'fit-content'}}/>
+        <div className={styles.vertContainer} style={{boxShadow:'var(--insetShadow)', borderRadius:'var(--borderRadiusLarge)'}}>
+          <QRCodeCanvas value={user._id} size={256} />
           <p>{user._id}</p>
         </div>
     </div>

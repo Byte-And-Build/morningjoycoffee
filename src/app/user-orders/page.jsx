@@ -7,11 +7,13 @@ import Placeholder from "../../app/assets/Logo.webp";
 import { useAuth } from "../context/AuthContext";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useRouter } from "next/navigation";
 import axios from "axios";
 
 const UserOrdersScreen = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
   const {token} = useAuth();
 
@@ -72,7 +74,7 @@ async function deleteOrder(id) {
 }
 
   return (
-    <div className={styles.page} style={{display:'flex', gap:'2rem' , justifyContent: "flex-start", padding:'20px 40px 80px 40px'}}>
+    <div className={styles.page} style={{display:'flex', gap:'1rem' , justifyContent: "flex-start"}}>
       <h2>Your Purchases</h2>
       <button
         onClick={() => router.push("/profile")}
@@ -84,14 +86,16 @@ async function deleteOrder(id) {
         <p>Loading orders...</p>
         ) : Array.isArray(orders) && orders.length > 0 ? (
         orders.map((order, index) => (
-          <div key={index} className={styles.horizContainer} style={{padding:'1rem', width:'100%', flex:'none', height:'150px'}}>
-            <p style={{maxWidth:'15%', padding:'10px'}}>Order# {index}</p>
-            <p style={{maxWidth:'15%', padding:'10px'}}>${parseFloat(order.amount)}</p>
-            <div className={styles.vertContainer} style={{flex: .5, textAlign: "center"}}>
+          <div key={index} className={styles.horizContainer} style={{padding:'1rem', width:'100%', maxHeight:'150px', overflowX:'auto', flexWrap:'nowrap'}}>
+            <div className={styles.vertContainer} style={{justifyContent:'center', textAlign:'center', flexGrow:'0'}}>
+              <p style={{padding:'10px', fontSize:'1rem'}}>Order# {index}</p>
+              <p style={{padding:'10px', fontSize:'.75rem'}}>${parseFloat(order.amount)}</p>
+            </div>
+            <div className={styles.vertContainer} style={{textAlign: "center", flex: '.3'}}>
               <Image src={order.image || Placeholder} alt="Drink" width={60} height={60} />
               <span className={styles.ingredients}> {order.customer}</span>
             </div>
-            <div className={styles.vertContainer} style={{flex: 1, textAlign: "left", justifyContent: "flex-start", overflowY:'auto', overflowX:'hidden'}}>
+            <div className={styles.vertContainer} style={{flex: '1', textAlign: "left", justifyContent: "flex-start", overflowY:'auto', overflowX:'hidden'}}>
               <ul style={{width:'100%'}}>
               <strong className={styles.strong}>Items:</strong>{" "}
                 {Array.isArray(order.items)
@@ -99,7 +103,7 @@ async function deleteOrder(id) {
                   : <li className={styles.itemDetails} style={{textAlign: "left"}}>{order.items}</li>}
               </ul>
             </div>
-            <div className={styles.vertContainer} style={{flex: 1, gap:'1rem', padding: "0 .25rem"}}>
+            <div className={styles.vertContainer} style={{flex: '1', gap:'1rem', padding: "0 .25rem"}}>
               <Link href={`/order/${order._id}`} className={styles.btns} style={order?.status === "Complete!" ? {minWidth:'100%', color:'var(--colorComplete)', boxShadow:'var(--insetShadow)'} : order?.status === "Making" ? {minWidth:'100%', color:'var(--colorInProcess)', boxShadow:'var(--insetShadow)'} : {minWidth:'100%', color:'var(--fontColor)', boxShadow:'var(--insetShadow)'}}>{order.status}</Link>
               {order.status === "Complete!" ? (
                 <button className={styles.btns} onClick={()=>deleteOrder(order._id)} style={{minWidth:'30%', maxWidth:'fit-content', fontSize:'12px', color: 'red'}}>Delete Order?</button>
@@ -108,7 +112,10 @@ async function deleteOrder(id) {
           </div>
         ))
         ) : (
-        <p>No purchases found.</p>
+        <div className={styles.vertContainer}>
+          <p>No purchases found.</p>
+          <button onClick={() => router.push("/profile")} className={styles.backBtn}> ← Back </button>
+        </div>
         )}
     </div>
   );

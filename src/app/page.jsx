@@ -66,7 +66,7 @@ export default function HomePage( ) {
 });
 
   if (loading) return (
-  <div className={styles.page}>
+  <div className={styles.page} style={{alignContent:'center', display:'flex', justifyContent:'center'}}>
     <Image src={Logo} width={256} height={256} alt="Logo" />
     <span>Loading...</span>
   </div>
@@ -78,8 +78,8 @@ export default function HomePage( ) {
         <Image src={mainImage} alt="Logo" />
       </div>
       <div className={styles.vertContainer}>
-        <div className={styles.vertContainer} style={{width:'calc(100%-40px)', alignItems:'flex-start'}}>
-          <div className={styles.searchWrapper}>
+        <div className={styles.vertContainer} style={{width:'calc(100%-40px)', alignItems:'flex-start', position:'relative'}}>
+          <div className={styles.searchWrapper} style={{position:'sticky', top:'0'}}>
             <SearchSymbol style={{ width:'20px', height:'20px', fill: 'transparent'}}/>
             <label htmlFor="searchInput" style={{boxShadow:'none', padding:'0px', marginBottom:'0px', maxWidth:'unset', backgroundColor:'transparent', fontSize:'1.2rem'}}>{searchItem ? searchItem : 'Search...'}</label>
             <input type="text" id='searchInput' placeholder="Search..." onChange={(e) => setSearchItem(e.target.value)} className={styles.hidden} />
@@ -101,7 +101,7 @@ export default function HomePage( ) {
             <div key={index} className={styles.drinkWrapper} onClick={() => router.push(`/drink/${item._id}`)}>
               <div className={styles.ratingContainerHome}>
                 <span className={styles.ratingText}>{item.rating?.thumbsUp || 0}</span>
-                <FaThumbsUp size={16} className={styles.ratingText} />
+                <FaThumbsUp size={'1.5rem'} className={styles.ratingText} />
               </div>
               {item && (
               <Image src={item.image ? item.image : Placeholder} alt={item.name} width={150} height={150}  className="drink-image" loading="lazy" />
