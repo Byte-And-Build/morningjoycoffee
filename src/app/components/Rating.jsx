@@ -15,7 +15,7 @@ export default function Rating({ item, thumbsUp, thumbsDown, handleRatingUpdate 
         style={{display:'flex', justifyContent:'center', alignItems:'center', padding:'.5rem', gap:'.5rem'}}
       >
         <span className={styles.ratingText}>{thumbsUp}</span>
-        <FaThumbsUp size={15} className={styles.ratingText} />
+        <FaThumbsUp size={'1.5rem'} className={styles.ratingText} />
       </button>
       <button
         disabled={!user}
@@ -24,7 +24,7 @@ export default function Rating({ item, thumbsUp, thumbsDown, handleRatingUpdate 
         style={{display:'flex', justifyContent:'center', alignItems:'center', padding:'.5rem', gap:'.5rem'}}
       >
         <span className={styles.ratingText}>{thumbsDown}</span>
-        <FaThumbsDown size={15} className={styles.ratingText} />
+        <FaThumbsDown size={'1.5rem'} className={styles.ratingText} />
       </button>
     </div>
   );

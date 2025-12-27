@@ -6,7 +6,6 @@ import Image from "next/image";
 import Placeholder from "../../app/assets/Logo.webp";
 import { useAuth } from "../context/AuthContext";
 import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 

@@ -371,7 +371,7 @@ const removeIngredient = (ingredientToRemove) => {
                       />
                       
                         <span style={{flex: .1}}>{ing.unit}</span>
-                        <button className={styles.btns} style={{maxWidth:'15px', maxHeight:'10px'}} type="button" onClick={() => {
+                        <button className={styles.btns} style={{display:'flex', minWidth:'15px', maxHeight:'10px'}} type="button" onClick={() => {
                           const id = typeof ing.ingredientId === "object" ? ing.ingredientId._id : ing.ingredientId; removeIngredient({ id, name: ing.name });}}>
                           X
                         </button>

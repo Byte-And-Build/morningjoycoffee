@@ -9,6 +9,8 @@ const http = require("http");
 const { Server } = require("socket.io");
 const path = require("path");
 
+const jwt = require("jsonwebtoken");
+
 dotenv.config();
 
 const dev = process.env.NODE_ENV !== "production";
@@ -34,6 +36,24 @@ io.on("connection", (socket) => {
   console.log("✅ New client connected:", socket.id);
   onlineUsers++;
   io.emit("online-count", onlineUsers);
+
+  // Client should send token right after connect
+  socket.on("auth", (token) => {
+    try {
+      if (!token) return;
+
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      const userId = decoded.id;
+
+      socket.join(`user:${userId}`);
+      socket.data.userId = userId;
+
+      console.log(`🔐 Socket ${socket.id} joined room user:${userId}`);
+    } catch (err) {
+      console.log("🛑 Socket auth failed:", err.message);
+      // optional: socket.disconnect(true);
+    }
+  });
 
   socket.on("disconnect", () => {
     onlineUsers--;

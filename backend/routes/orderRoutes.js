@@ -41,32 +41,32 @@ router.post("/new", async (req, res) => {
 
     // Deduct ingredients
     for (let item of items) {
-  const drink = drinks.find(d => d._id.toString() === item._id);
-  if (!drink) continue;
-  conosle.log("Drink", drink)
+      const drink = drinks.find(d => d._id.toString() === item._id);
+      if (!drink) continue;
 
-  // 1) Deduct the base recipe:
-  const sizeData = drink.sizes.find(s => s.size === item.size);
-  if (sizeData) {
-    for (let ing of sizeData.ingredients) {
-      const ingredient = await Ingredient.findById(ing.ingredientId);
-      if (!ingredient) continue;
-      ingredient.inStock = Math.max(0, ingredient.inStock - ing.quantity * item.quantity);
-      await ingredient.save();
-    }
-  }
+      // 1) Deduct the base recipe:
+      const sizeData = drink.sizes.find(s => s.size === item.size);
+      if (sizeData) {
+        for (let ing of sizeData.ingredients) {
+          const ingredient = await Ingredient.findById(ing.ingredientId);
+          if (!ingredient) continue;
+          ingredient.inStock = Math.max(0, ingredient.inStock - ing.quantity * item.quantity);
+          await ingredient.save();
+        }
+      }
 
-  // 2) Deduct any extras the customer chose:
-  if (Array.isArray(item.extras)) {
-    for (let extraName of item.extras) {
-      const ingredient = await Ingredient.findOne({ name: extraName });
-      if (!ingredient) continue;
-      // assume extras always 1 unit per drink:
-      ingredient.inStock = Math.max(0, ingredient.inStock - item.quantity);
-      await ingredient.save();
+      // 2) Deduct any extras the customer chose:
+      if (Array.isArray(item.extras)) {
+        for (let extraName of item.extras) {
+          const ingredient = await Ingredient.findOne({ name: extraName });
+          if (!ingredient) continue;
+          // assume extras always 1 unit per drink:
+          ingredient.inStock = Math.max(0, ingredient.inStock - item.quantity);
+          await ingredient.save();
+          conosle.log("sizeData", ingredient)
+        }
+      }
     }
-  }
-}
 
 
     const newOrder = new Order({
@@ -118,9 +118,20 @@ router.patch("/:id/status", async (req, res) => {
       { status, updatedBy },
       { new: true }
     );
-    res.json(order);
+
+    if (!order) return res.status(404).json({ error: "Order not found" });
+
     const io = req.app.get("io");
-      io.emit("order-status-updated", order);
+
+    // ✅ send to that specific customer if order.user exists
+    if (order.user) {
+      io.to(`user:${order.user.toString()}`).emit("order-status-updated", order);
+    }
+
+    // ✅ optional: still broadcast to staff dashboards
+    io.emit("order-status-updated-admin", order);
+
+    res.json(order);
   } catch (err) {
     console.error("Update status error:", err);
     res.status(500).json({ error: "Failed to update order" });

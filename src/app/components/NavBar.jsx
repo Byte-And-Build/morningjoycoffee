@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
-import styles from "../../app/page.module.css";
+import styles from "../page.module.css"
 
 const tabs = [
   { name: "Profile", icon: "MdPerson", route: "/profile" },
@@ -36,7 +36,7 @@ export default function NavBar() {
         const isActive = i === activeIndex;
         return (
           <div key={tab.name} className={styles.navItem} onClick={() => handleClick(i, tab.route)}>
-            <Icon size={isActive ? 32 : 24} color={isActive ? "#fff" : "#ffc2eb"} />
+            <Icon size={isActive ? 32 : 24} fill={isActive ? "var(--btnColor2)" : "var(--btnColor1)"} />
             {tab.name === "Cart" && totalItems > 0 && (
               <span className={styles.badge}>{totalItems}</span>
             )}

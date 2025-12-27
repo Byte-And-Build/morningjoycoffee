@@ -1,12 +1,35 @@
 :root {
   --background: #f0a9e6;
   --foreground: #594347;
+  --colorTop: #f7d2e3;
+  --colorBottom: #ec84ab;
+  --btnColor1: #f5b8ce;
+  --btnColor2: #fa9fc2;
+  --btnColor3: #e46895;
+  --fontColor: #a557ac;
+
+  ::-webkit-scrollbar{
+    width: 2px;
+    height: 2px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--fontColor); 
+    border-radius: 2px;
+  }
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #f0a9e6;
     --foreground: #594347;
+    --colorTop: #353535;
+    --colorBottom: #1b1b1b;
+    --btnColor1: #444444;
+    --btnColor2: #6e2767;
+    --btnColor3: #161616;
+    --selectedInsetTop: #200a22;
+    --selectedInsetBottom: #b854af;
+    --fontColor: #a557ac;
   }
 }
 
@@ -20,6 +43,7 @@ body {
   box-sizing: border-box;
   padding: 0;
   margin: 0;
+  color: var(--fontColor);
 }
 
 a {

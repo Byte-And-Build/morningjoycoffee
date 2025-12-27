@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import styles from "./page.module.css";
-import { FaThumbsUp } from "react-icons/fa";
+import { FaThumbsUp, FaSearch } from "react-icons/fa";
 import Image from "next/image";
 import mainImage from '../app/assets/mainImage.jpg';
 import Logo from '../app/assets/Logo.webp';
@@ -78,11 +78,10 @@ export default function HomePage( ) {
         <Image src={mainImage} alt="Logo" style={{backgroundColor:'transparent'}}/>
       </div>
       <div className={styles.vertContainer}>
-        <div className={styles.vertContainer} style={{width:'calc(100%-40px)', alignItems:'flex-start', position:'relative'}}>
-          <div className={styles.searchWrapper} style={{position:'sticky', top:'0'}}>
-            <SearchSymbol style={{ width:'20px', height:'20px', fill: 'transparent'}}/>
-            <label htmlFor="searchInput" style={{boxShadow:'none', padding:'0px', marginBottom:'0px', maxWidth:'unset', backgroundColor:'transparent', fontSize:'1.2rem'}}>{searchItem ? searchItem : 'Search...'}</label>
-            <input type="text" id='searchInput' placeholder="Search..." onChange={(e) => setSearchItem(e.target.value)} className={styles.hidden} />
+        <div className={styles.vertContainer} style={{width:'calc(100%-40px)', alignItems:'flex-start'}}>
+          <div className={styles.searchWrapper}>
+            <FaSearch style={{ width:'20px', height:'20px', fill:'var(--fontColor)'}}/>
+            <input type="text" id='searchInput' htmlFor="searchInput" placeholder={searchItem ? searchItem : 'Search...'} onChange={(e) => setSearchItem(e.target.value)} style={{boxShadow:'none', padding:'0px', marginBottom:'0px', maxWidth:'unset', backgroundColor:'transparent', fontSize:'1.2rem'}} className={styles.ratingText}/>
           </div>
           <div className={styles.horizWrapperInset} style={{width:'100%', justifyContent:'flex-start', overflowX:'auto', overflowY:'hidden', borderRadius:'var(--borderRadiusSmall)'}}>
             {categories.map(cat => (
@@ -115,7 +114,7 @@ export default function HomePage( ) {
                     ing.quantity > 0
                   )
                   .map((ing, i) => (
-                    <span key={i} style={{flex: "1", minWidth: "100%", fontSize: ".8rem", borderBottom: "1px dashed var(--fontColor)"}}>
+                    <span key={i} style={{color:'white', flex: "1", minWidth: "100%", fontSize: ".8rem", borderBottom: "1px dashed var(--fontColor)"}}>
                       +{ing.name}
                     </span>
                 ))}

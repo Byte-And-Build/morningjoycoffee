@@ -41,6 +41,7 @@ export default function LoginPage() {
         type="email"
         placeholder="Email"
         value={email}
+        autoComplete="email"
         onChange={(e) => setEmail(e.target.value)}
         className={styles.userInput}
         style={{minWidth:'500px'}}

@@ -26,8 +26,8 @@ export default function CartPage() {
                 <Image
                   src={item.image}
                   alt={item.name}
-                  width={128}
-                  height={128}
+                  width={64}
+                  height={64}
                   className="rounded-lg"
                 />
                 <div className={styles.vertContainer} style={{textAlign:'left', alignItems:'flex-start'}}>
