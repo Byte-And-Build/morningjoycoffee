@@ -75,7 +75,7 @@ export default function HomePage( ) {
   return (
     <div className={styles.page}>
       <div className={styles.heroContainer}>
-        <Image src={mainImage} alt="Logo" />
+        <Image src={mainImage} alt="Logo" style={{backgroundColor:'transparent'}}/>
       </div>
       <div className={styles.vertContainer}>
         <div className={styles.vertContainer} style={{width:'calc(100%-40px)', alignItems:'flex-start', position:'relative'}}>

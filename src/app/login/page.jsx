@@ -33,16 +33,17 @@ export default function LoginPage() {
   };
 
   return (
-    <div className={styles.page} style={{padding:'0px 40px 80px 40px', justifyContent:'center', display:'flex', gap:'1rem'}}>
+    <div className={styles.page} style={{justifyContent:'center', display:'flex'}}>
       <Image src={Logo} alt="Logo" width={200} height={200} content="contain"/>
       <div className={styles.vertContainer} style={{overflow: "hidden", flexGrow:'0', padding:'1rem'}}>
-      <form className={styles.vertContainer} style={{maxWidth:'50%'}}> 
+      <form className={styles.vertContainer}> 
       <input
         type="email"
         placeholder="Email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
         className={styles.userInput}
+        style={{minWidth:'500px'}}
       />
       <input
         type="password"
@@ -51,6 +52,7 @@ export default function LoginPage() {
         value={password}
         onChange={(e) => setPassword(e.target.value)}
         className={styles.userInput}
+        style={{minWidth:'500px'}}
       />
       </form>
       {loading ? (
@@ -59,7 +61,7 @@ export default function LoginPage() {
           <div>Loading...</div>
         </div>
       ) : (
-        <div className={styles.vertContainer} style={{maxWidth:'50%'}}>
+        <div className={styles.vertContainer}>
           <div className={styles.horizContainer} style={{boxShadow:'none'}}>
             <button className={styles.btns} onClick={handleLogin}>LOGIN</button>
           </div>
