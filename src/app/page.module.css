@@ -2,18 +2,18 @@
   --gray-rgb: 0, 0, 0;
   --gray-alpha-200: rgba(var(--gray-rgb), 0.08);
   --gray-alpha-100: rgba(var(--gray-rgb), 0.05);
-  --colorTop: #f7d2e3;
+  --colorTop: #f8dce8;
   --colorBottom: #ec84ab;
   --colorTop1: #ffffff;
   --colorBottom1: #ffffff;
-  --btnColor1: #f5b8ce;
-  --btnColor2: #fa9fc2;
-  --btnColor3: #fa9fc2;
-  --fontColor: #da60b5;
+  --btnColor1: #f0acc5;
+  --btnColor2: #ec79a5;
+  --btnColor3: #e46895;
+  --fontColor: #ffffff;
   --selectedSizeTop: #3f1f47;
   --selectedSizeBottom: #5b2d66;
-  --selectedInsetTop: #af588f;
-  --selectedInsetBottom: #f3a5c2;
+  --selectedInsetTop: #9b5a83;
+  --selectedInsetBottom: #ac4e71;
   --colorComplete: #229713;
   --colorInProcess: #e0850e;
   --fontColorContrast: #ffffff;
@@ -129,8 +129,6 @@
 
 .stickyContainer{
   display: flex;
-  position: sticky;
-  top: 0;
   width: 100vw;
   max-height: 100px;
   justify-content: space-between;
@@ -261,9 +259,8 @@
   display: flex;
   flex-direction: row;
   justify-content: space-around;
-  width: 90%;
   padding: .5rem 0;
-  gap: 1.5rem;
+  gap: 1rem;
   border-bottom: 2px dashed var(--fontColor);
 }
 
@@ -397,7 +394,7 @@ display: none;
   z-index: 999;
   border-top-left-radius: 1rem;
   border-top-right-radius: 1rem;
-  box-shadow: 3px -3px 10px black;
+  box-shadow: 3px -3px 5px var(--selectedInsetBottom);
 }
 
 .drinkWrapper img {
@@ -781,7 +778,7 @@ display: none;
 
 .drinkWrapper {
   height: 285px;
-  background-color: var(--colorTop);
+  background-color: var(--btnColor1);
   box-shadow: var(--shadow);
   border-radius: var(--borderRadiusSmall);
   padding: 1rem;
@@ -1074,6 +1071,18 @@ display: none;
 
   .userInput{
     font-size: 1rem;
+  }
+
+  .qtyBtns {
+    display: flex;
+    justify-content: center;
+    background-color: var(--btnColor1);
+    box-shadow: var(--shadow);
+    border: none;
+    align-items: center;
+    border-radius: 50%;
+    min-width: 1.5rem;
+    min-height: 1.5rem;
   }
 
 }

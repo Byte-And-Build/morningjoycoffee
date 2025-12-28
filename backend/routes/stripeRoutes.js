@@ -28,7 +28,7 @@ router.post("/create-payment-intent", async (req, res) => {
   }
 
   try {
-  const feePercent = 0.03;
+  const feePercent = 0.05;
   const applicationFee = Math.floor(finalAmountInCents * feePercent);
   const shortDesc = description.length > 200
   ? description.slice(0, 197) + "..."
@@ -37,7 +37,7 @@ router.post("/create-payment-intent", async (req, res) => {
   const paymentIntentConfig = {
   amount: finalAmountInCents,
   currency: "usd",
-  // payment_method_types: ["card"],
+  payment_method_types: ["card"],
   description: shortDesc,
   metadata: {
     customer_name: customerDetails?.name || "Guest",

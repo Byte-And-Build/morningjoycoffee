@@ -170,7 +170,7 @@ const handleSaveEditIngredient = async () => {
   const webpBlob = await convertToWebp(file);
 
   const presigned = await api.post(
-    "/api/drinks/upload/presign", // or `/api/upload/presign` if you moved it out
+    "/api/drinks/upload/presign",
     {
       fileName: imageName,
       fileType: "image/webp",
@@ -321,9 +321,9 @@ function removeIngredient(sizeName, ingredientIdToRemove) {
 
   return (
     <>
-    <div className={styles.horizWrapper} style={{width:'unset'}}>
-        <button onClick={() => setShowForm(true)} style={{maxWidth:"fit-content"}} className={styles.btns}><EditSymbol alt='edit product' style={{ width: "24px", height: "24px", stroke: "var(--fontColor)", padding:'2px' }} /> Product</button>
-        <button onClick={() => setShowIngForm(true)} style={{maxWidth:"fit-content"}} className={styles.btns}><EditSymbol alt='edit ingredient' style={{ width: "24px", height: "24px", stroke: "var(--fontColor)", padding:'2px' }} /> Ingredient</button>
+    <div className={styles.horizWrapper} style={{width:'unset', flexWrap:'wrap', padding:'.5rem'}}>
+        <button onClick={() => setShowForm(true)} className={styles.btns} style={{display:'flex', alignItems:'center', justifyContent:'center' }}><EditSymbol alt='edit product' style={{ width: "24px", height: "24px", stroke: "var(--fontColor)" }} /> Product</button>
+        <button onClick={() => setShowIngForm(true)} className={styles.btns} style={{display:'flex', alignItems:'center', justifyContent:'center' }}><EditSymbol alt='edit ingredient' style={{ width: "24px", height: "24px", stroke: "var(--fontColor)" }} /> Ingredient</button>
       </div>
       {showIngForm && (
         <div className={styles.overlay} onClick={() => setShowIngForm(false)}>

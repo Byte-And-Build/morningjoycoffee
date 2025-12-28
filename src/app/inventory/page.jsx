@@ -70,7 +70,7 @@ export default function InventoryPage() {
 };
 
   return (
-    <div className={styles.page} style={{alignContent:'flex-start', padding:'0px 40px 80px 40px'}}>
+    <div className={styles.page} style={{alignContent:'flex-start'}}>
       <div className={styles.stickyContainer}>
           <Image src={Logo} width={80} height={80} alt="Logo" content="contain" style={{maxWidth:'80px'}}/>
           <h1 className={styles.heading}>Products</h1>

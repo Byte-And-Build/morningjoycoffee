@@ -7,6 +7,8 @@ export default function OrderPage() {
   const { id } = useParams();
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [fact, setFact ] = useState('')
+  const [source, setSource ] = useState('')
 
   useEffect(() => {
     const fetchOrder = async () => {
@@ -19,6 +21,11 @@ export default function OrderPage() {
         console.error("❌ Failed to fetch order:", err);
         setLoading(false);
       }
+      const res = await fetch(`https://uselessfacts.jsph.pl/api/v2/facts/random`);
+      const ranFact = await res.json();
+      setFact(ranFact.text)
+      setSource(ranFact.source_url)
+      console.log(ranFact)
     };
     fetchOrder();
   }, [id]);
@@ -29,7 +36,7 @@ export default function OrderPage() {
   console.log(order)
 
   return (
-    <div className={styles.page} style={{padding:'40px 40px 80px 40px', display:'flex', justifyContent:'flex-start', gap:'1rem'}}>
+    <div className={styles.page} style={{display:'flex', justifyContent:'flex-start', gap:'1rem'}}>
       <h2 className={styles.heading}>Order Status</h2>
       <div className={styles.vertContainerInset}>
         <div className={styles.vertContainer} style={{flex: 1, paddingBottom: "1rem"}}>
@@ -49,8 +56,10 @@ export default function OrderPage() {
           
       </div>
       <div className={styles.vertContainerInset} style={{flex:'1'}}>
-            About to wake your taste buds up!
-          </div>
+        <span className={styles.ingredients}>Did you Know?</span>
+        <p style={{fontSize:'1.5rem', fontFamily:'var(--font-sourGummy)', textAlign:'center'}}>{fact}</p>
+        <span className={styles.ingredients} style={{fontStyle:'italic', fontSize:'.75rem'}}>Source: {source}</span>
+      </div>
     </div>
   );
 }

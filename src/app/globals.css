@@ -1,12 +1,14 @@
 :root {
   --background: #f0a9e6;
   --foreground: #594347;
-  --colorTop: #f7d2e3;
+  --colorTop: #f5c7dc;
   --colorBottom: #ec84ab;
-  --btnColor1: #f5b8ce;
-  --btnColor2: #fa9fc2;
-  --btnColor3: #e46895;
-  --fontColor: #a557ac;
+  --btnColor1: #f8abc7;
+  --btnColor2: #f8f2f4;
+  --btnColor3: #f0719f;
+  --fontColor: #fcfcfc;
+  --selectedInsetTop: #9b5a83;
+  --selectedInsetBottom: #ac4e71;
 
   ::-webkit-scrollbar{
     width: 2px;

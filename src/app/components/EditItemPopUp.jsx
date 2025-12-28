@@ -6,6 +6,7 @@ import { api } from "../../app/utils/api";
 import CurrencyInput from "../../app/components/CurrencyInput";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Placeholder from '../assets/Logo.webp'
 
 
 export default function EditItemPopUp({ item, setEditPopUp, fetchDrinks }) {
@@ -454,10 +455,15 @@ const removeIngredient = (ingredientToRemove) => {
             </div>
         </div>
         <div className={styles.horizWrapper}>
-        {formData.image && (
+        {formData.image ? (
           <>
           <Image src={formData.image} alt="Preview" width={256} height={256} style={{ objectFit: "contain" }} className={styles.preview} onError={(e) => e.currentTarget.style.display = 'none'}/>
           <button className={styles.btns} onClick={pickImage} style={{flex:'.5'}} >Replace Image</button>
+          </>
+        ) : (
+          <>
+          <Image src={Placeholder} alt="Preview" width={256} height={256} style={{ objectFit: "contain" }} className={styles.preview} onError={(e) => e.currentTarget.style.display = 'none'}/>
+          <button className={styles.btns} onClick={pickImage} style={{flex:'.5'}} >Upload Image</button>
           </>
         )}
         </div>

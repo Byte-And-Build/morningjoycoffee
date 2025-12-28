@@ -129,7 +129,7 @@ export default function DrinkDetails() {
                 setSelectedPrice(parseFloat(price));
               }}
               className={`${selectedSize === size ? styles.btnsSelected : styles.btns}`}
-              style={{borderRadius:'100%', width:'60px', height:'60px', minWidth:'60px'}}
+              style={{borderRadius:'100%', width:'3.5rem', height:'3.5rem', minWidth:'3.5rem'}}
             >
               {size}
             </button>

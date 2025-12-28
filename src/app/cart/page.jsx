@@ -14,7 +14,7 @@ export default function CartPage() {
   const subtotal = cart.reduce((acc, item) => acc + item.totalPrice, 0);
 
   return (
-    <div className={styles.page} style={{padding:'0px 40px 80px 40px'}}>
+    <div className={styles.page}>
       <h1 className={styles.heading}>Your Cart</h1>
       {cart.length === 0 ? (
         <p>Your cart is empty.</p>

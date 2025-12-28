@@ -118,7 +118,7 @@ const IncomingOrders = () => {
 };
 
   return (
-    <div className={styles.page} style={{padding:'40px 40px 80px 40px', display:'flex', justifyContent:'flex-start', gap:'1rem'}}>
+    <div className={styles.page} style={{display:'flex', justifyContent:'flex-start', gap:'1rem'}}>
       <ToastContainer position="top-right" autoClose={2000}/>
       {orders.length === 0 ? (
         <p>No incoming orders yet.</p>
@@ -138,14 +138,14 @@ const IncomingOrders = () => {
                   : <li className={styles.itemDetails} style={{textAlign: "left"}}>{order.items}</li>}
               </ul>
             </div>
-            <div className={styles.vertContainer} style={{maxHeight:'fit-content', padding:'1rem'}}>
-              <select className={styles.btns} style={{minWidth:'100%'}} value={order.status} onChange={(e) => handleStatusChange(order._id, e.target.value)}>
-                <option className={styles.itemDetails} style={{textAlign: "center", fontSize:'1rem', backgroundColor:'rgba(109, 109, 109, 1)'}}>Queued</option>
-                <option className={styles.itemDetails} style={{textAlign: "center", fontSize:'1rem', backgroundColor:'rgba(235, 177, 18, 1)'}}>Making</option>
-                <option className={styles.itemDetails} style={{textAlign: "center", fontSize:'1rem', backgroundColor:'rgba(41, 126, 34, 1)'}}>Complete!</option>
+            <div className={styles.vertContainer} style={{maxHeight:'fit-content'}}>
+              <select className={styles.btns} style={{flex:'1', minWidth:'100%'}} value={order.status} onChange={(e) => handleStatusChange(order._id, e.target.value)}>
+                <option className={styles.itemDetails} style={{textAlign: "center", fontSize:'1rem'}}>Queued</option>
+                <option className={styles.itemDetails} style={{textAlign: "center", fontSize:'1rem'}}>Making</option>
+                <option className={styles.itemDetails} style={{textAlign: "center", fontSize:'1rem'}}>Complete!</option>
               </select>
             {order.status === "Complete!" ? (
-                <button className={styles.btns} onClick={()=>deleteOrder(order._id)} style={{color: 'red', display:'flex'}}>Delete Order?</button>
+                <button className={styles.btns} onClick={()=>deleteOrder(order._id)} style={{color: 'red', display:'flex', justifyContent:'center', fontSize:'.75rem'}}>Delete Order?</button>
                 ):null}
             </div>
           </div>

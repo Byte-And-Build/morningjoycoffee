@@ -33,7 +33,7 @@ router.get("/", async (req, res) => {
 
 router.post("/new", async (req, res) => {
   try {
-    const { customer, items, user, amount } = req.body;
+    const { customer, image, items, user, amount } = req.body;
 
     // Fetch all involved drinks
     const drinkIds = items.map(item => item._id);
@@ -71,6 +71,7 @@ router.post("/new", async (req, res) => {
 
     const newOrder = new Order({
       customer,
+      image,
       items,
       amount,
       status: "Queued",
