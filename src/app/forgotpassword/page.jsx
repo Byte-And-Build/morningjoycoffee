@@ -1,11 +1,13 @@
 'use client';
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { api } from "../utils/api";
 import styles from "../../app/page.module.css";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 export default function ForgotPassword() {
+  const router = useRouter();
   const [email, setEmail] = useState("");
 
   const handleForgotPassword = async () => {
@@ -19,9 +21,9 @@ export default function ForgotPassword() {
   };
 
   return (
-    <div className={styles.page}>
+    <div className={styles.page} style={{display:'flex', alignItems:'center'}}>
       <h2 className={styles.heading}>Reset Your Password</h2>
-      <div className={styles.vertConatiner}>
+      <div className={styles.vertContainer} style={{flexGrow:'0'}}>
       <input
         className={styles.userInput}
         id="email"
@@ -29,14 +31,6 @@ export default function ForgotPassword() {
         placeholder="Enter your email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
-        style={{
-          width: "100%",
-          padding: 10,
-          marginTop: 10,
-          marginBottom: 20,
-          borderRadius: 6,
-          border: "1px solid #ccc"
-        }}
       />
       <div className={styles.horizWrapper}>
       <button

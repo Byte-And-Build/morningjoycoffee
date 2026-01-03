@@ -26,34 +26,32 @@ export default function LoginPage() {
     try {
       await login(email, password);
     } catch (error) {
-      toast.error("Login failed")
       console.error("Login failed:", error);
+      toast.error("Login failed")
     }
     setLoading(false);
   };
 
   return (
-    <div className={styles.page} style={{justifyContent:'center', display:'flex'}}>
+    <div className={styles.page} style={{display:'flex', alignItems:'center'}}>
       <Image src={Logo} alt="Logo" width={200} height={200} content="contain"/>
-      <div className={styles.vertContainer} style={{overflow: "hidden", flexGrow:'0', padding:'1rem'}}>
+      <div className={styles.vertContainer} style={{overflow: "hidden", flexGrow:'0'}}>
       <form className={styles.vertContainer}> 
       <input
         type="email"
         placeholder="Email"
-        value={email}
         autoComplete="email"
+        value={email}
         onChange={(e) => setEmail(e.target.value)}
         className={styles.userInput}
-        style={{minWidth:'500px'}}
       />
       <input
         type="password"
         placeholder="Password"
-        autoComplete="current-password"
+        autoComplete="new-password"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
         className={styles.userInput}
-        style={{minWidth:'500px'}}
       />
       </form>
       {loading ? (

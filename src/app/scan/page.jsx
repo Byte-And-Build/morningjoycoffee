@@ -32,7 +32,7 @@ export default function ScanScreen() {
             </div>
           </div>
         </div>
-        <div className={styles.vertContainer} style={{boxShadow:'var(--insetShadow)', borderRadius:'var(--borderRadiusLarge)'}}>
+        <div className={styles.vertContainer} style={{boxShadow:'var(--insetShadow)', borderRadius:'var(--borderRadiusLarge)', justifyContent:'center'}}>
           <QRCodeCanvas value={user._id} size={256} />
           <p>{user._id}</p>
         </div>

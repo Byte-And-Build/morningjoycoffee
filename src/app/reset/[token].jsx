@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import styles from '../page.module.css'
 import { useRouter, useSearchParams } from "next/navigation";
 import { api } from "../utils/api";
 
@@ -32,13 +33,13 @@ export default function ResetPassword() {
   };
 
   return (
-    <div className="reset-container">
-      <h2 className="title">Reset Your Password</h2>
+    <div className={styles.page}>
+      <h2 className={styles.heading}>Reset Your Password</h2>
 
       <input
         type="password"
         placeholder="New Password"
-        className="input"
+        className={styles.userInput}
         value={password}
         onChange={(e) => setPassword(e.target.value)}
       />
@@ -46,12 +47,12 @@ export default function ResetPassword() {
       <input
         type="password"
         placeholder="Confirm Password"
-        className="input"
+        className={styles.userInput}
         value={confirmPassword}
         onChange={(e) => setConfirmPassword(e.target.value)}
       />
 
-      <button className="reset-button" onClick={handleReset} disabled={loading}>
+      <button className={styles.btn} onClick={handleReset} disabled={loading}>
         {loading ? "Resetting..." : "Reset Password"}
       </button>
     </div>

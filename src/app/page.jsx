@@ -8,7 +8,6 @@ import Image from "next/image";
 import mainImage from '../app/assets/mainImage.jpg';
 import Logo from '../app/assets/Logo.webp';
 import Placeholder from '../app/assets/drinkExample.png';
-import SearchSymbol from '../app/assets/searchSymbol.svg';
 
 export default function HomePage( ) {
   const router = useRouter();
@@ -79,9 +78,10 @@ export default function HomePage( ) {
       </div>
       <div className={styles.vertContainer}>
         <div className={styles.vertContainer} style={{width:'calc(100%-40px)', alignItems:'flex-start'}}>
+          
           <div className={styles.searchWrapper}>
-            <FaSearch style={{ width:'20px', height:'20px', fill:'var(--fontColor)'}}/>
-            <input type="text" id='searchInput' htmlFor="searchInput" placeholder={searchItem ? searchItem : 'Search...'} onChange={(e) => setSearchItem(e.target.value)} style={{boxShadow:'none', padding:'0px', marginBottom:'0px', maxWidth:'unset', backgroundColor:'transparent', fontSize:'1.2rem'}} className={styles.ratingText}/>
+              <FaSearch />
+            <input type="text" id='searchInput' htmlFor="searchInput" placeholder={searchItem ? searchItem : 'Search...'} onChange={(e) => setSearchItem(e.target.value)} className={styles.input} style={{boxShadow:'none', padding:'0px', marginBottom:'0px', maxWidth:'unset', backgroundColor:'transparent', fontSize:'1.2rem'}} className={styles.ratingText}/>
           </div>
           <div className={styles.horizWrapperInset} style={{width:'100%', justifyContent:'flex-start', overflowX:'auto', overflowY:'hidden', borderRadius:'var(--borderRadiusSmall)'}}>
             {categories.map(cat => (

@@ -3,6 +3,7 @@ import axios from "axios";
 import styles from "../../app/page.module.css";
 import { api } from "../utils/api";
 import CurrencyInput from "./CurrencyInput";
+import { FaPlus } from "react-icons/fa";
 import { toast, ToastContainer } from "react-toastify";
 import EditSymbol from "../assets/editSymbol.svg";
 import DeleteSymbol from "../assets/deleteSymbol.svg";
@@ -321,7 +322,7 @@ function removeIngredient(sizeName, ingredientIdToRemove) {
 
   return (
     <>
-    <div className={styles.horizWrapper} style={{width:'unset', flexWrap:'wrap', padding:'.5rem'}}>
+    <div className={styles.horizWrapper} style={{width:'unset', flexGrow:'0', flexWrap:'wrap', gap:'.5rem', justifyContent:'flex-end'}}>
         <button onClick={() => setShowForm(true)} className={styles.btns} style={{display:'flex', alignItems:'center', justifyContent:'center' }}><EditSymbol alt='edit product' style={{ width: "24px", height: "24px", stroke: "var(--fontColor)" }} /> Product</button>
         <button onClick={() => setShowIngForm(true)} className={styles.btns} style={{display:'flex', alignItems:'center', justifyContent:'center' }}><EditSymbol alt='edit ingredient' style={{ width: "24px", height: "24px", stroke: "var(--fontColor)" }} /> Ingredient</button>
       </div>
@@ -415,7 +416,7 @@ function removeIngredient(sizeName, ingredientIdToRemove) {
                 ) : ( <></>)}
                 </div>
               <button className={styles.btns} onClick={handleAddIngredient}>
-                ➕ Save Ingredient
+                <FaPlus/> Save Ingredient
               </button>
 
               <h3 style={{ marginTop: "20px" }}>Available Ingredients</h3>
@@ -423,17 +424,18 @@ function removeIngredient(sizeName, ingredientIdToRemove) {
                 <p>No ingredients found.</p>
               ) : (
                 <div className={styles.vertContainer} style={{width:'100%'}}>
-                  <div className={styles.vertWrapperInset} style={{position: "relative", gap: "1rem", padding:'0px', width:'100%'}}>
-                    <div className={styles.horizWrapper} style={{width:'100%', justifyContent: "flex-start", paddingBottom: "1rem", position:'sticky', backgroundColor:'var(--btnColor2)', top:'0px', left:'0px', padding:'20px', boxShadow:'var(--shadow)'}}>
-                      <span className={styles.ingredients} style={{flex: 1, minWidth: "100px", textAlign: "left", color: "black"}}>Name</span>
-                      <span className={styles.ingredients} style={{flex: 1, minWidth: "100px", color: "black"}}>Cost/Unit</span>
-                      <span className={styles.ingredients} style={{flex: 1, minWidth: "100px", color: "black"}}>Extra Price</span>
-                      <span className={styles.ingredients} style={{flex: 1, minWidth: "100px", color: "black"}}>In Stock</span>
-                      <span className={styles.ingredients} style={{flex: 1, minWidth: "100px", color: "black"}}>Is Extra</span>
-                      <span className={styles.ingredients} style={{flex: 1, minWidth: "100px", color: "black"}}>Edit/Save</span>
+                  <div className={styles.vertWrapperInset} style={{justifyContent: "flex-start", position: "relative", padding:'0px', width:'100%', overflowX:'auto'}}>
+                    <div className={styles.stickyContainer} style={{ minHeight:'50px', backgroundColor:'var(--btnColor2)', top:'0px', left:'0px', boxShadow:'var(--shadow)', width:'unset'}}>
+                        <span className={styles.ingredients} style={{flex: 1, minWidth: "100px", textAlign: "left", color: "black"}}>Name</span>
+                        <span className={styles.ingredients} style={{flex: 1, minWidth: "100px", color: "black"}}>Cost/Unit</span>
+                        <span className={styles.ingredients} style={{flex: 1, minWidth: "100px", color: "black"}}>Extra Price</span>
+                        <span className={styles.ingredients} style={{flex: 1, minWidth: "100px", color: "black"}}>In Stock</span>
+                        <span className={styles.ingredients} style={{flex: 1, minWidth: "100px", color: "black"}}>Is Extra</span>
+                        <span className={styles.ingredients} style={{flex: 1, minWidth: "100px", color: "black"}}>Edit/Save</span>
                     </div>
                     {availableIngredients.map((ingredient) => (
-                      <div className={styles.cartWrapper} key={ingredient._id} style={{borderBottom: "1px black dashed", minWidth: "100%", padding:'0px .75rem'}}>
+                      <>
+                      <div className={styles.cartWrapper} key={ingredient._id} style={{borderBottom: "1px black dashed", padding:'0px .75rem', width:'unset'}}>
                         <span className={styles.ingredients} style={{flex: 1, textAlign: "left", minWidth: "100px"}}>{ingredient.name}</span>
                         <span className={styles.ingredients} style={{flex: 1, minWidth: "100px"}}>${ingredient.costPerUnit.toFixed(2)}/{ingredient.unit}</span>
                         <span className={styles.ingredients} style={{flex: 1, minWidth: "100px"}}>${ingredient.extraPrice.toFixed(2)}/{ingredient.unit}</span>
@@ -442,9 +444,10 @@ function removeIngredient(sizeName, ingredientIdToRemove) {
                         <button className={styles.btns} style={{flex: .33, minWidth: "75px"}} onClick={() => { setEditIngredient(ingredient); setIngrediantForm(true); }}>Edit</button>
                         <button className={styles.btns} style={{flex: .33, minWidth: "75px"}} onClick={() => handleDeleteIngredient(ingredient._id)}>Delete</button>
                       </div>
+                      </>
                     ))}
+                    </div>
                   </div>
-                </div>
               )}
 
               <button className={styles.btns} onClick={() => setShowIngForm(false)}>

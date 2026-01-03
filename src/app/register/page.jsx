@@ -35,11 +35,11 @@ export default function LoginPage() {
   };
 
   return (
-    <div className={styles.page} style={{padding:'0px 40px 80px 40px', justifyContent:'center', display:'flex', gap:'1rem'}}>
+    <div className={styles.page} style={{justifyContent:'center', display:'flex'}}>
       <ToastContainer position="top-right" autoClose={2000}/>
       <Image src={Logo} alt="Logo" width={200} height={200} content="contain"/>
-      <div className={styles.vertContainer} style={{overflow: "hidden", flexGrow:'0', padding:'1rem'}}>
-      <form className={styles.vertContainer} style={{maxWidth:'50%'}}>
+      <div className={styles.vertContainer} style={{overflow: "hidden", flexGrow:'0'}}>
+      <form className={styles.vertContainer}>
     <input
         type="name"
         placeholder="Name/Nickname"

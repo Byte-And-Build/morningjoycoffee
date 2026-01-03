@@ -118,7 +118,7 @@
   flex: 1;
   flex-grow: 0;
   font-family: var(--font-sourGummy);
-  padding: 1rem;
+  padding: .5rem;
   width: 100%;
 }
 
@@ -136,6 +136,9 @@
   border-radius: 0 0 1rem 1rem;
   padding: 0 40px 0 40px;
   align-items: center;
+  position: sticky;
+  top: 0px;
+  background-color: var(--colorTop);
 }
 
 .heroContainer{
@@ -192,6 +195,14 @@
   width: 30%;
   box-shadow: var(--insetShadow);
   border-radius: var(--borderRadiusSmall);
+}
+
+.searchWrapper>svg{
+  stroke: var(--fontColor) !important;
+  fill: var(--fontColor) !important;
+  vertical-align: middle;
+  min-width: 1rem;
+  height: 1rem;
 }
 
 .InventoryHoriz{
@@ -652,7 +663,7 @@ display: none;
       outline: none;
     }
 
-    input:focus {
+    .input:focus {
       outline: none;
     }
 
@@ -710,12 +721,8 @@ display: none;
 
 
 .dealsImage {
-  height: auto;
-  width: 40%;
-  background-repeat: no-repeat;
-  background-size: contain;
-  aspect-ratio: calc(8.5/11);
-  flex-grow: 0;
+  height: 75vh;
+  width: auto;
 }
 
 .navItem {
@@ -1064,13 +1071,14 @@ display: none;
 
   .searchWrapper{
     min-width: 150px;
-    padding: 2px 5px;
+    padding: 5px 10px;
     width: 50%;
-    margin-left: 10px;
   }
 
   .userInput{
     font-size: 1rem;
+    text-align: center;
+    width: 90%;
   }
 
   .qtyBtns {
@@ -1083,6 +1091,11 @@ display: none;
     border-radius: 50%;
     min-width: 1.5rem;
     min-height: 1.5rem;
+  }
+
+  
+  .stickyContainer{
+    padding: 10px;
   }
 
 }

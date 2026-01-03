@@ -40,7 +40,7 @@ export default function DealsPage() {
   };
 
   return (
-    <div className={styles.page} style={{display:'flex', justifyContent:'flex-start'}}>
+    <div className={styles.page}>
       <div className={styles.vertContainer}>
         <h1 className={styles.heading}>Seasonal Menu</h1>
         {menuImageUrl ? (

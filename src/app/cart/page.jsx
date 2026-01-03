@@ -45,7 +45,7 @@ export default function CartPage() {
                   )}        
                   </div>    
                 </div>
-                <div className={styles.vertContainer} style={{flexGrow:'0', alignContent:'center'}}>
+                <div className={styles.vertContainer} style={{flexGrow:'0'}}>
                   <button
                     onClick={() => updateQuantity(item.id, Math.max(item.quantity - 1, 1))}
                     className={styles.qtyBtns}
