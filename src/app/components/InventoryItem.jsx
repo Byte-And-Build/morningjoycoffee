@@ -425,24 +425,24 @@ function removeIngredient(sizeName, ingredientIdToRemove) {
               ) : (
                 <div className={styles.vertContainer} style={{width:'100%'}}>
                   <div className={styles.vertWrapperInset} style={{justifyContent: "flex-start", position: "relative", padding:'0px', width:'100%', overflowX:'auto'}}>
-                    <div className={styles.stickyContainer} style={{ minHeight:'50px', backgroundColor:'var(--btnColor2)', top:'0px', left:'0px', boxShadow:'var(--shadow)', width:'unset'}}>
-                        <span className={styles.ingredients} style={{flex: 1, minWidth: "100px", textAlign: "left", color: "black"}}>Name</span>
-                        <span className={styles.ingredients} style={{flex: 1, minWidth: "100px", color: "black"}}>Cost/Unit</span>
-                        <span className={styles.ingredients} style={{flex: 1, minWidth: "100px", color: "black"}}>Extra Price</span>
-                        <span className={styles.ingredients} style={{flex: 1, minWidth: "100px", color: "black"}}>In Stock</span>
-                        <span className={styles.ingredients} style={{flex: 1, minWidth: "100px", color: "black"}}>Is Extra</span>
-                        <span className={styles.ingredients} style={{flex: 1, minWidth: "100px", color: "black"}}>Edit/Save</span>
+                    <div className={styles.stickyContainer} style={{ minHeight:'50px', backgroundColor:'var(--btnColor1)', top:'0px', left:'0px', boxShadow:'var(--shadow)', width:'100%'}}>
+                        <span className={styles.ingredients} style={{flex: 1, minWidth: "100px", textAlign: "left"}}>Name</span>
+                        <span className={styles.ingredients} style={{flex: 1, minWidth: "100px"}}>Cost/Unit</span>
+                        <span className={styles.ingredients} style={{flex: 1, minWidth: "100px"}}>Extra Price</span>
+                        <span className={styles.ingredients} style={{flex: 1, minWidth: "100px"}}>In Stock</span>
+                        <span className={styles.ingredients} style={{flex: 1, minWidth: "100px"}}>Is Extra</span>
+                        <span className={styles.ingredients} style={{flex: 1, minWidth: "100px"}}>Edit/Save</span>
                     </div>
                     {availableIngredients.map((ingredient) => (
                       <>
-                      <div className={styles.cartWrapper} key={ingredient._id} style={{borderBottom: "1px black dashed", padding:'0px .75rem', width:'unset'}}>
+                      <div className={styles.cartWrapper} key={ingredient._id} style={{borderBottom: "1px black dashed"}}>
                         <span className={styles.ingredients} style={{flex: 1, textAlign: "left", minWidth: "100px"}}>{ingredient.name}</span>
                         <span className={styles.ingredients} style={{flex: 1, minWidth: "100px"}}>${ingredient.costPerUnit.toFixed(2)}/{ingredient.unit}</span>
                         <span className={styles.ingredients} style={{flex: 1, minWidth: "100px"}}>${ingredient.extraPrice.toFixed(2)}/{ingredient.unit}</span>
                         <span className={styles.ingredients} style={{flex: 1, minWidth: "100px"}}>{ingredient.inStock} {ingredient.unit}{ingredient.inStock > 1 ? "(s)" : ""}</span>
                         <input type="checkbox" defaultChecked={ingredient?.isExtra ? "checked" : ""} style={{flex: .33, minWidth: "75px"}}/>
-                        <button className={styles.btns} style={{flex: .33, minWidth: "75px"}} onClick={() => { setEditIngredient(ingredient); setIngrediantForm(true); }}>Edit</button>
-                        <button className={styles.btns} style={{flex: .33, minWidth: "75px"}} onClick={() => handleDeleteIngredient(ingredient._id)}>Delete</button>
+                        <button className={styles.btns} style={{flex: .33}} onClick={() => { setEditIngredient(ingredient); setIngrediantForm(true); }}>Edit</button>
+                        <button className={styles.btns} style={{flex: .33}} onClick={() => handleDeleteIngredient(ingredient._id)}>Delete</button>
                       </div>
                       </>
                     ))}
@@ -585,9 +585,9 @@ function removeIngredient(sizeName, ingredientIdToRemove) {
               />
             </div>
             <h4>Sizes & Prices</h4>
-            <div className={styles.horizContainer} style={{gap:'2rem', overflowY:'auto', boxShadow:'var(--insetShadow)', borderRadius:'var(--borderRadiusSmall)', padding:'1rem'}}>
+            <div className={styles.horizContainer} style={{gap:'1rem', overflowY:'auto', justifyContent:'space-between', boxShadow:'var(--insetShadow)', borderRadius:'var(--borderRadiusSmall)', padding:'1rem'}}>
               {sizesConfig.map((s, idx) => (
-                <div key={s.size} className={styles.vertContainer} style={{gap:'1rem', alignItems:'flex-start', justifyContent:'stretch', border:'1px dashed var(--fontColor)', borderRadius:'var(--borderRadiusSmall)', padding:'10px'}}>
+                <div key={s.size} className={styles.vertContainer} style={{ flexGrow:'0', border:'1px dashed var(--fontColor)', borderRadius:'var(--borderRadiusSmall)', padding:'10px'}}>
                     <input type="checkbox" id={s.size} className={styles.hidden}  onChange={() => toggleSize(idx)}/>
                     <label className={styles.horizContainer} style={{fontSize:'1rem', justifyContent:'space-between', padding:'.5rem', alignItems:'center' ,width:'100%', boxShadow: 'var(--shadow)', borderRadius:'var(--borderRadiusSmall)'}} htmlFor={s.size}>{" "} {s.size}
                       <button type="button" style={{color:'red', backgroundColor:'var(--btnColor2)', display:'flex', alignItems:'center', fill:'red', cursor:'pointer', padding:'2px', borderRadius:'50%'}} onClick={() => removeSize(s.size)}><DeleteSymbol style={{width:'24px', height:'24px'}}/></button>
@@ -597,10 +597,10 @@ function removeIngredient(sizeName, ingredientIdToRemove) {
                       <button type="button" style={{color:'red', backgroundColor:'var(--btnColor2)', display:'flex', alignItems:'center', fill:'red', cursor:'pointer', padding:'2px', borderRadius:'50%'}} onClick={() => removeIngredient(s.size, ing.ingredientId)}>
                         <DeleteSymbol style={{width:'16px', height:'16px'}}/>
                       </button>
-                      <span style={{textAlign: "right", fontSize:'.8rem'}}>{ing.name}</span>
+                      <span style={{textAlign: "left", fontSize:'.8rem', flex:'1', width:'100%'}}>{ing.name}</span>
                       <input
-                        style={{textAlign: "right"}}
                         className={styles.userInput}
+                        style={{textAlign: "right"}}
                         type="number"
                         value={ing.quantity}
                         onChange={(e) => {

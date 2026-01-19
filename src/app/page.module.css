@@ -9,7 +9,7 @@
   --btnColor1: #f0acc5;
   --btnColor2: #ec79a5;
   --btnColor3: #e46895;
-  --fontColor: #ffffff;
+  --fontColor: #331d0c;
   --selectedSizeTop: #3f1f47;
   --selectedSizeBottom: #5b2d66;
   --selectedInsetTop: #9b5a83;
@@ -273,6 +273,7 @@
   padding: .5rem 0;
   gap: 1rem;
   border-bottom: 2px dashed var(--fontColor);
+  width: 100%
 }
 
 .btns{
@@ -453,8 +454,8 @@ display: none;
 .vertWrapperInset{
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
-  /* gap: .5rem; */
+  justify-content: center;
+  /* gap: .75rem; */
   align-items: center;
   width: 100%;
   box-shadow: var(--insetShadow);
@@ -750,7 +751,7 @@ display: none;
   top: -12px;
   right: 40%;
   background-color: var(--btnColor2);
-  color: white;
+  color: var(--btnColor3);
   border-radius: 12px;
   font-size: 1rem;
   font-weight: bold;
@@ -840,9 +841,9 @@ display: none;
   justify-content: space-between;
   gap: 1.5rem;
   border-bottom: 1px dashed black;
-  padding-bottom: .625rem;
   align-items: center;
   width: 100%;
+  padding: .5rem .75rem;
 }
 
 .horizWrapper {
@@ -889,7 +890,7 @@ display: none;
 }
 
 .ingredients {
-  color: white;
+  color: var(--fontColor);
   font-family: var(--font-quicksand);
   text-align: center;
   font-size: .875rem;

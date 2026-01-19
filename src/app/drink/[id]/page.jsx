@@ -59,10 +59,14 @@ export default function DrinkDetails() {
   console.log(drink?.ingredients)
 
   const customOptions = useMemo(() => {
-  if (!drink?.extras) return [];
-  return drink.extras.map((ing) => ({
-    name: ing.name,
-    price: ing.ingredientId?.extraPrice || 0,
+  if (!Array.isArray(drink?.extras)) return [];
+
+  return drink.extras.map((x) => ({
+    _id: x.ingredientId?._id ?? x.ingredientId,
+    ingredientId: x.ingredientId?._id ?? x.ingredientId,
+    name: x.name,
+    price: Number(x.extraPrice ?? 0),
+    quantity: Number(x.quantity ?? 1),
   }));
 }, [drink]);
 

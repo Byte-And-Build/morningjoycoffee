@@ -19,7 +19,7 @@ export default function PunchCard({ rewards = 0 }) {
             );
         })}
         </div>
-        <strong className={styles.itemDetails}>Your 10th drink is on us!</strong>
+        {/* <strong className={styles.itemDetails}>Your 10th drink is on us!</strong> */}
     </div>
   );
 }

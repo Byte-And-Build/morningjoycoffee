@@ -42,10 +42,27 @@ export default function OrderPage() {
         <div className={styles.vertContainer} style={{flex: 1, paddingBottom: "1rem"}}>
           <span>For: {order?.customer}</span>
             <span className={styles.ingrediants}>
-              {order.items.map((item, idx) => (
-                <p key={idx}>{item}</p>
-              ))}
-            </span>
+            {Array.isArray(order?.items) ? (
+              order.items.map((item, idx) => (
+                <div key={`${item?.drinkId ?? "item"}-${idx}`} style={{ marginBottom: ".5rem" }}>
+                  <p style={{ margin: 0 }}>
+                    {item.quantity}x {item.name} ({item.size})
+                  </p>
+
+                  {!!item.extras?.length && (
+                    <p style={{ margin: 0, fontSize: ".85rem", opacity: 0.8 }}>
+                      Extras: {item.extras
+                      .map((x) => (typeof x === "string" ? x : x?.name))
+                      .filter(Boolean)
+                      .join(", ")}
+                    </p>
+                  )}
+                </div>
+              ))
+            ) : (
+              <p style={{ margin: 0 }}>No items found for this order.</p>
+          )}
+          </span>
           <span>${(Number(order?.amount || 0) / 100).toFixed(2)}</span>
           </div>
           <div className={styles.vertContainer} style={{gap: ".5rem", alignItems: "center", flex: .75}}>

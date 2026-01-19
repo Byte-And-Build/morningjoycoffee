@@ -12,7 +12,7 @@ import { toast } from "react-toastify";
 // const stripePromise = loadStripe("pk_live_51QuQJVKsD8c2Ud4tJ31d0GyK32xIaKcafuoBMPNmIW4UWgCmQwLgYio3yJhZH1fwp2IUNgMpsoSiQaUmcS8xGEx100sA0LCFTY");
 const stripePromise = loadStripe("pk_test_51QuQJVKsD8c2Ud4tb2Px3I1faecKUlngul2OkNKpmcFXnNPcHRmUJTq70gmzVaJ02QAJRl7KX3mGgfeTD3fxTK5R00Oq8T7sat");
 
-function CheckoutForm({ clientSecret, userRewards, setUserRewards, redeemReward, cart, user }) {
+function CheckoutForm({ clientSecret, userRewards, setUserRewards, redeemReward, cart, user, token }) {
   const { clearCart } = useCart();
   const router = useRouter();
   const stripe = useStripe();
@@ -22,6 +22,8 @@ function CheckoutForm({ clientSecret, userRewards, setUserRewards, redeemReward,
 
   const handlePayment = async () => {
   if (!stripe || !elements) return;
+
+  const userId = user?._id ?? undefined;
 
   setLoading(true);
   const { error, paymentIntent } = await stripe.confirmPayment({
@@ -41,14 +43,23 @@ function CheckoutForm({ clientSecret, userRewards, setUserRewards, redeemReward,
       const { data: savedOrder } = await api.post(
         "/api/orders/new",
         {
-          user: user?._id || undefined,
+          user: userId,
           customer: customerName || "Guest",
           amount: paymentIntent.amount,
           image: cart.image || '',
-          items: cart.map((item) => {
-            const opts = item.customOptions?.map((opt) => opt.name).join(", ");
-            return `${item.quantity}x ${item.name}${opts ? ` (${opts})` : ""}`;
-          }),
+          items: cart.map((item) => ({
+            drinkId: item._id,                 // or item.drinkId depending on your cart
+            name: item.name,
+            size: item.selectedSize || item.size, // whatever your cart uses
+            quantity: item?.quantity ?? 1,
+            extras: (item.customOptions || [])
+              .filter(Boolean)
+              .map((opt) => opt.ingredientId || opt._id)
+              .filter(Boolean),
+            unitPrice: item.price,             // optional, but helpful
+            totalPrice: item.totalPrice,       // optional
+            image: item?.image || "",
+          })),
         },
         {
           headers: token ? { Authorization: `Bearer ${token}` } : {},
@@ -97,7 +108,7 @@ function CheckoutForm({ clientSecret, userRewards, setUserRewards, redeemReward,
 
 export default function CheckoutPage() {
   const { cart } = useCart();
-  const { user } = useAuth();
+  const { user, token } = useAuth();
   const router = useRouter();
 
   const [clientSecret, setClientSecret] = useState("");
@@ -185,6 +196,7 @@ export default function CheckoutPage() {
             redeemReward={redeemReward}
             cart={cart}
             user={user}
+            token={token}
           />
         </Elements>
       )}
