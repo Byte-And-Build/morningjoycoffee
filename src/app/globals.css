@@ -1,14 +1,15 @@
 :root {
-  --background: #f0a9e6;
-  --foreground: #594347;
-  --colorTop: #f5c7dc;
-  --colorBottom: #ec84ab;
-  --btnColor1: #f8abc7;
-  --btnColor2: #f8f2f4;
-  --btnColor3: #f0719f;
-  --fontColor: #fcfcfc;
-  --selectedInsetTop: #9b5a83;
-  --selectedInsetBottom: #ac4e71;
+  --colorTop: #ffffff;
+  --colorBottom: #ffdaf1;
+  --btnColor1: #ffeef8;
+  --btnColor2: #ffdaf1;
+  --btnColor3: #ffaedb;
+  --fontColor: #331d0c;
+  --shadowColor: #fcb8e5;
+  --shadow: 0px 0px 10px var(--shadowColor),
+            0px 0px 10px var(--shadowColor);
+  --insetShadow: inset 0px 0px 10px var(--shadowColor),
+                 inset 0px 0px 10px var(--shadowColor);
 
   ::-webkit-scrollbar{
     width: 2px;
@@ -20,7 +21,7 @@
   }
 }
 
-@media (prefers-color-scheme: dark) {
+/* @media (prefers-color-scheme: dark) {
   :root {
     --background: #f0a9e6;
     --foreground: #594347;
@@ -33,7 +34,7 @@
     --selectedInsetBottom: #b854af;
     --fontColor: #a557ac;
   }
-}
+} */
 
 html,
 body {

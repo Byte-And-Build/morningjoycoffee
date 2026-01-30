@@ -5,7 +5,7 @@ import axios from "axios";
 import styles from "./page.module.css";
 import { FaThumbsUp, FaSearch } from "react-icons/fa";
 import Image from "next/image";
-import mainImage from '../app/assets/mainImage.jpg';
+import heroImage from '../app/assets/heroImage.jpg';
 import Logo from '../app/assets/Logo.webp';
 import Placeholder from '../app/assets/drinkExample.png';
 
@@ -74,7 +74,8 @@ export default function HomePage( ) {
   return (
     <div className={styles.page}>
       <div className={styles.heroContainer}>
-        <Image src={mainImage} alt="Logo" style={{backgroundColor:'transparent'}}/>
+        <Image src={Logo} alt="Logo" style={{position:'absolute', objectFit: "contain", height:'auto', filter:'invert(100)', zIndex:'2'}}/>
+        <Image src={heroImage} alt="Hero Image" style={{backgroundColor:'transparent', width: '100vw', objectFit: "cover"}}/>
       </div>
       <div className={styles.vertContainer}>
         <div className={styles.vertContainer} style={{width:'calc(100%-40px)', alignItems:'flex-start'}}>
@@ -87,7 +88,7 @@ export default function HomePage( ) {
             {categories.map(cat => (
               <button
                 key={cat}
-                className={`${styles.btns} ${selectedCategory === cat ? `${styles.btnsSelected}` : ""}`}
+                className={`${styles.ingredientItem} ${styles.btns} ${selectedCategory === cat ? `${styles.btnsSelected}` : `${styles.ingredientItem}`}`}
                 onClick={() => setSelectedCategory(cat)}
               >
                 {cat}
@@ -114,7 +115,7 @@ export default function HomePage( ) {
                     ing.quantity > 0
                   )
                   .map((ing, i) => (
-                    <span key={i} style={{color:'white', flex: "1", minWidth: "100%", fontSize: ".8rem", borderBottom: "1px dashed var(--fontColor)"}}>
+                    <span key={i} style={{color:'var(--fontColor)', flex: "1", minWidth: "100%", fontSize: ".8rem", borderBottom: "1px dashed var(--fontColor)"}}>
                       +{ing.name}
                     </span>
                 ))}

@@ -2,29 +2,21 @@
   --gray-rgb: 0, 0, 0;
   --gray-alpha-200: rgba(var(--gray-rgb), 0.08);
   --gray-alpha-100: rgba(var(--gray-rgb), 0.05);
-  --colorTop: #f8dce8;
-  --colorBottom: #ec84ab;
-  --colorTop1: #ffffff;
-  --colorBottom1: #ffffff;
-  --btnColor1: #f0acc5;
-  --btnColor2: #ec79a5;
-  --btnColor3: #e46895;
+  --colorTop: #ffffff;
+  --colorBottom: #ffffff;
+  --btnColor1: #ffffff;
+  --btnColor2: #ffdaf1;
+  --btnColor3: #222121;
   --fontColor: #331d0c;
-  --selectedSizeTop: #3f1f47;
-  --selectedSizeBottom: #5b2d66;
-  --selectedInsetTop: #9b5a83;
-  --selectedInsetBottom: #ac4e71;
-  --colorComplete: #229713;
-  --colorInProcess: #e0850e;
-  --fontColorContrast: #ffffff;
-  --button-primary-hover: #383838;
-  --button-secondary-hover: #f2f2f2;
-  --shadow: 3px 3px 8px var(--selectedInsetTop),
-            0px 0px 8px var(--selectedInsetBottom);
-  --insetShadow: inset 3px 3px 5px var(--selectedInsetTop),
-                 inset 0px 0px 5px var(--selectedInsetBottom);
+  --shadowTop: #ebebeb;
+  --shadowBottom: #a1a1a1;
+  --shadow: 2px 2px 10px var(--shadowBottom),
+            -2px -2px 10px var(--shadowTop);
+  --insetShadow: inset -2px -2px 10px var(--shadowBottom),
+                 inset 2px 2px 10px var(--shadowTop);
   --borderRadiusLarge: 1rem;
   --borderRadiusSmall: .5rem;
+  color: var(--fontColor);
   display: block;
   flex-direction: column;
   justify-content: center;
@@ -51,7 +43,7 @@
   }
 }
 
-@media (prefers-color-scheme: dark) {
+/* @media (prefers-color-scheme: dark) {
   .page {
     --gray-rgb: 255, 255, 255;
     --gray-alpha-200: rgba(var(--gray-rgb), 0.145);
@@ -70,7 +62,7 @@
   .logo {
     filter: invert();
   }
-}
+} */
 
 .StripeElement {
   width: 100%;
@@ -143,17 +135,25 @@
 
 .heroContainer{
   height: 300px;
-  background-color: white;
   margin-bottom: 1.5rem;
   border-radius: 0 0 1rem 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 4px 4px 10px var(--shadowColor);
+  z-index: 1;
+  /* --mask:
+    radial-gradient(45.3px at 50% calc(100% - 61.6px),#000 99%,#0000 101%) calc(50% - 44px) 0/88px 100%,
+    radial-gradient(45.3px at 50% calc(100% + 39.6px),#0000 99%,#000 101%) 50% calc(100% - 22px)/88px 100% repeat-x;
+  -webkit-mask: var(--mask);
+          mask: var(--mask); */
 }
 
 .heroContainer>img{
-  object-fit: contain;
-  height: 100%; 
-  /* width: 100vw;  */
-  object-fit: none;
-  object-position: 50% 25%;
+  object-fit: fill;
+  height: 100%;
+  filter: brightness(.5) blur(2px);
+  z-index: 1;
 }
 
 .vertContainer{
@@ -263,7 +263,7 @@
   display: flex;
   max-width: 250px;
   font-size: .8rem;
-  color: var(--fontColorContrast);
+  color: var(--fontColor);
 }
 
 .orderWrapper{
@@ -278,6 +278,7 @@
 
 .btns{
   padding: .75rem;
+  justify-content: center;
   border-radius: var(--borderRadiusSmall);
   background-color: var(--btnColor1);
   border: none;
@@ -402,11 +403,11 @@ display: none;
   display: flex;
   justify-content: space-around;
   align-items: center;
-  background-color: var(--btnColor3);
+  background-color: var(--btnColor2);
   z-index: 999;
   border-top-left-radius: 1rem;
   border-top-right-radius: 1rem;
-  box-shadow: 3px -3px 5px var(--selectedInsetBottom);
+  box-shadow: var(--shadow);
 }
 
 .drinkWrapper img {
