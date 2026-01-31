@@ -61,12 +61,10 @@ export default function LoginPage() {
         </div>
       ) : (
         <div className={styles.vertContainer}>
-          <div className={styles.horizContainer} style={{boxShadow:'none'}}>
+          <div className={styles.horizContainer} style={{boxShadow:'none', padding:'.5rem'}}>
             <button className={styles.btns} onClick={handleLogin}>LOGIN</button>
+            <button className={styles.btns} onClick={() => router.push("/forgotpassword")}>Forgot Password?</button>
           </div>
-          <button className={styles.btns} onClick={() => router.push("/forgotpassword")}>
-              Forgot Password?
-          </button>
         </div>
       )}
       </div>

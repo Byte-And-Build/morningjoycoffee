@@ -5,11 +5,12 @@
   --btnColor2: #ffdaf1;
   --btnColor3: #ffaedb;
   --fontColor: #331d0c;
-  --shadowColor: #fcb8e5;
-  --shadow: 0px 0px 10px var(--shadowColor),
-            0px 0px 10px var(--shadowColor);
-  --insetShadow: inset 0px 0px 10px var(--shadowColor),
-                 inset 0px 0px 10px var(--shadowColor);
+  --shadowTop: #fdddf3;
+  --shadowBottom: #ffd1f1;
+  --shadow: 2px 2px 10px var(--shadowBottom),
+            -2px -2px 10px var(--shadowTop);
+  --insetShadow: inset -2px -2px 10px var(--shadowTop),
+                 inset 2px 2px 10px var(--shadowBottom);
 
   ::-webkit-scrollbar{
     width: 2px;
