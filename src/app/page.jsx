@@ -79,10 +79,9 @@ export default function HomePage( ) {
       </div>
       <div className={styles.vertContainer}>
         <div className={styles.vertContainer} style={{width:'calc(100%-40px)', alignItems:'flex-start'}}>
-          
           <div className={styles.searchWrapper}>
               <FaSearch />
-            <input type="text" id='searchInput' htmlFor="searchInput" placeholder={searchItem ? searchItem : 'Search...'} onChange={(e) => setSearchItem(e.target.value)} className={styles.input} style={{boxShadow:'none', padding:'0px', marginBottom:'0px', maxWidth:'unset', backgroundColor:'transparent', fontSize:'1.2rem'}} className={styles.ratingText}/>
+            <input type="text" id='searchInput' htmlFor="searchInput" placeholder={searchItem ? searchItem : 'Search...'} onChange={(e) => setSearchItem(e.target.value)} className={styles.input} style={{boxShadow:'none', padding:'0px', marginBottom:'0px', maxWidth:'unset', backgroundColor:'transparent', fontSize:'1.2rem'}} />
           </div>
           <div className={styles.horizWrapperInset} style={{width:'100%', justifyContent:'flex-start', overflowX:'auto', overflowY:'hidden', borderRadius:'var(--borderRadiusSmall)'}}>
             {categories.map(cat => (

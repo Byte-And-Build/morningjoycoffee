@@ -158,7 +158,7 @@ const deleteUser = async (id) => {
           <Image src={Logo} width={80} height={80} alt="Logo" content="contain" />
           <h1 className={styles.heading}>Metrics</h1>
           <div className={styles.visitorContainer}>
-            <h2 className={styles.ingrediants}>Live Visitors:</h2>
+            <h2 className={styles.ingredients}>Live Visitors:</h2>
             <p className={styles.drinkName}>{liveVisitors}</p>
           </div>
         </div>
@@ -203,26 +203,28 @@ const deleteUser = async (id) => {
         {editUser && (
           <div className={styles.overlay}>
             <div className={styles.modal}>
-              <h3 className={styles.heading}>Edit User</h3>
-              <div className={styles.horizWrapper}>
-                <span>email: </span>
-                <input id="userEmail" className={styles.userInput} value={editUser.email} onChange={e => setEditUser({ ...editUser, email: e.target.value })} />
-              </div>
-              <div className={styles.horizWrapper}>
-                <span>Rewards: </span>
-                <input id="rewardsAmount" className={styles.userInput} type="number" value={editUser.rewards} onChange={e => setEditUser({ ...editUser, rewards: +e.target.value })} />
-              </div>
-              <div className={styles.horizWrapper}>
-              <span>Role:</span>
-              <select value={editUser.role} onChange={e => setEditUser({ ...editUser, role: e.target.value })}>
-                <option value="Customer">Customer</option>
-                <option value="Employee">Employee</option>
-                <option value="Admin">Admin</option>
-              </select>
-              </div>
-              <div className={styles.horizWrapper}>
-                <button className={styles.btns} onClick={saveUserChanges}>Save</button>
-                <button className={styles.btns} onClick={() => setEditUser(null)}>Cancel</button>
+              <div className={styles.vertContainer}>
+                <h3 className={styles.heading}>Edit User</h3>
+                <div className={styles.horizWrapper}>
+                  <span>Email: </span>
+                  <input id="userEmail" className={styles.userInput} value={editUser.email} onChange={e => setEditUser({ ...editUser, email: e.target.value })} />
+                </div>
+                <div className={styles.horizWrapper}>
+                  <span>Rewards: </span>
+                  <input id="rewardsAmount" className={styles.userInput} type="number" value={editUser.rewards} onChange={e => setEditUser({ ...editUser, rewards: +e.target.value })} />
+                </div>
+                <div className={styles.horizWrapper}>
+                <span>Role:</span>
+                <select value={editUser.role} className={styles.select} onChange={e => setEditUser({ ...editUser, role: e.target.value })}>
+                  <option value="Customer">Customer</option>
+                  <option value="Employee">Employee</option>
+                  <option value="Admin">Admin</option>
+                </select>
+                </div>
+                <div className={styles.horizWrapper}>
+                  <button className={styles.btns} onClick={saveUserChanges}>Save</button>
+                  <button className={styles.btns} onClick={() => setEditUser(null)}>Cancel</button>
+                </div>
               </div>
             </div>
           </div>

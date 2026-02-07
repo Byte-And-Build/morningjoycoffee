@@ -56,8 +56,6 @@ export default function DrinkDetails() {
     return (selectedPrice + optionsTotal) * count;
   }, [selectedPrice, selectedOptions, count]);
 
-  console.log(drink?.ingredients)
-
   const customOptions = useMemo(() => {
   if (!Array.isArray(drink?.extras)) return [];
 
@@ -77,15 +75,18 @@ export default function DrinkDetails() {
     });
   };
 
-  const handleRatingUpdate = async (type) => {
+  const handleRatingUpdate = async (type, _id) => {
     try {
-      const response = await api.post(`/api/drinks/${String(id)}/rate`, { type });
-      if (response.status === 200) {
-        const updated = response.data;
-        setThumbsUp(updated.rating.thumbsUp);
-        setThumbsDown(updated.rating.thumbsDown);
-      }
+      const res = await api.post(`/api/drinks/${String(id)}/rate`, { type, _id });
+      setThumbsUp(res.data.rating.thumbsUp);
+      setThumbsDown(res.data.rating.thumbsDown);
     } catch (error) {
+      if (error?.response?.status === 409) {
+        // Already rated (or tapped same vote again)
+        // Optional: show a toast instead of console.log
+        console.log(error.response.data.message);
+        return;
+      }
       console.error("Error updating rating:", error);
     }
   };
@@ -133,7 +134,7 @@ export default function DrinkDetails() {
                 setSelectedPrice(parseFloat(price));
               }}
               className={`${selectedSize === size ? styles.btnsSelected : styles.btns}`}
-              style={{borderRadius:'100%', width:'3.5rem', height:'3.5rem', minWidth:'3.5rem'}}
+              style={{borderRadius:'100%', width:'3.5rem', height:'3.5rem', minWidth:'fit-content'}}
             >
               {size}
             </button>
@@ -149,7 +150,7 @@ export default function DrinkDetails() {
             <button
               key={option.name}
               onClick={() => toggleOption(option)}
-              style={{fontSize:'14px', minWidth:'48%', flex: '0 0 calc(50% - 1rem)'}}
+              style={{fontSize:'14px', minWidth:'32%', maxWidth:'unset', flexGrow:'0'}}
               className={
                 selectedOptions.some(o => o.name === option.name)
                   ? styles.btnsSelected

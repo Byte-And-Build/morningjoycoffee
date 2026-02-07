@@ -116,7 +116,7 @@ useEffect(() => {
 }, [ingredientSearch, availableIngredients, formData.ingredients]);
 
 const handleAddNewIngredient = async (name) => {
-  const token = localStorage.getItem("token");
+  const token = localStorage.getItem("MJCT");
   try {
     const res = await api.post(
       "api/drinks/addIngredient",
@@ -170,7 +170,7 @@ const calculateCostForSize = (size) => {
     const file = e.target.files[0];
     if (!file) return;
 
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("MJCT");
     if (!token) {
       toast.error("You must be logged in to upload images.");
       return;
@@ -279,7 +279,7 @@ const removeIngredient = (ingredientToRemove) => {
 };
 
   const handleSave = async () => {
-  const token = localStorage.getItem("token");
+  const token = localStorage.getItem("MJCT");
 
   const payload = {
     ...formData,

@@ -115,7 +115,7 @@ const calculateCost = (size, availableIngredients) => {
 
 const handleAddIngredient = async () => {
   try {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("MJCT");
     await api.post("/api/drinks/addIngredient", newIngredient, {
       headers: { Authorization: `Bearer ${token}` }
     });
@@ -142,7 +142,7 @@ const handleAddIngredient = async () => {
 
 const handleSaveEditIngredient = async () => {
   try {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("MJCT");
     await api.post("/api/drinks/editIngredient", editIngredient, {
       headers: { Authorization: `Bearer ${token}` },
     });
@@ -161,7 +161,7 @@ const handleSaveEditIngredient = async () => {
   const file = e.target.files[0];
   if (!file) return;
 
-  const token = localStorage.getItem("token");
+  const token = localStorage.getItem("MJCT");
   if (!token) {
     toast.error("You must be logged in to upload images.");
     return;
@@ -233,7 +233,7 @@ const convertToWebp = async (file) => {
     };
 
     try {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("MJCT");
       await api.post("/api/drinks/addInventory", payload, {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -251,7 +251,7 @@ const convertToWebp = async (file) => {
   const handleDeleteIngredient = async (id) => {
     if (!confirm("Really delete this ingredient?")) return;
     try {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("MJCT");
       await api.delete(
         `/api/drinks/ingredients/${id}`,
         { headers: { Authorization: `Bearer ${token}` } }
@@ -395,14 +395,14 @@ function removeIngredient(sizeName, ingredientIdToRemove) {
                         <span className={styles.ingredients} style={{flex: 1, minWidth: "100px", textAlign: "left"}}>${ingredient.extraPrice.toFixed(2)}/{ingredient.unit}</span>
                         <span className={styles.ingredients} style={{flex: 1, minWidth: "64px", textAlign: "left"}}>{ingredient.inStock} {ingredient.unit}{ingredient.inStock > 1 ? "(s)" : ""}</span>
                         <input type="checkbox" defaultChecked={ingredient?.isExtra ? "checked" : ""} style={{flexGrow:'0', minWidth:"64px"}}/>
-                        <button className={styles.btns} style={{flex: 1, minWidth: "100px"}} onClick={() => { setEditIngredient(ingredient); setIngrediantForm(true); }}>Edit</button>
+                        <button className={styles.btns} style={{flex: 1, minWidth: "100px"}} onClick={() => { setEditIngredient(ingredient); setIngredientForm(true); }}>Edit</button>
                         <button className={styles.btns} style={{flex: 1, minWidth: "100px"}} onClick={() => handleDeleteIngredient(ingredient._id)}>Delete</button>
                       </div>
                       </>
                     ))}
                     </div>
               )}
-              <button className={styles.btns} style={{flexGrow:'0'}} onClick={() => setShowIngForm(false)}>Close</button>
+              <button className={styles.btns} style={{maxHeight:'fit-content'}} onClick={() => setShowIngForm(false)}>Close</button>
             </div>
           </div>
         </div>
@@ -487,7 +487,7 @@ function removeIngredient(sizeName, ingredientIdToRemove) {
                 <button
                   className={styles.btns}
                   onClick={() => {
-                    setIngrediantForm(false);
+                    setIngredientForm(false);
                     setEditIngredient(null);
                   }}
                 >

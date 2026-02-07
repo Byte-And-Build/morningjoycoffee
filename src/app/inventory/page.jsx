@@ -18,7 +18,7 @@ export default function InventoryPage() {
 
   useEffect(() => {
     fetchDrinks();
-    const t = localStorage.getItem("token");
+    const t = localStorage.getItem("MJCT");
       setToken(t);
   }, []);
 

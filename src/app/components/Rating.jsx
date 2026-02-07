@@ -5,6 +5,7 @@ import { FaThumbsUp, FaThumbsDown } from "react-icons/fa";
 
 export default function Rating({ item, thumbsUp, thumbsDown, handleRatingUpdate }) {
   const { user } = useAuth();
+  console.log(user)
 
   return (
     <div className={styles.horizWrapper} style={{gap:'1rem'}}>

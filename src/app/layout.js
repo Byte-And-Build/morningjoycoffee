@@ -36,7 +36,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} ${quicksand.variable} ${sourGummy.variable}`}>
-        <AuthProvider> {/* ✅ wrap AuthProvider */}
+        <AuthProvider>
           <CartProvider>
             <SocketBridge />
             {children}

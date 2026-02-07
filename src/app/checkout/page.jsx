@@ -38,7 +38,7 @@ function CheckoutForm({ clientSecret, userRewards, setUserRewards, redeemReward,
     toast.error(`Payment failed: ${error.message}`);
   } else if (paymentIntent?.status === "succeeded") {
     try {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("MJCT");
         
       const { data: savedOrder } = await api.post(
         "/api/orders/new",
@@ -132,7 +132,7 @@ export default function CheckoutPage() {
   useEffect(() => {
   if (!description) return;
   const createPaymentIntent = async () => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("MJCT");
 
     if (amountInCents < 50) {
   alert("Total amount must be at least $0.50 USD.");

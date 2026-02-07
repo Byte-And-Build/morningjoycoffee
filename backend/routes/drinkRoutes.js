@@ -102,33 +102,89 @@ router.get("/:id", async (req, res) => {
 });
 
 // Update thumbs-up or thumbs-down count
-router.post("/:id/rate", async (req, res) => {
-  
+router.post("/:id/rate", protect, async (req, res) => {
+  console.log(req.body)
+  const session = await mongoose.startSession();
+
   try {
-    const { id } = req.params;
+    const { id: drinkId } = req.params;
     const { type } = req.body;
-    const drink = await Drink.findById(id);
-    console.log(type)
+    const userId = req.user._id;
+
+    console.log("type", type)
+    console.log("user", userId)
+
+    if (!["thumbsUp", "thumbsDown"].includes(type)) {
+      return res.status(400).json({ message: "Invalid rating type" });
+    }
+
+    session.startTransaction();
+
+    const drink = await Drink.findById(drinkId).session(session);
     if (!drink) {
+      await session.abortTransaction();
       return res.status(404).json({ message: "Drink not found" });
     }
 
-    if (!drink.rating) {
-      drink.rating = { thumbsUp: 0, thumbsDown: 0 };
+    if (!drink.rating) drink.rating = { thumbsUp: 0, thumbsDown: 0 };
+
+    const existing = await DrinkRating.findOne({ drinkId, userId }).session(session);
+
+    // Case A: first time rating
+    if (!existing) {
+      await DrinkRating.create([{ drinkId, userId, type }], { session });
+
+      if (type === "thumbsUp") drink.rating.thumbsUp += 1;
+      else drink.rating.thumbsDown += 1;
+
+      drink.markModified("rating");
+      await drink.save({ session });
+
+      await session.commitTransaction();
+      return res.json({
+        rating: drink.rating,
+        userRating: type,
+        changed: false,
+      });
     }
 
-    if (type === "thumbsUp") {
-      drink.rating.thumbsUp += 1;
-    } else if (type === "thumbsDown") {
-      drink.rating.thumbsDown += 1;
+    // Case B: same rating again → block spam
+    if (existing.type === type) {
+      await session.commitTransaction();
+      return res.status(409).json({
+        message: "You already rated this drink",
+        rating: drink.rating,
+        userRating: existing.type,
+      });
     }
 
-    drink.markModified('rating');
+    // Case C: change vote (optional feature)
+    const prevType = existing.type;
+    existing.type = type;
+    await existing.save({ session });
 
-    await drink.save();
-    res.json(drink);
+    // decrement old
+    if (prevType === "thumbsUp") drink.rating.thumbsUp = Math.max(0, drink.rating.thumbsUp - 1);
+    else drink.rating.thumbsDown = Math.max(0, drink.rating.thumbsDown - 1);
+
+    // increment new
+    if (type === "thumbsUp") drink.rating.thumbsUp += 1;
+    else drink.rating.thumbsDown += 1;
+
+    drink.markModified("rating");
+    await drink.save({ session });
+
+    await session.commitTransaction();
+    return res.json({
+      rating: drink.rating,
+      userRating: type,
+      changed: true,
+    });
   } catch (error) {
-    res.status(500).json({ message: "Error updating rating", error });
+    try { await session.abortTransaction(); } catch {}
+    return res.status(500).json({ message: "Error updating rating", error });
+  } finally {
+    session.endSession();
   }
 });
 
@@ -143,11 +199,7 @@ router.post("/addIngredient", protect, requireRole(["Admin"]), async (req, res) 
   }
 });
 
-router.delete(
-  "/ingredients/:id",
-  protect,
-  requireRole(["Admin"]),
-  async (req, res) => {
+router.delete("/ingredients/:id", protect, requireRole(["Admin"]), async (req, res) => {
     try {
       const { id } = req.params;
       const deleted = await Ingredient.findByIdAndDelete(id);

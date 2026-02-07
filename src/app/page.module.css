@@ -217,7 +217,7 @@
   flex-direction: row;
   justify-content: flex-start;
   padding: .25rem 1.5rem;
-  background-color: rgb(245, 152, 189);
+  background-color: var(--btnColor2);
   box-shadow: var(--insetShadow);
   border-radius: .625rem;
   gap: .5rem;
@@ -311,6 +311,7 @@
   font-size: 1rem;
   font-family: var(--font-sourGummy);
   box-shadow: var(--insetShadow);
+  color: var(--fontColor);
 }
 
 .qtyBtns:hover, .btns:hover{
@@ -544,20 +545,25 @@ display: none;
     border-radius: 5px;
     border: none;
     background-color: transparent;
-    color: white;
+    color: var(--fontColor);
   }
 
 .backBtn {
-  background-color: var(--btnColor2);
-  padding: .625rem;
+  background-color: var(--btnColor1);
+  padding: 1rem;
   position: absolute; 
   top: 1.75rem; 
   left: 1.75rem; 
   border-radius: 2rem;
   z-index: 20;
   border: none;
-  color: white;
+  color: var(--fontColor);
   cursor: pointer;
+  box-shadow: var(--shadow);
+}
+
+.backBtn:hover, .backBtn:active {
+  box-shadow: var(--insetShadow);
 }
 
 .ratingWrapper {
@@ -656,7 +662,7 @@ display: none;
       border: none;
       padding: .625rem;
       border-radius: 5px;
-      margin-bottom: .625rem;
+      /* margin-bottom: .625rem; */
       background-color: var(--colorTop);
       min-width: 50%;
       flex: 1;
@@ -752,7 +758,7 @@ display: none;
   top: -12px;
   right: 40%;
   background-color: var(--btnColor2);
-  color: var(--btnColor3);
+  color: var(--fontColor);
   border-radius: 12px;
   font-size: 1rem;
   font-weight: bold;
@@ -774,11 +780,9 @@ display: none;
 .extrasContainer{
   display: flex;
   flex-wrap: wrap;
-  justify-content: flex-start;
+  justify-content: space-between;
   gap: 1rem;
   width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
   padding: .625rem;
   box-sizing: border-box;
   box-shadow: var(--insetShadow);
@@ -792,7 +796,6 @@ display: none;
   border-radius: var(--borderRadiusSmall);
   padding: 1rem;
   flex: 0 0 calc(15% - .75rem);
-  min-width: 250px; 
   flex-grow: 0;
   position: relative;
   cursor: pointer;
@@ -884,7 +887,7 @@ display: none;
 }
 
 .ingredientsInventory {
-  color: white;
+  color: var(--fontColor);
   text-align: left;
   font-size: .625rem;
   overflow-y: auto;

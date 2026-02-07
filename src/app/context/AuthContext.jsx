@@ -11,14 +11,16 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     const loadUser = async () => {
-      const storedToken = localStorage.getItem("token");
+      const storedToken = localStorage.getItem("MJCT");
       if (storedToken) {
         setToken(storedToken);
         try {
-          const response = await api.get("api/users/profile", {
+          const response = await api.get("/api/users/profile", {
             headers: { Authorization: `Bearer ${storedToken}` },
           });
-          setUser(response.data);
+          console.log(response.data)
+            setUser(response.data);
+            setToken(storedToken);
         } catch (error) {
           console.error("Failed to load user", error);
         }
@@ -30,10 +32,12 @@ export function AuthProvider({ children }) {
 
   const login = async (email, password) => {
     try {
-      const response = await api.post("api/users/login", { email, password });
-      setToken(response.data.token);
-      setUser(response.data);
-      localStorage.setItem("token", response.data.token);
+      const response = await api.post("/api/users/login", { email, password });
+      const { token, ...userData } = response.data;
+        setToken(token);
+        setUser(userData);
+        localStorage.setItem("MJCT", token);
+        localStorage.setItem("MJCU", JSON.stringify(userData));
     } catch (error) {
       console.error("Login failed", error);
     }
@@ -41,10 +45,12 @@ export function AuthProvider({ children }) {
 
   const register = async (name, email, password) => {
     try {
-      const response = await api.post("api/users/register", { name, email, password });
-      setToken(response.data.token);
-      setUser(response.data);
-      localStorage.setItem("token", response.data.token);
+      const response = await api.post("/api/users/register", { name, email, password });
+      const { token, ...userData } = response.data;
+        setToken(token);
+        setUser(userData);
+        localStorage.setItem("MJCT", token);
+        localStorage.setItem("MJCU", JSON.stringify(userData));
     } catch (error) {
       console.error("Registration failed", error);
     }
@@ -53,7 +59,8 @@ export function AuthProvider({ children }) {
   const logout = () => {
     setUser(null);
     setToken(null);
-    localStorage.removeItem("token");
+    localStorage.removeItem("MJCT");
+    localStorage.removeItem("MJCU");
   };
 
   return (

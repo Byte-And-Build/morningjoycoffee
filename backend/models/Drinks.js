@@ -39,4 +39,16 @@ const drinkSchema = new mongoose.Schema({
   rating: Object,
 });
 
-module.exports = mongoose.model("Drinks", drinkSchema);
+const drinkRatingSchema = new mongoose.Schema(
+  {
+    drinkId: { type: mongoose.Schema.Types.ObjectId, ref: "Drink", required: true, index: true },
+    userId:  { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true, index: true },
+    type:    { type: String, enum: ["thumbsUp", "thumbsDown"], required: true },
+  },
+  { timestamps: true }
+);
+
+// ✅ one rating per user per drink
+drinkRatingSchema.index({ drinkId: 1, userId: 1 }, { unique: true });
+
+module.exports = mongoose.model("Drinks", drinkSchema), mongoose.model("DrinkRating", drinkRatingSchema);
