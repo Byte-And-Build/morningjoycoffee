@@ -1,5 +1,5 @@
 const express = require("express");
-const Drink = require("../models/Drinks");
+const Item = require("../models/Items");
 const Ingredient = require("../models/Ingredient");
 const { protect } = require("./userRoutes");
 const requireRole = require("../middleware/requireRole");
@@ -22,14 +22,14 @@ const s3Client = new S3Client({
   },
 });
 
-// Get all drinks
+// Get all items
 router.get("/", async (req, res) => {
   try {
-    const drinks = await Drink.find().populate("sizes.ingredients.ingredientId").populate("extras.ingredientId");
-    res.status(200).json(drinks);
+    const items = await Item.find().populate("sizes.ingredients.ingredientId").populate("extras.ingredientId");
+    res.status(200).json(items);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Failed to fetch drinks" });
+    res.status(500).json({ message: "Failed to fetch items" });
   }
 });
 
@@ -91,13 +91,13 @@ router.post("/upload/presign", protect, async (req, res) => {
 router.get("/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const drink = await Drink.findById(id).populate("sizes.ingredients.ingredientId").populate("extras.ingredientId");
-    if (!drink) {
-      return res.status(404).json({ message: "Drink not found" });
+    const item = await Item.findById(id).populate("sizes.ingredients.ingredientId").populate("extras.ingredientId");
+    if (!item) {
+      return res.status(404).json({ message: "Item not found" });
     }
-    res.json(drink);
+    res.json(item);
   } catch (error) {
-    res.status(500).json({ message: "Error fetching drink", error });
+    res.status(500).json({ message: "Error fetching item", error });
   }
 });
 
@@ -107,7 +107,7 @@ router.post("/:id/rate", protect, async (req, res) => {
   const session = await mongoose.startSession();
 
   try {
-    const { id: drinkId } = req.params;
+    const { id: itemId } = req.params;
     const { type } = req.body;
     const userId = req.user._id;
 
@@ -120,29 +120,29 @@ router.post("/:id/rate", protect, async (req, res) => {
 
     session.startTransaction();
 
-    const drink = await Drink.findById(drinkId).session(session);
-    if (!drink) {
+    const item = await Item.findById(itemId).session(session);
+    if (!item) {
       await session.abortTransaction();
-      return res.status(404).json({ message: "Drink not found" });
+      return res.status(404).json({ message: "Item not found" });
     }
 
-    if (!drink.rating) drink.rating = { thumbsUp: 0, thumbsDown: 0 };
+    if (!item.rating) item.rating = { thumbsUp: 0, thumbsDown: 0 };
 
-    const existing = await DrinkRating.findOne({ drinkId, userId }).session(session);
+    const existing = await ItemRating.findOne({ itemId, userId }).session(session);
 
     // Case A: first time rating
     if (!existing) {
-      await DrinkRating.create([{ drinkId, userId, type }], { session });
+      await ItemRating.create([{ itemId, userId, type }], { session });
 
-      if (type === "thumbsUp") drink.rating.thumbsUp += 1;
-      else drink.rating.thumbsDown += 1;
+      if (type === "thumbsUp") item.rating.thumbsUp += 1;
+      else item.rating.thumbsDown += 1;
 
-      drink.markModified("rating");
-      await drink.save({ session });
+      item.markModified("rating");
+      await item.save({ session });
 
       await session.commitTransaction();
       return res.json({
-        rating: drink.rating,
+        rating: item.rating,
         userRating: type,
         changed: false,
       });
@@ -152,8 +152,8 @@ router.post("/:id/rate", protect, async (req, res) => {
     if (existing.type === type) {
       await session.commitTransaction();
       return res.status(409).json({
-        message: "You already rated this drink",
-        rating: drink.rating,
+        message: "You already rated this item",
+        rating: item.rating,
         userRating: existing.type,
       });
     }
@@ -164,19 +164,19 @@ router.post("/:id/rate", protect, async (req, res) => {
     await existing.save({ session });
 
     // decrement old
-    if (prevType === "thumbsUp") drink.rating.thumbsUp = Math.max(0, drink.rating.thumbsUp - 1);
-    else drink.rating.thumbsDown = Math.max(0, drink.rating.thumbsDown - 1);
+    if (prevType === "thumbsUp") item.rating.thumbsUp = Math.max(0, item.rating.thumbsUp - 1);
+    else item.rating.thumbsDown = Math.max(0, item.rating.thumbsDown - 1);
 
     // increment new
-    if (type === "thumbsUp") drink.rating.thumbsUp += 1;
-    else drink.rating.thumbsDown += 1;
+    if (type === "thumbsUp") item.rating.thumbsUp += 1;
+    else item.rating.thumbsDown += 1;
 
-    drink.markModified("rating");
-    await drink.save({ session });
+    item.markModified("rating");
+    await item.save({ session });
 
     await session.commitTransaction();
     return res.json({
-      rating: drink.rating,
+      rating: item.rating,
       userRating: type,
       changed: true,
     });
@@ -217,12 +217,12 @@ router.delete("/ingredients/:id", protect, requireRole(["Admin"]), async (req, r
 
 router.post("/addInventory", protect, requireRole(["Admin"]), async (req, res) => {
   try {
-    const newDrink = new Drink(req.body);
-    await newDrink.save();
-    res.status(201).json(newDrink);
+    const newItem = new Item(req.body);
+    await newItem.save();
+    res.status(201).json(newItem);
   } catch (error) {
     console.error("Add error", error);
-    res.status(500).json({ message: "Failed to add drink" });
+    res.status(500).json({ message: "Failed to add item" });
   }
 });
 
@@ -230,25 +230,25 @@ router.post("/editInventory", protect, requireRole(["Admin", "Employee"]), async
   console.log(req.body)
   try {
     const { _id, ...rest } = req.body;
-    const updated = await Drink.findByIdAndUpdate(_id, rest, { new: true });
+    const updated = await Item.findByIdAndUpdate(_id, rest, { new: true });
     res.status(200).json(updated);
   } catch (error) {
     console.error("Edit error", error);
-    res.status(500).json({ message: "Failed to edit drink" });
+    res.status(500).json({ message: "Failed to edit item" });
   }
 });
 
 router.post("/deleteInventory", protect, requireRole(["Admin"]), async (req, res) => {
   try {
     const { _id } = req.body;
-    const deleted = await Drink.findByIdAndDelete(_id);
+    const deleted = await Item.findByIdAndDelete(_id);
     if (!deleted) {
-      return res.status(404).json({ message: "Drink not found" });
+      return res.status(404).json({ message: "Item not found" });
     }
-    res.status(200).json({ message: "Drink deleted", _id });
+    res.status(200).json({ message: "Item deleted", _id });
   } catch (error) {
     console.error("Delete error", error);
-    res.status(500).json({ message: "Failed to delete drink" });
+    res.status(500).json({ message: "Failed to delete Item" });
   }
 });
 

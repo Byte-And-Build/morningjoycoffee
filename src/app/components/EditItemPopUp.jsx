@@ -9,7 +9,7 @@ import "react-toastify/dist/ReactToastify.css";
 import Placeholder from '../assets/Logo.webp'
 
 
-export default function EditItemPopUp({ item, setEditPopUp, fetchDrinks }) {
+export default function EditItemPopUp({ item, setEditPopUp, fetchItems }) {
 
   console.log(item)
   
@@ -33,7 +33,7 @@ export default function EditItemPopUp({ item, setEditPopUp, fetchDrinks }) {
   useEffect(() => {
   const fetchIngredients = async () => {
     try {
-      const res = await api.get("api/drinks/ingredients");
+      const res = await api.get("api/items/ingredients");
       const allIngredients = res.data || [];
       setAvailableIngredients(allIngredients);
 
@@ -119,7 +119,7 @@ const handleAddNewIngredient = async (name) => {
   const token = localStorage.getItem("MJCT");
   try {
     const res = await api.post(
-      "api/drinks/addIngredient",
+      "api/items/addIngredient",
       { name },
       {
         headers: {
@@ -181,7 +181,7 @@ const calculateCostForSize = (size) => {
 
     try {
       const presigned = await api.post(
-        "/api/drinks/upload/presign", // or /api/upload/presign if you split it out
+        "/api/items/upload/presign", // or /api/upload/presign if you split it out
         {
           fileName: imageName,
           fileType: "image/webp",
@@ -296,15 +296,15 @@ const removeIngredient = (ingredientToRemove) => {
   };
 
   try {
-    await api.post("api/drinks/editInventory", payload, {
+    await api.post("api/items/editInventory", payload, {
       headers: { Authorization: `Bearer ${token}` },
     });
-    toast.success("Drink updated!");
+    toast.success("Item updated!");
     setEditPopUp(false);
-    fetchDrinks();
+    fetchItems();
   } catch (err) {
     console.error("Update error", err);
-    alert("Failed to update drink.");
+    alert("Failed to update item.");
   }
 };
 

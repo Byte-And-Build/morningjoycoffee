@@ -67,7 +67,7 @@ app.use(bodyParser.urlencoded({ extended: true, limit: "10mb" }));
 
 // Routes
 const { router: userRoutes } = require("./routes/userRoutes");
-const drinkRoutes = require("./routes/drinkRoutes");
+const itemRoutes = require("./routes/itemRoutes");
 const menuRoutes = require("./routes/menuRoutes");
 const stripeRoutes = require("./routes/stripeRoutes");
 const orderRoutes = require("./routes/orderRoutes");
@@ -75,7 +75,7 @@ const metricsRoutes = require("./routes/metricRoutes");
 
 app.use("/api/stripe", stripeRoutes);
 app.use("/api/users", userRoutes);
-app.use("/api/drinks", drinkRoutes);
+app.use("/api/items", itemRoutes);
 app.use("/api/menu", menuRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/metrics", metricsRoutes);

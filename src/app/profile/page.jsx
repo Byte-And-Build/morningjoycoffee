@@ -53,7 +53,7 @@ export default function ProfileScreen() {
         <h2 className={styles.heading}>
           Hello, <span>{profile?.name || "Guest"}!</span>
         </h2>
-        <div className={styles.vertContainer} style={{paddingTop: ".5rem", paddingBottom: ".5rem", maxHeight:'fit-content'}}>
+        <div className={styles.vertContainer} style={{maxHeight:'fit-content'}}>
           <PunchCard rewards={profile?.rewards || 0} />
         </div>
         <div className={styles.horizContainer} style={{ flexGrow:'0', boxShadow:'none', gap:'.75rem' }}>
@@ -61,9 +61,9 @@ export default function ProfileScreen() {
           <button onClick={() => router.push("/user-settings")} className={styles.btns}>Settings</button>
         </div>
         <button onClick={() => { logout(); router.replace("/") }} className={styles.btns} style={{maxHeight:'fit-content'}}>Logout</button>
-        <div className={styles.vertContainer} style={{padding:'1rem'}}>
+        <div className={styles.vertContainer} style={{padding:'1rem', justifyContent:'flex-start' }}>
           {(profile?.role === "Admin" || profile?.role === "Employee") && (
-            <div className={styles.horizContainer} style={{maxHeight:'fit-content', padding:'.75rem', width:'100%', justifyContent:'center' }}>
+            <div className={styles.horizContainer} style={{maxHeight:'fit-content', padding:'.75rem', width:'100%'}}>
               <button onClick={() => router.push("/scanner")} style={{ minWidth:'calc(50% - .5rem)'}} className={styles.btns}>Scan QR</button>
               <button onClick={() => router.push("/inventory")} style={{ minWidth:'calc(50% - .5rem)'}} className={styles.btns}>Inventory</button>
               <button onClick={() => router.push("/incoming-orders")} style={{minWidth:'calc(50% - .5rem)',}} className={styles.btns}>View Orders</button>

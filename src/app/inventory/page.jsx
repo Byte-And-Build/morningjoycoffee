@@ -7,44 +7,28 @@ import { useRouter } from "next/navigation";
 import { api } from "../../app/utils/api";
 import EditItemPopUp from "../../app/components/EditItemPopUp";
 import InventoryItem from "../../app/components/InventoryItem";
+import DeletePopUp from "../components/DeletePopUp";
 
 export default function InventoryPage() {
   const router = useRouter();
-  const [drinks, setDrinks] = useState([]);
+  const [items, setItems] = useState([]);
   const [selectedItem, setSelectedItem] = useState(null);
   const [editPopUp, setEditPopUp] = useState(false);
   const [deletePopUp, setDeletePopUp] = useState(false);
   const [token, setToken] = useState("");
 
   useEffect(() => {
-    fetchDrinks();
+    fetchItems();
     const t = localStorage.getItem("MJCT");
       setToken(t);
   }, []);
 
-  const fetchDrinks = async () => {
+  const fetchItems = async () => {
     try {
-      const response = await api.get("api/drinks");
-      setDrinks(response.data || []);
+      const response = await api.get("api/items");
+      setItems(response.data || []);
     } catch (error) {
-      console.error("Error fetching drinks:", error);
-    }
-  };
-
-  const handleDelete = async (_id) => {
-    try {
-      await api.post("api/drinks/deleteInventory", { _id },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      setDrinks((prev) => prev.filter((d) => d._id !== _id));
-      setDeletePopUp(false);
-    } catch (err) {
-      console.error("Delete error", err);
-      alert("Failed to delete drink.");
+      console.error("Error fetching items:", error);
     }
   };
 
@@ -74,12 +58,12 @@ export default function InventoryPage() {
       <div className={styles.stickyContainer}>
           <Image src={Logo} width={80} height={80} alt="Logo" content="contain" style={{maxWidth:'80px'}}/>
           <h1 className={styles.heading}>Products</h1>
-          <InventoryItem refreshDrinks={fetchDrinks} />
+          <InventoryItem fetchItems={fetchItems} />
       </div>
       <div className={styles.vertContainer}>
-      {drinks.map((item) => (
+      {items.map((item) => (
         <div key={item._id} className={styles.inventoryWrapper}>
-          <div className={styles.vertContainer} onClick={() => router.push(`/drink/${item._id}`)} style={{flex:'.3'}}> 
+          <div className={styles.vertContainer} onClick={() => router.push(`/item/${item._id}`)} style={{flex:'.3'}}> 
             <p className={styles.ingredients}>{item.name}</p>
             {item.image && (
             <Image src={item.image} width={80} height={80} alt={item.name} className="object-contain" style={{cursor: "pointer", minWidth:'fit-content'}}/>
@@ -103,7 +87,7 @@ export default function InventoryPage() {
             </div>
           <pre>{formatPriceBySize(item.sizes)}</pre>
           <div className={styles.vertContainer} style={{flex:'.3'}}>
-            <p className={styles.ingrediants}>Category: <br></br>{item.category}</p>
+            <p className={styles.ingredients}>Category: <br></br>{item.category}</p>
           </div>
           <div className={styles.vertContainer} style={{flex:'.25'}}>
             <div className={styles.horizContainer} style={{ padding: '.5em', width:'100%' }}>
@@ -130,34 +114,11 @@ export default function InventoryPage() {
         <EditItemPopUp
           item={selectedItem}
           setEditPopUp={setEditPopUp}
-          fetchDrinks={fetchDrinks}
+          fetchItems={fetchItems}
         />
       )}
-
       {deletePopUp && (
-        <div className={styles.overlay}>
-          <div className={styles.modal}>
-          <div className={styles.vertContainer}>
-          <h2 className={styles.heading}>
-            Are you sure you want to delete <br /> {selectedItem?.name}?
-          </h2>
-            <div className={styles.horizWrapper}>
-              <button
-                className={styles.btns}
-                onClick={() => handleDelete(selectedItem?._id)}
-              >
-                Yes, Delete
-              </button>
-              <button
-                className={styles.btns}
-                onClick={() => setDeletePopUp(false)}
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
-          </div>
-        </div>
+        <DeletePopUp token={token} selectedItem={selectedItem} setDeletePopUp={setDeletePopUp} setItems={setItems} />
       )}
     </div>
   );

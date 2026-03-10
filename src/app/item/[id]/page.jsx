@@ -8,13 +8,13 @@ import { FaPlus, FaMinus } from "react-icons/fa";
 import Rating from "../../components/Rating";
 import Image from "next/image";
 
-export default function DrinkDetails() {
+export default function ItemDetails() {
   const router = useRouter();
   const { id } = useParams(); // ✅ This replaces router.query.id
 
   const { addToCart } = useCart();
 
-  const [drink, setDrink] = useState(null);
+  const [item, setItem] = useState(null);
   const [count, setCount] = useState(1);
   const [selectedSize, setSelectedSize] = useState("");
   const [selectedPrice, setSelectedPrice] = useState(0);
@@ -31,24 +31,24 @@ export default function DrinkDetails() {
 
     const fetchDrink = async () => {
       try {
-        const response = await api.get(`/api/drinks/${id}`);
-        const drinkData = response.data;
-        setDrink(drinkData);
-        console.log(drinkData)
-        if (drinkData?.sizes?.length > 0) {
-          const defaultSize = drinkData.sizes[0];
+        const response = await api.get(`/api/items/${id}`);
+        const itemData = response.data;
+        setItem(itemData);
+        console.log(itemData)
+        if (itemData?.sizes?.length > 0) {
+          const defaultSize = itemData.sizes[0];
           setSelectedSize(defaultSize.size);
           setSelectedPrice(parseFloat(defaultSize.price || 0));
         }
 
-        setThumbsUp(drinkData?.rating?.thumbsUp || 0);
-        setThumbsDown(drinkData?.rating?.thumbsDown || 0);
+        setThumbsUp(itemData?.rating?.thumbsUp || 0);
+        setThumbsDown(itemData?.rating?.thumbsDown || 0);
       } catch (error) {
-        console.error("Error fetching drink:", error);
+        console.error("Error fetching item:", error);
       }
     };
 
-    fetchDrink();
+    fetchItem();
   }, [id]);
 
   const totalPrice = useMemo(() => {
@@ -57,16 +57,16 @@ export default function DrinkDetails() {
   }, [selectedPrice, selectedOptions, count]);
 
   const customOptions = useMemo(() => {
-  if (!Array.isArray(drink?.extras)) return [];
+  if (!Array.isArray(item?.extras)) return [];
 
-  return drink.extras.map((x) => ({
+  return item.extras.map((x) => ({
     _id: x.ingredientId?._id ?? x.ingredientId,
     ingredientId: x.ingredientId?._id ?? x.ingredientId,
     name: x.name,
     price: Number(x.extraPrice ?? 0),
     quantity: Number(x.quantity ?? 1),
   }));
-}, [drink]);
+}, [item]);
 
   const toggleOption = (option) => {
     setSelectedOptions((prev = []) => {
@@ -77,7 +77,7 @@ export default function DrinkDetails() {
 
   const handleRatingUpdate = async (type, _id) => {
     try {
-      const res = await api.post(`/api/drinks/${String(id)}/rate`, { type, _id });
+      const res = await api.post(`/api/items/${String(id)}/rate`, { type, _id });
       setThumbsUp(res.data.rating.thumbsUp);
       setThumbsDown(res.data.rating.thumbsDown);
     } catch (error) {
@@ -91,7 +91,7 @@ export default function DrinkDetails() {
     }
   };
 
-  if (!drink) return <div className="text-center mt-10">Drink not found</div>;
+  if (!item) return <div className="text-center mt-10">Item not found</div>;
 
   return (
     <div className={styles.page}>
@@ -109,7 +109,7 @@ export default function DrinkDetails() {
       {drink.sizes?.[0] && (
         <div className={styles.horizWrapper} style={{ flexWrap: "wrap" }}>
           <p className={styles.ingredients}>
-            {drink.sizes[0].ingredients
+            {item.sizes[0].ingredients
               .map((ing) => ing.ingredientId?.name)
               .filter(name => name && !BASE_INGREDIENTS.includes(name))
               .join("  •  ")}
@@ -117,7 +117,7 @@ export default function DrinkDetails() {
         </div>
       )}
       <Rating
-        item={drink}
+        item={item}
         thumbsUp={thumbsUp}
         thumbsDown={thumbsDown}
         handleRatingUpdate={handleRatingUpdate}
@@ -125,8 +125,8 @@ export default function DrinkDetails() {
       <p className={styles.drinkDetailsPrice}>Total: ${totalPrice.toFixed(2)}</p>
       <h3 className={styles.itemName} style={{fontSize:'1.5rem'}}>Choose a size:</h3>
       <div className={styles.horizContainer} style={{padding:'1rem', boxShadow:'none'}}>
-        {Array.isArray(drink.sizes) && drink.sizes.length > 1 && (
-          drink.sizes.map(({ size, price }) => (
+        {Array.isArray(item.sizes) && item.sizes.length > 1 && (
+          item.sizes.map(({ size, price }) => (
             <button
               key={size}
               onClick={() => {
@@ -171,7 +171,7 @@ export default function DrinkDetails() {
           </div>
           <button
             onClick={() => addToCart({
-              ...drink,
+              ...item,
               quantity: count,
               selectedSize,
               selectedPrice,

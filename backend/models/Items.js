@@ -17,7 +17,7 @@ const SizeSubschema = new mongoose.Schema({
   ]
 }, { _id: false });
 
-const drinkSchema = new mongoose.Schema({
+const itemSchema = new mongoose.Schema({
   name: String,
   category: String,
   sizes: [ SizeSubschema ],
@@ -39,7 +39,7 @@ const drinkSchema = new mongoose.Schema({
   rating: Object,
 });
 
-const drinkRatingSchema = new mongoose.Schema(
+const itemRatingSchema = new mongoose.Schema(
   {
     drinkId: { type: mongoose.Schema.Types.ObjectId, ref: "Drink", required: true, index: true },
     userId:  { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true, index: true },
@@ -49,6 +49,6 @@ const drinkRatingSchema = new mongoose.Schema(
 );
 
 // ✅ one rating per user per drink
-drinkRatingSchema.index({ drinkId: 1, userId: 1 }, { unique: true });
+itemRatingSchema.index({ drinkId: 1, userId: 1 }, { unique: true });
 
-module.exports = mongoose.model("Drinks", drinkSchema), mongoose.model("DrinkRating", drinkRatingSchema);
+module.exports = mongoose.model("Items", itemSchema), mongoose.model("ItemRating", itemRatingSchema);

@@ -11,7 +11,7 @@ import Placeholder from '../app/assets/drinkExample.png';
 
 export default function HomePage( ) {
   const router = useRouter();
-  const [drinks, setDrinks] = useState([]);
+  const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [searchItem, setSearchItem] = useState("")
@@ -22,38 +22,38 @@ export default function HomePage( ) {
     "32oz Clear Plastic Cup With Lid and Straw"];
 
   useEffect(() => {
-    const fetchDrinks = async () => {
+    const fetchItems = async () => {
       try {
-        const response = await axios.get("/api/drinks");
+        const response = await axios.get("/api/items");
         const data = response.data || [];
-        setDrinks(data);
+        setItems(data);
       } catch (err) {
-        console.error("Error fetching drinks:", err);
+        console.error("Error fetching items:", err);
       } finally {
         setLoading(false);
       }
     };
-    fetchDrinks();
+    fetchItems();
   }, []);
 
-  const categories = drinks.length > 0 ? ["All", ...new Set(drinks.map(d => d.category))] : [];
+  const categories = items.length > 0 ? ["All", ...new Set(items.map(d => d.category))] : [];
   const normalizedSearch = searchItem.trim().toLowerCase();
-  const filteredDrinks = drinks.filter((drink) => {
+  const filteredItems = items.filter((item) => {
   // Category filter
   const matchesCategory =
-    selectedCategory === "All" || drink.category === selectedCategory;
+    selectedCategory === "All" || item.category === selectedCategory;
 
   // Search filter (name + category + optional ingredient match)
   if (!normalizedSearch) return matchesCategory;
 
-  const nameMatch = (drink.name || "").toLowerCase().includes(normalizedSearch);
-  const categoryMatch = (drink.category || "")
+  const nameMatch = (item.name || "").toLowerCase().includes(normalizedSearch);
+  const categoryMatch = (item.category || "")
     .toLowerCase()
     .includes(normalizedSearch);
 
   // Optional: search across ingredients (across all sizes)
   const ingredientMatch =
-    drink.sizes?.some((size) =>
+    item.sizes?.some((size) =>
       size.ingredients?.some((ing) =>
         (ing?.name || "").toLowerCase().includes(normalizedSearch)
       )
@@ -96,7 +96,7 @@ export default function HomePage( ) {
             </div>
         </div>
         <div className={styles.gridContainer}>
-          {filteredDrinks.map((item, index) => (
+          {filteredItems.map((item, index) => (
             <div key={index} className={styles.drinkWrapper} onClick={() => router.push(`/drink/${item._id}`)}>
               <div className={styles.ratingContainerHome}>
                 <span className={styles.ratingText}>{item.rating?.thumbsUp || 0}</span>

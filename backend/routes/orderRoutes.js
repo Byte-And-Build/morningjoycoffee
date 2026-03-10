@@ -4,7 +4,7 @@ const Order = require("../models/Order");
 const router = express.Router();
 const jwt = require("jsonwebtoken");
 const User = require("../models/User.js");
-const Drink = require("../models/Drinks");
+const Item = require("../models/Items");
 const Ingredient = require("../models/Ingredient");
 const Counter = require("../models/Counter");
 
@@ -53,24 +53,24 @@ router.post("/new", async (req, res) => {
       const orderNumber = counter.seq;
 
       // 2) Fetch drinks referenced in order
-      const drinkIds = items.map(i => i.drinkId).filter(Boolean);
-      const drinks = await Drink.find({ _id: { $in: drinkIds } }).session(session);
+      const itemIds = items.map(i => i.itemId).filter(Boolean);
+      const items = await Item.find({ _id: { $in: itemIds } }).session(session);
 
       // 3) Deduct inventory
       for (const item of items) {
-        const drink = drinks.find(d => d._id.toString() === String(item.drinkId));
-        if (!drink) continue;
+        const i = items.find(d => d._id.toString() === String(item.itemId));
+        if (!i) continue;
 
         const qty = Number(item.quantity || 0);
         if (qty <= 0) continue;
 
         // base recipe ingredients for the chosen size
-        const sizeData = drink.sizes?.find(s => s.size === item.size);
+        const sizeData = item.sizes?.find(s => s.size === item.size);
         if (sizeData?.ingredients?.length) {
           for (const ing of sizeData.ingredients) {
             const ingredientId = ing.ingredientId;
-            const perDrinkQty = Number(ing.quantity || 0);
-            const deductQty = perDrinkQty * qty;
+            const perItemQty = Number(ing.quantity || 0);
+            const deductQty = perItemQty * qty;
 
             if (deductQty > 0) {
               await Ingredient.updateOne(

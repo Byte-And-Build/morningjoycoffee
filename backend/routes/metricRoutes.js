@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const Order = require("../models/Order");
-const Drink = require("../models/Drinks");
+const Drink = require("../models/Items");
 
 // Utility: get date N days ago
 const daysAgo = (n) => {

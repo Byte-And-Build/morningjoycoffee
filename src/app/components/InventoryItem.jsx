@@ -8,7 +8,7 @@ import { toast, ToastContainer } from "react-toastify";
 import EditSymbol from "../assets/editSymbol.svg";
 import DeleteSymbol from "../assets/deleteSymbol.svg";
 
-const InventoryItem = ({ refreshDrinks, item }) => {
+const InventoryItem = ({ refreshItems, item }) => {
   const [showForm, setShowForm] = useState(false);
   const [showIngForm, setShowIngForm] = useState(false);
   const [availableIngredients, setAvailableIngredients] = useState([]);
@@ -50,7 +50,7 @@ const [formData, setFormData] = useState({
   if (showForm) document.body.style.overflow = "hidden";
   const fetchIngredients = async () => {
       try {
-        const response = await axios.get("/api/drinks/ingredients");
+        const response = await axios.get("/api/items/ingredients");
         const data = response.data || [];
         const sortedData = data.sort((a, b) => a.name.localeCompare(b.name));
           setAvailableIngredients(sortedData);
@@ -116,7 +116,7 @@ const calculateCost = (size, availableIngredients) => {
 const handleAddIngredient = async () => {
   try {
     const token = localStorage.getItem("MJCT");
-    await api.post("/api/drinks/addIngredient", newIngredient, {
+    await api.post("/api/items/addIngredient", newIngredient, {
       headers: { Authorization: `Bearer ${token}` }
     });
 
@@ -132,7 +132,7 @@ const handleAddIngredient = async () => {
     });
 
     // refresh ingredients
-    const refreshed = await axios.get("/api/drinks/ingredients");
+    const refreshed = await axios.get("/api/items/ingredients");
     setAvailableIngredients(refreshed.data || []);
   } catch (err) {
     console.error("Ingredient Add Error:", err);
@@ -143,13 +143,13 @@ const handleAddIngredient = async () => {
 const handleSaveEditIngredient = async () => {
   try {
     const token = localStorage.getItem("MJCT");
-    await api.post("/api/drinks/editIngredient", editIngredient, {
+    await api.post("/api/items/editIngredient", editIngredient, {
       headers: { Authorization: `Bearer ${token}` },
     });
     toast.success("Ingredient updated!");
     setEditIngredient(null);
     setIngredientForm(false);
-    const refreshed = await axios.get("/api/drinks/ingredients");
+    const refreshed = await axios.get("/api/items/ingredients");
     setAvailableIngredients(refreshed.data || []);
   } catch (err) {
     console.error("Edit ingredient error:", err);
@@ -171,7 +171,7 @@ const handleSaveEditIngredient = async () => {
   const webpBlob = await convertToWebp(file);
 
   const presigned = await api.post(
-    "/api/drinks/upload/presign",
+    "/api/items/upload/presign",
     {
       fileName: imageName,
       fileType: "image/webp",
@@ -234,14 +234,14 @@ const convertToWebp = async (file) => {
 
     try {
       const token = localStorage.getItem("MJCT");
-      await api.post("/api/drinks/addInventory", payload, {
+      await api.post("/api/items/addInventory", payload, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      toast.success("Drink added!");
+      toast.success("Item added!");
       resetForm();
       setShowForm(false);
-      refreshDrinks();
+      refreshItems();
     } catch (err) {
       console.error("Save error:", err);
       toast.error("Failed :( ");
@@ -253,7 +253,7 @@ const convertToWebp = async (file) => {
     try {
       const token = localStorage.getItem("MJCT");
       await api.delete(
-        `/api/drinks/ingredients/${id}`,
+        `/api/items/ingredients/${id}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       // drop it from local state so UI updates immediately

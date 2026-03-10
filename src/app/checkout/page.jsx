@@ -48,7 +48,7 @@ function CheckoutForm({ clientSecret, userRewards, setUserRewards, redeemReward,
           amount: paymentIntent.amount,
           image: cart.image || '',
           items: cart.map((item) => ({
-            drinkId: item._id,                 // or item.drinkId depending on your cart
+            itemId: item._id,                 // or item.itemId depending on your cart
             name: item.name,
             size: item.selectedSize || item.size, // whatever your cart uses
             quantity: item?.quantity ?? 1,
@@ -177,7 +177,7 @@ export default function CheckoutPage() {
 
       {userRewards >= 10 && (
         <div className={styles.switchRow}>
-          <label htmlFor="rewards" className={styles.btns}>Redeem 10 points for a free drink?</label>
+          <label htmlFor="rewards" className={styles.btns}>Redeem 10 points for a free item?</label>
           <input
             id="rewards"
             type="checkbox"
