@@ -91,7 +91,7 @@ async function deleteOrder(id) {
               <p style={{padding:'10px', fontSize:'.75rem'}}>${parseFloat(order.amount)}</p>
             </div>
             <div className={styles.vertContainer} style={{textAlign: "center", flex: '.3'}}>
-              <Image src={order.image || Placeholder} alt="Drink" width={60} height={60} />
+              <Image src={order.image || Placeholder} alt="Item" width={60} height={60} />
               <span className={styles.ingredients}> {order.customer}</span>
             </div>
             <div className={styles.vertContainer} style={{flex: '1', textAlign: "left", justifyContent: "flex-start", overflowY:'auto', overflowX:'hidden'}}>

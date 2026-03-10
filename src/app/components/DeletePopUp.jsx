@@ -5,7 +5,7 @@ const DeletePopUp = ({selectedItem, setDeletePopUp, setItems, token}) => {
 
     const handleDelete = async (_id) => {
     try {
-      await api.post("api/drinks/deleteInventory", { _id },
+      await api.post("api/items/deleteInventory", { _id },
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -16,7 +16,7 @@ const DeletePopUp = ({selectedItem, setDeletePopUp, setItems, token}) => {
       setDeletePopUp(false);
     } catch (err) {
       console.error("Delete error", err);
-      alert("Failed to delete drink.");
+      alert("Failed to delete item.");
     }
   };
 

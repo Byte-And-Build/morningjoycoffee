@@ -142,7 +142,7 @@ const IncomingOrders = () => {
             </p>
 
             <div className={styles.vertContainer} style={{ flex: 0.5, textAlign: "center" }}>
-              <Image src={Placeholder} alt="Drink" width={60} height={60} />
+              <Image src={Placeholder} alt="Item" width={60} height={60} />
               <span className={styles.ingredients}>{order.customer}</span>
             </div>
 
@@ -160,7 +160,7 @@ const IncomingOrders = () => {
                   order.items.map((item, idx) => {
                     const extrasText = formatExtras(item.extras);
                     return (
-                      <li key={`${String(item?.drinkId ?? "item")}-${idx}`} className={styles.itemDetails}>
+                      <li key={`${String(item?.ItemId ?? "item")}-${idx}`} className={styles.itemDetails}>
                         {formatItemLine(item)}
                         {!!extrasText && (
                           <div style={{ fontSize: ".85rem", opacity: 0.8 }}>

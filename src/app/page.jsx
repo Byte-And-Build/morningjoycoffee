@@ -1,25 +1,19 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
 import axios from "axios";
 import styles from "./page.module.css";
-import { FaThumbsUp, FaSearch } from "react-icons/fa";
+import { FaSearch } from "react-icons/fa";
 import Image from "next/image";
 import heroImage from '../app/assets/heroImage.jpg';
 import Logo from '../app/assets/Logo.webp';
 import Placeholder from '../app/assets/drinkExample.png';
+import ProductCard from "./components/ProductCard";
 
 export default function HomePage( ) {
-  const router = useRouter();
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [searchItem, setSearchItem] = useState("")
-
-  const BASE_INGREDIENTS = [
-    "16oz Disposable Coffee Cup With Lid and Sleeves", 
-    "20oz Disposable Coffee Cup With Lid and Sleeves",
-    "32oz Clear Plastic Cup With Lid and Straw"];
 
   useEffect(() => {
     const fetchItems = async () => {
@@ -96,32 +90,7 @@ export default function HomePage( ) {
             </div>
         </div>
         <div className={styles.gridContainer}>
-          {filteredItems.map((item, index) => (
-            <div key={index} className={styles.drinkWrapper} onClick={() => router.push(`/drink/${item._id}`)}>
-              <div className={styles.ratingContainerHome}>
-                <span className={styles.ratingText}>{item.rating?.thumbsUp || 0}</span>
-                <FaThumbsUp size={'1.5rem'} className={styles.ratingText} />
-              </div>
-              {item && (
-              <Image src={item.image ? item.image : Placeholder} alt={item.name} width={150} height={150}  className="drink-image" loading="lazy" />
-              )}
-              <h3 className={styles.drinkName}>{item.name}</h3>
-              <ul style={{display:'flex', flexWrap:'wrap', flexDirection: 'row', width:'100%', height:'33%', overflowY:'auto', overflowX:'hidden', padding:'.5rem', gap:'.5rem', boxShadow:'var(--insetShadow)', borderRadius:'var(--borderRadiusSmall)', alignContent:'flex-start'}}>
-                {item.sizes?.[0]?.ingredients
-                  ?.filter((ing) => 
-                    ing && 
-                    !BASE_INGREDIENTS.includes(ing.name) &&
-                    ing.quantity > 0
-                  )
-                  .map((ing, i) => (
-                    <span key={i} style={{color:'var(--fontColor)', flex: "1", minWidth: "100%", fontSize: ".8rem", borderBottom: "1px dashed var(--fontColor)"}}>
-                      +{ing.name}
-                    </span>
-                ))}
-
-              </ul>
-            </div>
-          ))}
+          <ProductCard filteredItems={filteredItems} />
         </div>
       </div>
     </div>

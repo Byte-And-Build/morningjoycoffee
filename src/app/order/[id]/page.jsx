@@ -44,7 +44,7 @@ export default function OrderPage() {
             <span className={styles.ingrediants}>
             {Array.isArray(order?.items) ? (
               order.items.map((item, idx) => (
-                <div key={`${item?.drinkId ?? "item"}-${idx}`} style={{ marginBottom: ".5rem" }}>
+                <div key={`${item?._id ?? "item"}-${idx}`} style={{ marginBottom: ".5rem" }}>
                   <p style={{ margin: 0 }}>
                     {item.quantity}x {item.name} ({item.size})
                   </p>

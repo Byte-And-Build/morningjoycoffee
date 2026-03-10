@@ -548,6 +548,24 @@ display: none;
     color: var(--fontColor);
   }
 
+.stripeBtn{
+  background-color: var(--btnColor1);
+  padding: 1rem;
+  position: absolute; 
+  top: 1.75rem; 
+  right: 1.75rem; 
+  border-radius: 2rem;
+  z-index: 20;
+  border: none;
+  color: var(--fontColor);
+  cursor: pointer;
+  box-shadow: var(--shadow);
+}
+
+.stripeBtn:hover, .stripeBtn:active {
+  box-shadow: var(--insetShadow);
+}
+
 .backBtn {
   background-color: var(--btnColor1);
   padding: 1rem;

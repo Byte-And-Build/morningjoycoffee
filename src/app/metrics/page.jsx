@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import Logo from "../../app/assets/Logo.webp";
 import { useAuth } from "../context/AuthContext";
 import { toast } from "react-toastify";
+import { FaArrowRightToBracket } from "react-icons/fa6";
 
 const socket = io(
   process.env.NODE_ENV === "development"
@@ -38,7 +39,7 @@ export default function MetricsPage() {
   useEffect(() => {
   const fetchSupplies = async () => {
     try {
-      const res = await fetch("/api/drinks/supplies", {
+      const res = await fetch("/api/items/supplies", {
         headers: token ? { Authorization: `Bearer ${token}` } : {}
       });
       const data = await res.json();
@@ -133,25 +134,31 @@ const deleteUser = async (id) => {
         <div className={styles.vertContainer} style={{justifyContent: "flex-start"}}>
           <h3 className={styles.drinkName}>{label}</h3>
           <Image src={Logo} alt={item.name} width={100} height={100} content="contain"/>
-          <p className={styles.ingrediants}>{item.name}</p>
+          <p className={styles.ingredients}>{item.name}</p>
           <p>Sold: {item.count}</p>
         </div>
       ) : (
         <div className={styles.vertContainer} style={{justifyContent: "flex-start"}}>
           <h3 className={styles.drinkName}>{label}</h3>
-          <p className={styles.ingrediants}>No sales</p>
+          <p className={styles.ingredients}>No sales</p>
         </div>
       )}
     </div>
   );
 
   return (
-    <div className={styles.page} style={{ justifyContent: "flex-start", padding:'0px 40px 80px 40px' }}>
+    <div className={styles.page}>
       <button
         onClick={() => router.push("/profile")}
         className={styles.backBtn}
       >
         ← Back
+      </button>
+      <button
+        onClick={() => router.push("/profile")}
+        className={styles.stripeBtn}
+      >
+       Stripe Dashboard <FaArrowRightToBracket />
       </button>
       <div className={styles.vertContainer} style={{paddingLeft: ".5rem", paddingRight: ".5rem"}}>
         <div className={styles.horizWrapper}>
@@ -202,14 +209,12 @@ const deleteUser = async (id) => {
         </div>
         {editUser && (
           <div className={styles.overlay}>
-            <div className={styles.modal}>
-              <div className={styles.vertContainer}>
+            <div className={styles.modal} style={{alignItems:'center'}}>
+              <div className={styles.vertContainer} style={{padding:'1rem', width:'75%'}}>
                 <h3 className={styles.heading}>Edit User</h3>
                 <div className={styles.horizWrapper}>
                   <span>Email: </span>
                   <input id="userEmail" className={styles.userInput} value={editUser.email} onChange={e => setEditUser({ ...editUser, email: e.target.value })} />
-                </div>
-                <div className={styles.horizWrapper}>
                   <span>Rewards: </span>
                   <input id="rewardsAmount" className={styles.userInput} type="number" value={editUser.rewards} onChange={e => setEditUser({ ...editUser, rewards: +e.target.value })} />
                 </div>

@@ -29,7 +29,7 @@ export default function ItemDetails() {
   useEffect(() => {
     if (!id) return;
 
-    const fetchDrink = async () => {
+    const fetchItems = async () => {
       try {
         const response = await api.get(`/api/items/${id}`);
         const itemData = response.data;
@@ -48,7 +48,7 @@ export default function ItemDetails() {
       }
     };
 
-    fetchItem();
+    fetchItems();
   }, [id]);
 
   const totalPrice = useMemo(() => {
@@ -103,10 +103,10 @@ export default function ItemDetails() {
         ← Back
       </button>
       <div className={styles.vertContainer}>
-        <Image src={drink.image} alt={drink.name} width={256} height={256}/>
-        <h1 className={styles.itemName}>{drink.name}</h1>
+        <Image src={item.image} alt={item.name} width={256} height={256}/>
+        <h1 className={styles.itemName}>{item.name}</h1>
       </div>
-      {drink.sizes?.[0] && (
+      {item.sizes?.[0] && (
         <div className={styles.horizWrapper} style={{ flexWrap: "wrap" }}>
           <p className={styles.ingredients}>
             {item.sizes[0].ingredients

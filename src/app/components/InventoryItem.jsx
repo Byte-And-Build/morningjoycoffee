@@ -3,10 +3,11 @@ import axios from "axios";
 import styles from "../../app/page.module.css";
 import { api } from "../utils/api";
 import CurrencyInput from "./CurrencyInput";
-import { FaPlus } from "react-icons/fa";
 import { toast, ToastContainer } from "react-toastify";
 import EditSymbol from "../assets/editSymbol.svg";
 import DeleteSymbol from "../assets/deleteSymbol.svg";
+import EditIngredient from "./EditIngredient";
+import IngredientForm from "./IngredientForm";
 
 const InventoryItem = ({ refreshItems, item }) => {
   const [showForm, setShowForm] = useState(false);
@@ -14,15 +15,6 @@ const InventoryItem = ({ refreshItems, item }) => {
   const [availableIngredients, setAvailableIngredients] = useState([]);
   const [ingredientForm , setIngredientForm ] = useState(false)
   const [editIngredient, setEditIngredient] = useState(null);
-  const [newIngredient, setNewIngredient] = useState({
-  name: "",
-  unit: "",
-  inStock: 0,
-  reorderAt: 0,
-  costPerUnit: 0,
-  extraCost: 0,
-  isExtra: false
-});
 
 const availableSizes = ["Single Item", "16oz", "20oz", "24oz", "32oz"];
 
@@ -111,50 +103,6 @@ const calculateCost = (size, availableIngredients) => {
     totalCost += unitCost;
   }
   return totalCost;
-};
-
-const handleAddIngredient = async () => {
-  try {
-    const token = localStorage.getItem("MJCT");
-    await api.post("/api/items/addIngredient", newIngredient, {
-      headers: { Authorization: `Bearer ${token}` }
-    });
-
-    toast.success("Ingredient added!");
-    setNewIngredient({
-      name: "",
-      unit: "",
-      inStock: 0.00,
-      reorderAt: 0.00,
-      costPerUnit: 0.00,
-      isExtra: false,
-      extraPrice: 0.00
-    });
-
-    // refresh ingredients
-    const refreshed = await axios.get("/api/items/ingredients");
-    setAvailableIngredients(refreshed.data || []);
-  } catch (err) {
-    console.error("Ingredient Add Error:", err);
-    toast.error("Failed to add ingredient");
-  }
-};
-
-const handleSaveEditIngredient = async () => {
-  try {
-    const token = localStorage.getItem("MJCT");
-    await api.post("/api/items/editIngredient", editIngredient, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    toast.success("Ingredient updated!");
-    setEditIngredient(null);
-    setIngredientForm(false);
-    const refreshed = await axios.get("/api/items/ingredients");
-    setAvailableIngredients(refreshed.data || []);
-  } catch (err) {
-    console.error("Edit ingredient error:", err);
-    toast.error("Failed to update ingredient");
-  }
 };
 
   const pickImage = async (e) => {
@@ -248,22 +196,7 @@ const convertToWebp = async (file) => {
     }
   };
 
-  const handleDeleteIngredient = async (id) => {
-    if (!confirm("Really delete this ingredient?")) return;
-    try {
-      const token = localStorage.getItem("MJCT");
-      await api.delete(
-        `/api/items/ingredients/${id}`,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      // drop it from local state so UI updates immediately
-      setAvailableIngredients((prev) => prev.filter((i) => i._id !== id));
-      toast.success("Ingredient deleted");
-    } catch (err) {
-      console.error("Delete ingredient error:", err);
-      toast.error("Failed to delete ingredient");
-    }
-  };
+  
 
   const resetForm = () => {
   setFormData({
@@ -327,177 +260,8 @@ function removeIngredient(sizeName, ingredientIdToRemove) {
         <button onClick={() => setShowIngForm(true)} className={styles.btns} style={{display:'flex', alignItems:'center', justifyContent:'center' }}><EditSymbol alt='edit ingredient' style={{ width: "24px", height: "24px", stroke: "var(--fontColor)" }} /> Ingredient</button>
       </div>
       {/* add/edit items */}
-      {showIngForm && (
-        <div className={styles.overlay} onClick={() => setShowIngForm(false)}>
-          <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
-            <ToastContainer theme="dark" />
-            <div className={styles.vertContainer}>
-              <div className={styles.vertContainer} style={{boxShadow:'var(--insetShadow)', borderRadius: 'var(--borderRadiusLarge)', padding: '1rem', flexGrow:'0'}}>
-                <h3>Add New Item</h3>
-                <div className={styles.horizWrapper}>
-                  <input className={styles.userInput} style={{margin: "0"}} placeholder="Name" value={newIngredient.name || ""} onChange={(e) => setNewIngredient({ ...newIngredient, name: e.target.value })} />
-                  <select className={styles.select} value={newIngredient.unit} onChange={(e) => setNewIngredient({ ...newIngredient, unit: e.target.value }) }>
-                    <option value="ml">ml</option>
-                    <option value="oz">oz</option>
-                    <option value="g">g</option>
-                    <option value="piece">piece</option>
-                    <option value="each">each</option>
-                  </select>
-                </div>
-                <div className={styles.horizWrapper}>
-                  <div className={styles.vertContainer} style={{flex: '1'}}>
-                    <label htmlFor="stock" className={styles.ingredients}>Current Stock:</label>
-                    <input id="stock" type="number" className={styles.userInput} placeholder="In Stock" value={newIngredient.inStock} onChange={(e) => setNewIngredient({ ...newIngredient, inStock: parseInt(e.target.value) })} />
-                  </div>
-                  <div className={styles.vertContainer} style={{flex: '1'}}>
-                    <label className={styles.ingredients}>Re-Order At:</label>
-                    <input type="number" className={styles.userInput} placeholder="Reorder At" value={newIngredient.reorderAt} onChange={(e) => setNewIngredient({ ...newIngredient, reorderAt: parseInt(e.target.value) })} />
-                  </div>
-                  <div className={styles.vertContainer} style={{flex: '1'}}>
-                    <label className={styles.ingredients}>Cost Per Unit:</label>
-                    <CurrencyInput value={newIngredient.costPerUnit} onChange={(val) => setNewIngredient({ ...newIngredient, costPerUnit: val })} placeholder="Cost Per Unit" />
-                  </div>
-                  <div className={styles.vertContainer} style={{flex: '1'}}>
-                    <div className={styles.horizContainer} style={{boxShadow:'none'}}>
-                      <label htmlFor="extra">Is Extra?</label>
-                      <input id="extra" type="checkbox" checked={newIngredient.isExtra} onChange={(e) => setNewIngredient({ ...newIngredient, isExtra: e.target.checked })} />
-                    </div>
-                    {newIngredient.isExtra ? (
-                      <>
-                        <label className={styles.ingredients}>Extra Cost:</label>
-                          <CurrencyInput value={newIngredient.extraCost} onChange={(val) => setNewIngredient({ ...newIngredient, extraCost: val })} placeholder="0.75" />
-                      </>
-                    ) : ( <></>)}
-                    </div>
-                </div>
-                <button className={styles.btns} onClick={handleAddIngredient}> <FaPlus/> Save Ingredient </button>
-              </div>
-              {availableIngredients.length === 0 ? (
-                <p>No ingredients found.</p>
-              ) : (
-                  <div className={styles.vertWrapper} style={{ padding:'0px', width:'100%', overflowY:'auto', maxHeight:'45vh', borderRadius:'var(--borderRadiusLarge)', boxShadow:'var(--insetShadow)'}}>
-                    <div className={styles.stickyContainer} style={{width:'100%', flexDirection: 'column'}}>
-                        <h3>Available Items</h3>
-                      <div className={styles.horizWrapper} style={{paddingBottom:'1rem'}}>
-                        <span className={styles.ingredients} style={{flex: 1, minWidth: "100px", textAlign: "left"}}>Name</span>
-                        <span className={styles.ingredients} style={{flex: 1, minWidth: "100px", textAlign: "left"}}>Cost/Unit</span>
-                        <span className={styles.ingredients} style={{flex: 1, minWidth: "100px", textAlign: "left"}}>Extra Price</span>
-                        <span className={styles.ingredients} style={{flex: 1, minWidth: "100px", textAlign: "left"}}>In Stock</span>
-                        <span className={styles.ingredients} style={{flexGrow:'0', minWidth: "64px", textAlign: "center"}}>Is Extra</span>
-                        <span className={styles.ingredients} style={{flex: 1, minWidth: "100px", textAlign: "center"}}>Edit/Save</span>
-                      </div>
-                    </div>
-                    {availableIngredients.map((ingredient) => (
-                      <>
-                      <div className={styles.cartWrapper} key={ingredient._id} style={{borderBottom: "1px black dashed"}}>
-                        <span className={styles.ingredients} style={{flex: 1, textAlign: "left", minWidth: "100px"}}>{ingredient.name}</span>
-                        <span className={styles.ingredients} style={{flex: 1, minWidth: "100px", textAlign: "left"}}>${ingredient.costPerUnit.toFixed(2)}/{ingredient.unit}</span>
-                        <span className={styles.ingredients} style={{flex: 1, minWidth: "100px", textAlign: "left"}}>${ingredient.extraPrice.toFixed(2)}/{ingredient.unit}</span>
-                        <span className={styles.ingredients} style={{flex: 1, minWidth: "64px", textAlign: "left"}}>{ingredient.inStock} {ingredient.unit}{ingredient.inStock > 1 ? "(s)" : ""}</span>
-                        <input type="checkbox" defaultChecked={ingredient?.isExtra ? "checked" : ""} style={{flexGrow:'0', minWidth:"64px"}}/>
-                        <button className={styles.btns} style={{flex: 1, minWidth: "100px"}} onClick={() => { setEditIngredient(ingredient); setIngredientForm(true); }}>Edit</button>
-                        <button className={styles.btns} style={{flex: 1, minWidth: "100px"}} onClick={() => handleDeleteIngredient(ingredient._id)}>Delete</button>
-                      </div>
-                      </>
-                    ))}
-                    </div>
-              )}
-              <button className={styles.btns} style={{maxHeight:'fit-content'}} onClick={() => setShowIngForm(false)}>Close</button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {ingredientForm && editIngredient && (
-        <div className={styles.overlay} onClick={() => { setEditIngredient(null); setIngrediantForm(false) }}>
-          <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
-            <div className={styles.vertContainer}>
-              <h3>Edit Ingredient</h3>
-              <div className={styles.horizWrapper}>
-                <label htmlFor={editIngredient.name} className={styles.ingredients} style={{flex: 1, textAlign: "left"}}>Name:</label>
-                <input className={styles.userInput} id={editIngredient.name} placeholder="Name" value={editIngredient.name} onChange={(e) => setEditIngredient({ ...editIngredient, name: e.target.value })} />
-                <label htmlFor={editIngredient.name} className={styles.ingredients} style={{flex: 1, textAlign: "left"}}>Unit:</label>
-                <select
-                  className={styles.select}
-                  value={editIngredient.unit}
-                  onChange={(e) =>
-                    setEditIngredient({ ...editIngredient, unit: e.target.value })
-                  }
-                >
-                  <option value="ml">ml</option>
-                  <option value="oz">oz</option>
-                  <option value="g">g</option>
-                  <option value="piece">piece</option>
-                </select>
-              </div>
-              <div className={styles.horizWrapper}>
-                <label htmlFor={editIngredient.name} className={styles.ingredients} style={{flex: 1, textAlign: "left"}}>Current Stock:</label>
-                <input
-                  className={styles.userInput}
-                  placeholder="In Stock"
-                  type="number"
-                  value={editIngredient.inStock}
-                  onChange={(e) =>
-                    setEditIngredient({ ...editIngredient, inStock: parseFloat(e.target.value) })
-                  }
-                />
-              </div>
-              <div className={styles.horizWrapper}>
-                <label htmlFor={editIngredient.name} className={styles.ingredients} style={{flex: 1, textAlign: "left"}}>Reorder At:</label>
-                <input
-                  className={styles.userInput}
-                  placeholder="Reorder At"
-                  type="number"
-                  value={editIngredient.reorderAt}
-                  onChange={(e) =>
-                    setEditIngredient({ ...editIngredient, reorderAt: parseFloat(e.target.value) })
-                  }
-                />
-              </div>
-              <div className={styles.horizWrapper}>
-                <label htmlFor={editIngredient.name} className={styles.ingredients} style={{flex: 1, textAlign: "left"}}>Cost Per Unit</label>
-                <CurrencyInput
-                  value={editIngredient.costPerUnit}
-                  onChange={(val) =>
-                    setEditIngredient({ ...editIngredient, costPerUnit: val })
-                  }
-                  placeholder="Cost Per Unit"
-                />
-                </div>
-                <div className={styles.horizWrapper}>
-                  <label htmlFor={editIngredient.name} className={styles.ingredients} style={{flex: 1, textAlign: "left"}}>Is Extra?</label>
-                  <input type="checkbox" checked={editIngredient.isExtra} onChange={(e) => setEditIngredient({ ...editIngredient, isExtra: e.target.checked })}/>
-                    {editIngredient.isExtra && (
-                      <CurrencyInput
-                        value={editIngredient.extraPrice}
-                        onChange={(val) =>
-                          setEditIngredient({ ...editIngredient, extraPrice: val })
-                        }
-                        placeholder="Extra Price"
-                      />
-                    )}
-                  </div>
-              <div className={styles.horizWrapper}>
-                <button
-                  className={styles.btns}
-                  onClick={handleSaveEditIngredient}
-                >
-                  Save Changes
-                </button>
-                <button
-                  className={styles.btns}
-                  onClick={() => {
-                    setIngredientForm(false);
-                    setEditIngredient(null);
-                  }}
-                >
-                  Cancel
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      <IngredientForm showIngForm={showIngForm} setShowIngForm={setShowIngForm} availableIngredients={availableIngredients} />
+      <EditIngredient setIngredientForm={setIngredientForm} setEditIngredient={setEditIngredient} editIngredient={editIngredient} ingredientForm={ingredientForm}/>
       {/* add product */}
       {showForm && (
         <div className={styles.overlay} onClick={() => setShowForm(false)}>

@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const Order = require("../models/Order");
-const Drink = require("../models/Items");
+const Item = require("../models/Items");
 
 // Utility: get date N days ago
 const daysAgo = (n) => {
@@ -52,10 +52,10 @@ router.get("/top-selling", async (req, res) => {
       ]);
 
       if (top.length) {
-        const drink = await Drink.findOne({ name: top[0]._id }); // ✅ use `name` instead of `_id`
+        const item = await Item.findOne({ name: top[0]._id }); // ✅ use `name` instead of `_id`
         results[key] = {
-            name: drink?.name || top[0]._id || "Unknown",
-            img: drink?.image || "",
+            name: item?.name || top[0]._id || "Unknown",
+            img: item?.image || "",
             count: top[0].count,
         };
         } else {
